@@ -6,9 +6,16 @@
 <body>
     <h1>Welcome to the Home Page!</h1>
     <p>You have successfully logged in.</p>
-    
+
+    <div>
+        <a th:href="@{/profile}">
+            <button type="button">Go to Profile</button>
+        </a>
+    </div>  
+
     <form th:action="@{/logout}" method="post">
         <button type="submit">Log Out</button>
-    </form>    
+    </form>
+
 </body>
 </html>
