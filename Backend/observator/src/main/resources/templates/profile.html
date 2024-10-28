@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Profile</title>
+    <script>
+        // Check if the URL contains the success parameter and show an alert
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('success')) {
+                alert('Your information has been saved successfully!');
+            }
+        };
+    </script>
+</head>
+<body>
+    <h2>Update Profile</h2>
+
+    <form th:action="@{/profile}" method="post">
+        <div>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" th:value="${user.username}" readonly />
+        </div>
+        <div>
+            <label for="upbitAccessKey">Upbit Access Key:</label>
+            <input type="text" id="upbitAccessKey" name="upbitAccessKey" th:value="${user.upbitAccessKey}" />
+        </div>
+        <div>
+            <label for="upbitSecretKey">Upbit Secret Key:</label>
+            <input type="text" id="upbitSecretKey" name="upbitSecretKey" th:value="${user.upbitSecretKey}" />
+        </div>
+        <div>
+            <button type="submit">Save Changes</button>
+        </div>
+    </form>
+
+    <div style="margin-top: 10px;">
+        <a th:href="@{/home}">
+            <button type="button">Go Back to Home</button>
+        </a>
+    </div>
+</body>
+</html>

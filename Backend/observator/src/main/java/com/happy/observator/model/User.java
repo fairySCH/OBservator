@@ -23,7 +23,15 @@ public class User {
 
     private boolean isCertified;
     private long balance;
+    private String upbitAccessKey;
+    private String upbitSecretKey;
 
+    public User() {}
+    
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 
     public int getId() {
         return this.id;
@@ -69,11 +77,19 @@ public class User {
         this.balance = balance;
     }
 
+    public String getUpbitAccessKey() {
+        return this.upbitAccessKey;
+    }
 
-    public User() {}
-    
-    public User(String username, String password) {
-        this.username = username;
-        this.password = password;
+    public void setUpbitAccessKey(String upbitAccessKey) {
+        this.upbitAccessKey = upbitAccessKey;
+    }
+
+    public String getUpbitSecretKey() {
+        return this.upbitSecretKey;
+    }
+
+    public void setUpbitSecretKey(String upbitSecretKey) {
+        this.upbitSecretKey = upbitSecretKey;
     }
 }

@@ -25,6 +25,7 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests((authz) -> authz
                 .requestMatchers("/signup", "/login", "/h2-console/**").permitAll()
+                .requestMatchers("/profile").authenticated()
                 .anyRequest().authenticated()
             )
             .formLogin((form) -> form

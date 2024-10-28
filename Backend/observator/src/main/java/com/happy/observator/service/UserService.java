@@ -34,6 +34,10 @@ public class UserService implements UserDetailsService{
             .build();
     }
 
+    public Optional<User> findByUsername(String username) {
+        return userRepositary.findByUsername(username);
+    }
+
     public void saveUser(String username, String password){
         if(userRepositary.findByUsername(username).isPresent()){
             throw new IllegalArgumentException("Username already taken");
@@ -41,4 +45,12 @@ public class UserService implements UserDetailsService{
         User user = new User(username, passwordEncoder.encode(password));
         userRepositary.save(user);
     }
+
+    public void updateUpbitKeys(String username, String upbitAccessKey, String upbitSecretKey) {
+        User user = userRepositary.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+        user.setUpbitAccessKey(upbitAccessKey);
+        user.setUpbitSecretKey(upbitSecretKey);
+        userRepositary.save(user);
+    }
+
 }
