@@ -12,6 +12,7 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
+    @SuppressWarnings("unused")
     @Autowired
     private UserDetailsService userDetailsService;  // Field injection
 
