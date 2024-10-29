@@ -38,6 +38,25 @@
         </div>
     </form>
 
+    <h3>Upbit Balance Information</h3>
+
+    <p th:if="${errorMessage}" style="color:red;">[[${errorMessage}]]</p>
+
+    <table th:if="${hasKeys}" border="1">
+        <tr>
+            <th>Currency</th>
+            <th>Balance</th>
+            <th>Locked</th>
+            <th>Avg Buy Price</th>
+        </tr>
+        <tr th:each="balance : ${balances}">
+            <td th:text="${balance.currency}"></td>
+            <td th:text="${balance.balance}"></td>
+            <td th:text="${balance.locked}"></td>
+            <td th:text="${balance.avgBuyPrice}"></td>
+        </tr>
+    </table>
+
     <div style="margin-top: 10px;">
         <a th:href="@{/home}">
             <button type="button">Go Back to Home</button>

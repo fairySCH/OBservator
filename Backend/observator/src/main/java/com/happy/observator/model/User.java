@@ -24,6 +24,8 @@ public class User {
     private long balance;
     private String upbitAccessKey;
     private String upbitSecretKey;
+    //private String upbitAccessKey = "sRvinMUxfPsx4RlqFKoVC6djMO1j8BqYCnGAuqrY";
+    //private String upbitSecretKey = "rGYR8Af81iNBVA1GCeENqehkqE01TwLhbRsQHxHi";
     private boolean upbitKeysSet;
 
     public User() {}
