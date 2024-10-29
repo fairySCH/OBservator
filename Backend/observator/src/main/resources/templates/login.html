@@ -87,6 +87,7 @@
     </style>
 </head>
 <body>
+<form th:action="@{/login}" method="post">
     <div class="login-container">
         <h1>로그인</h1>
         <form action="home.html" method="post">
@@ -108,10 +109,12 @@
             <div>
                 <button type="submit" class="login-button">로그인</button>
             </div>
+            <div>
+                <button type="button" class="signup-button" onclick="location.href='/signup'">회원가입</button>
+            </div>
         </form>
-        <div>
-            <button class="signup-button" onclick="location.href='/signup'">회원가입</button>
-        </div>
     </div>
+</form>
+
 </body>
 </html>

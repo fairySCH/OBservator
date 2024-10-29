@@ -15,6 +15,11 @@
 <body>
     <h2>Update Profile</h2>
 
+    <p>
+        Upbit Keys Set:
+        <span th:text="${user.upbitKeysSet ? 'Yes' : 'No'}"></span>
+    </p>
+
     <form th:action="@{/profile}" method="post">
         <div>
             <label for="username">Username:</label>
