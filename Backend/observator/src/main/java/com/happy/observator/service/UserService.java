@@ -50,6 +50,8 @@ public class UserService implements UserDetailsService{
         User user = userRepositary.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
         user.setUpbitAccessKey(upbitAccessKey);
         user.setUpbitSecretKey(upbitSecretKey);
+        boolean keysSet = !upbitAccessKey.isBlank() && !upbitSecretKey.isBlank();
+        user.setUpbitKeysSet(keysSet);
         userRepositary.save(user);
     }
 

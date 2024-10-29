@@ -21,10 +21,10 @@ public class User {
     @NotBlank
     private String password;
 
-    private boolean isCertified;
     private long balance;
     private String upbitAccessKey;
     private String upbitSecretKey;
+    private boolean upbitKeysSet;
 
     public User() {}
     
@@ -57,18 +57,6 @@ public class User {
         this.password = password;
     }
 
-    public boolean isIsCertified() {
-        return this.isCertified;
-    }
-
-    public boolean getIsCertified() {
-        return this.isCertified;
-    }
-
-    public void setIsCertified(boolean isCertified) {
-        this.isCertified = isCertified;
-    }
-
     public long getBalance() {
         return this.balance;
     }
@@ -91,5 +79,13 @@ public class User {
 
     public void setUpbitSecretKey(String upbitSecretKey) {
         this.upbitSecretKey = upbitSecretKey;
+    }
+
+    public boolean isUpbitKeysSet() {
+        return this.upbitKeysSet;
+    }
+
+    public void setUpbitKeysSet(boolean upbitKeysSet) {
+        this.upbitKeysSet = upbitKeysSet;
     }
 }
