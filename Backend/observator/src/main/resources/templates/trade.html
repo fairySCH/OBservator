@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Trade Bitcoin</title>
+</head>
+<body>
+    <h2>Trade Bitcoin</h2>
+
+    <form th:action="@{/trade}" method="post">
+        <div>
+            <label for="price">Amount (KRW):</label>
+            <input type="text" id="price" name="price" placeholder="Enter price in KRW" required />
+        </div>
+        <button type="submit" name="action" value="buy">Buy Bitcoin</button>
+    </form>
+
+    <p th:if="${errorMessage}" style="color:red;">[[${errorMessage}]]</p>
+    <p th:if="${successMessage}" style="color:green;">[[${successMessage}]]</p>
+
+    <div>
+        <a href="/home"><button type="button">Back to Home</button></a>
+    </div>
+</body>
+</html>
