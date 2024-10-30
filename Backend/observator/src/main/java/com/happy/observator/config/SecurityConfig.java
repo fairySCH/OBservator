@@ -29,7 +29,7 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .csrf(csrf -> csrf.disable())  // Disable CSRF protection for H2 console
-            .headers(headers -> headers.frameOptions().disable())  // Allow H2 frames
+            .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))  // Allow H2 frames
             .formLogin((form) -> form
                 .loginPage("/login")
                 .failureUrl("/login?error=true")
