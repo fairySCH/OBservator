@@ -25,7 +25,7 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests((authz) -> authz
                 .requestMatchers("/signup", "/login", "/h2-console/**").permitAll()
-                .requestMatchers("/profile").authenticated()
+                .requestMatchers("/profile", "/trade").authenticated()
                 .anyRequest().authenticated()
             )
             .csrf(csrf -> csrf.disable())  // Disable CSRF protection for H2 console
