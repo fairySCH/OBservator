@@ -5,6 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.happy.observator.service.UserService;
 
@@ -24,10 +25,31 @@ public class SignupController {
     }
 
     @PostMapping("/signup")
-    public String registerUser(@ModelAttribute User user, Model model) {
+    public String registerUser(@RequestParam String username,
+            @RequestParam String password,
+            @RequestParam(required = false) String email_local,
+            @RequestParam(required = false) String email_domain,
+            @RequestParam(required = false) String phone1,
+            @RequestParam(required = false) String phone2,
+            @RequestParam(required = false) String phone3, Model model) {
         try{
-            userService.saveUser(user.getUsername(), user.getPassword());
-            return "redirect:/login?signup=true";  // Redirect to login with signup success message
+            // Combine email and phone number
+            String email = email_local + "@" + email_domain;
+            String phone = phone1 + "-" + phone2 + "-" + phone3;
+
+            if (userService.userExists(username)) {
+                model.addAttribute("errorMessage", "Username already taken. Please try another one.");
+                return "signup";  // Render signup.html again with the error message
+            }
+
+            // Save user
+            userService.saveUser(username, password, email, phone);
+
+            // Add a success message
+            model.addAttribute("successMessage", "User registered successfully! Please log in.");
+
+            // Redirect to login with signup success message
+            return "redirect:/login";
         } catch(IllegalArgumentException e){
             model.addAttribute("error", e.getMessage());
             return "signup";

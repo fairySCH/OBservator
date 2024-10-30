@@ -250,10 +250,9 @@
 <body>
     <div class="signup-container">
         <h2>회원가입</h2>
-        <form action="home.html" method="post">
-            <div style="display: flex; align-items: center;">
-                <input type="text" id="name" name="name" placeholder="이름" style="flex: 1; margin-right: 20px;">
-            </div>
+        <p th:if="${errorMessage}" style="color:red;">[[${errorMessage}]]</p>
+        <p th:if="${successMessage}" style="color:green;">[[${successMessage}]]</p>
+        <form action="/signup" method="post">
             <div>
                 <input type="text" id="username" name="username" placeholder="아이디">
                 <div class="username-requirements">특수문자 없이 4자~20자로 입력해주세요.</div>
