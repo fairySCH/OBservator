@@ -6,12 +6,20 @@
 <body>
     <h2>Trade Bitcoin</h2>
 
-    <form th:action="@{/trade}" method="post">
+    <form th:action="@{/buy}" method="post">
         <div>
-            <label for="price">Amount (KRW):</label>
+            <label for="price">Price to Buy (KRW):</label>
             <input type="text" id="price" name="price" placeholder="Enter price in KRW" required />
         </div>
         <button type="submit" name="action" value="buy">Buy Bitcoin</button>
+    </form>
+
+    <form th:action="@{/sell}" method="post">
+        <div>
+            <label for="price">Volume to Sell (BTC):</label>
+            <input type="text" id="volume" name="volume" placeholder="Enter Bitcoin volume to sell" required />
+        </div>
+        <button type="submit" name="action" value="sell">Sell Bitcoin</button>
     </form>
 
     <p th:if="${errorMessage}" style="color:red;">[[${errorMessage}]]</p>
