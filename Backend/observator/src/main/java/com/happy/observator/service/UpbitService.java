@@ -84,4 +84,42 @@ public class UpbitService {
             throw new RuntimeException("Error placing buy order: " + e.getMessage(), e);
         }
     }
+
+    public String placeSellOrder(String accessKey, String secretKey, String market, String volume) {
+        try {
+            //String formattedVolume = String.format("%.5f", Double.parseDouble(volume));
+
+            Map<String, String> params = new HashMap<>();
+            params.put("market", market);
+            params.put("side", "ask");
+            params.put("volume", volume);
+            params.put("ord_type", "market");
+
+            ArrayList<String> queryElements = new ArrayList<>();
+            for(Map.Entry<String, String> entity : params.entrySet()) {
+                queryElements.add(entity.getKey() + "=" + entity.getValue());
+            }
+
+            String queryString = String.join("&", queryElements.toArray(new String[0]));
+
+            String jwtToken = UpbitApiUtil.generateJwtToken(accessKey, secretKey, queryString);
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + jwtToken);
+            headers.set("Content-Type", "application/json");
+            HttpEntity<String> entity = new HttpEntity<>(new Gson().toJson(params), headers);
+
+            ResponseEntity<String> response = restTemplate.exchange(
+                    UPBIT_ORDER_URL, HttpMethod.POST, entity, String.class
+            );
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody();  // Return the response body on success
+            } else {
+                throw new RuntimeException("Order failed: " + response.getBody());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error placing buy order: " + e.getMessage(), e);
+        }
+    }
 }

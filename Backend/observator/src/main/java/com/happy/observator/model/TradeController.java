@@ -27,8 +27,8 @@ public class TradeController {
         return "trade";  // Return the name of the template (trade.html)
     }
 
-    @PostMapping("/trade")
-    public String tradeBitcoin(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("price") String price, Model model) {
+    @PostMapping("/buy")
+    public String buyBitcoin(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("price") String price, Model model) {
         String username = userDetails.getUsername();
         User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
         try {
@@ -36,6 +36,20 @@ public class TradeController {
             model.addAttribute("successMessage", "Buy order placed successfully: " + response);
         } catch (Exception e) {
             model.addAttribute("errorMessage", "Failed to place buy order: " + e.getMessage());
+        }
+
+        return "trade";  // Render the same page with success or error message
+    }
+
+    @PostMapping("/sell")
+    public String sellBitcoin(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("volume") String volume, Model model) {
+        String username = userDetails.getUsername();
+        User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+        try {
+            String response = upbitService.placeSellOrder(user.getUpbitAccessKey(), user.getUpbitSecretKey(), "KRW-BTC", volume);
+            model.addAttribute("successMessage", "Sell order placed successfully: " + response);
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Failed to place sell order: " + e.getMessage());
         }
 
         return "trade";  // Render the same page with success or error message
