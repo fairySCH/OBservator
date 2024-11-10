@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import { Line, Bar, Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
@@ -15,61 +16,116 @@ import {
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Title, Tooltip, Legend);
 
-function App() {
+// Center text plugin for Doughnut chart
+// Center text plugin for Doughnut chart
+// Center text plugin for Doughnut chart
+// Center text plugin for Doughnut chart
+// Center text plugin for Doughnut chart only
+ChartJS.register({
+  id: 'centerText',
+  beforeDraw: (chart) => {
+    // 도넛 차트에서만 중앙 텍스트를 추가
+    if (chart.config.type === 'doughnut') {
+      const { ctx, data } = chart;
+      const { width, height } = chart;
+      ctx.save();
+      const fontSize = (height / 150).toFixed(2); // 폰트 크기 조정 가능
+      ctx.font = `${fontSize}em sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      const winRateValue = parseFloat(data.datasets[0]?.data[0]) || 0;
+      const text = `${winRateValue.toFixed(2)}%`;
+      
+      const textX = width / 2;
+      const textY = height / 2;
+      ctx.fillText(text, textX, textY);
+      ctx.restore();
+    }
+  },
+});
+
+
+
+
+function LoginPage({ setIsLoggedIn, setUsername }) {
+  const navigate = useNavigate();
+  const [inputUsername, setInputUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLogin = () => {
+    if (inputUsername && password) {
+      setUsername(inputUsername);
+      setIsLoggedIn(true);
+      navigate('/dashboard');
+    } else {
+      alert('Please enter both username and password');
+    }
+  };
+
+  return (
+    <div style={styles.loginContainer}>
+      <h2>Login</h2>
+      <input
+        type="text"
+        placeholder="Username"
+        value={inputUsername}
+        onChange={(e) => setInputUsername(e.target.value)}
+        style={styles.input}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        style={styles.input}
+      />
+      <button onClick={handleLogin} style={styles.button}>Log In</button>
+    </div>
+  );
+}
+
+function BitcoinTracker({ isLoggedIn, username }) {
   const [priceData, setPriceData] = useState([]);
+  const [predictedPriceData, setPredictedPriceData] = useState([]);
   const [timeData, setTimeData] = useState([]);
   const [volumeData, setVolumeData] = useState([]);
   const [tradeHistory, setTradeHistory] = useState([]);
-  const [trend, setTrend] = useState('상승세');
-  const [totalProfit, setTotalProfit] = useState(5000);
-  const [previousProfit, setPreviousProfit] = useState(5000);
-  const [profitChange, setProfitChange] = useState(0);
-  const [isProfitIncreasing, setIsProfitIncreasing] = useState(true);
-  const [accuracy, setAccuracy] = useState(85);
-  const [profitRate, setProfitRate] = useState(20);
+  const [winRate, setWinRate] = useState(0);
+  const [averageHoldingTime, setAverageHoldingTime] = useState(0);
 
   useEffect(() => {
     const fetchDummyData = () => {
-      const dummyPrice = (Math.random() * (60000 - 50000) + 50000).toFixed(2);
+      const dummyPrice = parseFloat((Math.random() * (60000 - 50000) + 50000).toFixed(2));
+      const dummyPredictedPrice = parseFloat((dummyPrice * (1 + (Math.random() - 0.5) * 0.02)).toFixed(2));
       const dummyVolume = (Math.random() * 100).toFixed(2);
       const currentTime = new Date().toLocaleTimeString();
-  
-      setProfitRate(Math.floor(Math.random() * 100));
-      setAccuracy(Math.floor(Math.random() * 100));
-  
-      const newProfit = totalProfit + Math.floor(Math.random() * 200 - 100);
-      setPreviousProfit(totalProfit);
-      setTotalProfit(newProfit);
-  
-      const change = newProfit - previousProfit;
-      setProfitChange(change);
-      setIsProfitIncreasing(change >= 0);
-  
-      setPriceData((prevPriceData) => [...prevPriceData, dummyPrice].slice(-20)); // 10개 데이터만 유지
-      setTimeData((prevTimeData) => [...prevTimeData, currentTime].slice(-20)); // 10개 시간 데이터만 유지
-      setVolumeData((prevVolumeData) => [...prevVolumeData, dummyVolume].slice(-20));
-  
-      const newTrade = {
-        time: currentTime,
-        price: dummyPrice,
-        volume: dummyVolume,
-        action: Math.random() > 0.5 ? 'Buy' : 'Sell',
-        result: Math.random() > 0.5 ? 'Win' : 'Lose',
-      };
-      setTradeHistory((prevHistory) => {
-        const updatedHistory = [...prevHistory, newTrade];
-        return updatedHistory.length > 15 ? updatedHistory.slice(-15) : updatedHistory;
-      });
-  
-      const recentPrices = [...priceData, dummyPrice].slice(-5);
-      const priceDifference = recentPrices[recentPrices.length - 1] - recentPrices[0];
-      setTrend(priceDifference > 0 ? '상승세' : '하락세');
+
+      setPriceData((prevPriceData) => [...prevPriceData, dummyPrice]);
+      setPredictedPriceData((prevPredictedData) => [...prevPredictedData, dummyPredictedPrice]);
+      setTimeData((prevTimeData) => [...prevTimeData, currentTime]);
+      setVolumeData((prevVolumeData) => [...prevVolumeData, dummyVolume]);
+
+      const isWin = Math.random() > 0.5;
+      setTradeHistory((prevHistory) => [
+        ...prevHistory,
+        { time: currentTime, isWin, holdingTime: Math.floor(Math.random() * 60) },
+      ]);
+
+      const winCount = tradeHistory.filter((trade) => trade.isWin).length;
+      setWinRate((winCount / tradeHistory.length) * 100);
+
+      const totalHoldingTime = tradeHistory.reduce((acc, trade) => acc + trade.holdingTime, 0);
+      setAverageHoldingTime(totalHoldingTime / tradeHistory.length || 0);
     };
-    
-    // 주기가 10초로 정확히 작동하도록 하기 위해 의존성을 없앰
-    const interval = setInterval(fetchDummyData, 700); // 1초(10000ms) 간격으로 데이터 갱신
+
+    const interval = setInterval(fetchDummyData, 1000);
     return () => clearInterval(interval);
-  }, []); // 빈 의존성 배열로 설정해 10초마다만 작동
+  }, [tradeHistory]);
+
+  if (!isLoggedIn) {
+    return <Navigate to="/" />;
+  }
 
   const priceChartData = {
     labels: timeData,
@@ -81,9 +137,68 @@ function App() {
         borderColor: 'blue',
         tension: 0.4,
         borderWidth: 1,
+        pointRadius: 0,
+      },
+      {
+        label: 'Predicted Bitcoin Price',
+        data: predictedPriceData,
+        fill: false,
+        borderColor: 'darkorange', // 눈에 잘 띄는 색상
+        borderWidth: 3, // 선 두께 증가
+        pointRadius: 3, // 포인트 크기 증가
+        borderDash: [5, 5], // 점선 스타일
+        tension: 0.4,
       },
     ],
   };
+  
+  // 그림자 플러그인 추가
+// 도넛 차트 전용 Center text plugin
+ChartJS.register({
+  id: 'centerText',
+  beforeDraw: (chart) => {
+    if (chart.config.type === 'doughnut') {
+      const { ctx, data } = chart;
+      const { width, height } = chart;
+      ctx.save();
+      const fontSize = (height / 150).toFixed(2);
+      ctx.font = `${fontSize}em sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      const winRateValue = parseFloat(data.datasets[0]?.data[0]) || 0;
+      const text = `${winRateValue.toFixed(2)}%`;
+
+      const textX = width / 2;
+      const textY = height / 2;
+      ctx.fillText(text, textX, textY);
+      ctx.restore();
+    }
+  },
+});
+
+// 그림자 플러그인 (라인 차트, 바 차트 등에서만 사용)
+ChartJS.register({
+  id: 'shadowPlugin',
+  beforeDatasetsDraw: (chart) => {
+    if (chart.config.type !== 'doughnut') { // 도넛 차트 제외
+      const { ctx, chartArea: { left, top, width, height } } = chart;
+      ctx.save();
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+      ctx.shadowBlur = 10;
+      ctx.shadowOffsetX = 5;
+      ctx.shadowOffsetY = 5;
+      ctx.clearRect(left, top, width, height);
+    }
+  },
+  afterDatasetsDraw: (chart) => {
+    if (chart.config.type !== 'doughnut') { // 도넛 차트 제외
+      chart.ctx.restore();
+    }
+  },
+});
+
+  
 
   const volumeChartData = {
     labels: timeData,
@@ -91,41 +206,19 @@ function App() {
       {
         label: 'Bitcoin Volume',
         data: volumeData,
-        backgroundColor: 'green',
+        backgroundColor: 'rgba(0, 123, 255, 0.5)',
+        borderColor: 'blue',
+        borderWidth: 1,
       },
     ],
   };
 
-  const options = {
-    scales: {
-      x: {
-        ticks: {
-          maxTicksLimit: 5,
-        },
-      },
-    },
-  };
-
-  const profitRateData = {
-    labels: ['Profit', 'Loss'],
+  const winRateData = {
+    labels: ['Win', 'Loss'],
     datasets: [
       {
-        label: 'Profit Rate',
-        data: [profitRate, 100 - profitRate],
+        data: [winRate, 100 - winRate],
         backgroundColor: ['#4caf50', '#f44336'],
-        hoverOffset: 4,
-      },
-    ],
-  };
-
-  const accuracyData = {
-    labels: ['Accuracy', 'Error'],
-    datasets: [
-      {
-        label: 'Prediction Accuracy',
-        data: [accuracy, 100 - accuracy],
-        backgroundColor: ['#2196f3', '#ff9800'],
-        hoverOffset: 4,
       },
     ],
   };
@@ -133,24 +226,16 @@ function App() {
   return (
     <div>
       <div style={styles.header}>
-        <h1>Bitcoin Tracker with Dummy Data</h1>
-        <div style={styles.totalProfit}>
-          <h2 style={styles.fixedProfit}>
-            Total Profit: ${totalProfit.toLocaleString()}
-            <span style={{ color: isProfitIncreasing ? 'green' : 'red' }}>
-              {isProfitIncreasing ? ` (+${profitChange}) ↑` : ` (${profitChange}) ↓`}
-            </span>
-          </h2>
-        </div>
+        <h1>{username}님 안녕하세요</h1>
       </div>
 
       <div style={styles.container}>
         <div style={styles.column}>
-          <h2>Bitcoin Price</h2>
-          <Line data={priceChartData} options={options} />
+          <h2>Bitcoin Price vs Predicted Price</h2>
+          <Line data={priceChartData} options={{ scales: { x: { ticks: { maxTicksLimit: 10 } } } }} />
 
           <h2>Bitcoin Volume</h2>
-          <Bar data={volumeChartData} options={options} />
+          <Bar data={volumeChartData} options={{ scales: { x: { ticks: { maxTicksLimit: 10 } } } }} />
         </div>
 
         <div style={styles.column}>
@@ -161,18 +246,18 @@ function App() {
                 <th>Time</th>
                 <th>Price (USD)</th>
                 <th>Volume</th>
-                <th>Action</th> 
-                <th>Result</th> 
+                <th>Action</th>
+                <th>Result</th>
               </tr>
             </thead>
             <tbody>
-              {tradeHistory.map((trade, index) => (
+              {tradeHistory.slice(-15).map((trade, index) => (
                 <tr key={index}>
                   <td>{trade.time}</td>
-                  <td>{trade.price}</td>
-                  <td>{trade.volume}</td>
-                  <td>{trade.action}</td>
-                  <td>{trade.result}</td>
+                  <td>{priceData[index]}</td>
+                  <td>{volumeData[index]}</td>
+                  <td>{trade.isWin ? 'Buy' : 'Sell'}</td>
+                  <td>{trade.isWin ? 'Win' : 'Lose'}</td>
                 </tr>
               ))}
             </tbody>
@@ -180,42 +265,64 @@ function App() {
         </div>
 
         <div style={styles.column}>
-          <h2>Current Trend: {trend}</h2>
-          <p>최근 5개의 가격을 기반으로 분석된 결과: {trend}</p>
-
-          <h2>Profit Rate</h2>
-          <div style={styles.chartWrapper}>
-            <Doughnut data={profitRateData} />
-            <p style={styles.chartText}>{profitRate}%</p>
-          </div>
-
-          <h2>Prediction Accuracy</h2>
-          <div style={styles.chartWrapper}>
-            <Doughnut data={accuracyData} />
-            <p style={styles.chartText}>{accuracy}%</p>
-          </div>
+          <h2>Trade Metrics</h2>
+          <p>Win Rate: {winRate.toFixed(2)}%</p>
+          <p>Average Holding Time: {averageHoldingTime.toFixed(2)} minutes</p>
+          <h3>Win Rate</h3>
+          <Doughnut data={winRateData} options={{ plugins: { centerText: true } }} />
         </div>
       </div>
     </div>
   );
 }
 
+function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState('');
+
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" element={<LoginPage setIsLoggedIn={setIsLoggedIn} setUsername={setUsername} />} />
+        <Route path="/dashboard" element={<BitcoinTracker isLoggedIn={isLoggedIn} username={username} />} />
+      </Routes>
+    </Router>
+  );
+}
+
 const styles = {
+  loginContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    height: '100vh',
+    backgroundColor: '#f0f2f5',
+  },
+  input: {
+    margin: '10px',
+    padding: '12px',
+    fontSize: '16px',
+    width: '250px',
+    borderRadius: '4px',
+    border: '1px solid #ccc',
+  },
+  button: {
+    padding: '10px 20px',
+    fontSize: '16px',
+    cursor: 'pointer',
+    backgroundColor: '#4caf50',
+    color: '#fff',
+    border: 'none',
+    borderRadius: '4px',
+  },
   header: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingBottom: '20px',
+    padding: '20px',
     borderBottom: '2px solid #ccc',
-  },
-  totalProfit: {
-    fontSize: '24px',
-    fontWeight: 'bold',
-  },
-  fixedProfit: {
-    display: 'inline-block',
-    width: '200px',
-    textAlign: 'right',
+    backgroundColor: '#f0f2f5',
   },
   container: {
     display: 'flex',
@@ -229,20 +336,6 @@ const styles = {
     minWidth: '300px',
     marginRight: '10px',
     marginBottom: '20px',
-  },
-  chartWrapper: {
-    position: 'relative',
-    width: '300px',
-    height: '300px',
-    margin: '0 auto',
-  },
-  chartText: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    fontSize: '24px',
-    fontWeight: 'bold',
   },
 };
 
