@@ -47,7 +47,6 @@ ChartJS.register({
 
 
 
-
 function LoginPage({ setIsLoggedIn, setUsername }) {
   const navigate = useNavigate();
   const [inputUsername, setInputUsername] = useState('');
@@ -340,3 +339,5 @@ const styles = {
 };
 
 export default App;
+
+
