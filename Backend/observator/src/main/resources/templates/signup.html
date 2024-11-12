@@ -224,9 +224,13 @@
             var termsChecked = document.getElementById("terms").checked;
             var emailLocal = document.getElementById("email_local").value;
             var emailDomain = document.getElementById("email_domain").value;
+            var emailDomainCustom = document.getElementById("email_domain_custom").value;
             var submitButton = document.querySelector("button[type='submit']");
-
-            if (password.length >= 8 && password.length <= 16 && /[!@#$%^&*(),.?":{}|<>]/.test(password) && confirmPassword === password && termsChecked && emailLocal !== "" && emailDomain !== "") {
+            var isCustomDomain = emailDomain === "custom";
+            var emailValid = emailLocal !== "" && (isCustomDomain ? emailDomainCustom !== "" : emailDomain !== "");
+            
+            if (password.length >= 8 && password.length <= 16 && /[!@#$%^&*(),.?":{}|<>]/.test(password) 
+                && confirmPassword === password && termsChecked && emailValid) {
                 submitButton.disabled = false;
             } else {
                 submitButton.disabled = true;

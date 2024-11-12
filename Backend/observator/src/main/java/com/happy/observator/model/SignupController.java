@@ -10,13 +10,13 @@ import com.happy.observator.service.UserService;
 
 @Controller
 public class SignupController {
-    
+
     private UserService userService;
 
     public SignupController(UserService userService) {
         this.userService = userService;
     }
-    
+
     @GetMapping("/signup")
     public String showSignupForm(Model model) {
         model.addAttribute("user", new User());
@@ -24,35 +24,39 @@ public class SignupController {
     }
 
     @PostMapping("/signup")
-    public String registerUser(@RequestParam String username,
+    public String registerUser(
+            @RequestParam String username,
             @RequestParam String password,
             @RequestParam(required = false) String email_local,
             @RequestParam(required = false) String email_domain,
+            @RequestParam(required = false) String email_domain_custom,
             @RequestParam(required = false) String phone1,
             @RequestParam(required = false) String phone2,
-            @RequestParam(required = false) String phone3, Model model) {
-        try{
-            // Combine email and phone number
-            String email = email_local + "@" + email_domain;
-            String phone = phone1 + "-" + phone2 + "-" + phone3;
+            @RequestParam(required = false) String phone3,
+            @RequestParam(required = false) String email_opt_in,
+            Model model) {
 
-            if (userService.userExists(username)) {
-                model.addAttribute("errorMessage", "Username already taken. Please try another one.");
-                return "signup";  // Render signup.html again with the error message
+        try {
+            String email = email_local + "@";
+            if ("custom".equals(email_domain)) {
+                email += email_domain_custom;
+            } else {
+                email += email_domain;
             }
 
-            // Save user
-            userService.saveUser(username, password, email, phone);
+            String phone = phone1 + "-" + phone2 + "-" + phone3;
+            if (userService.userExists(username)) {
+                model.addAttribute("errorMessage", "Username already taken. Please try another one.");
+                return "signup";
+            }
 
-            // Add a success message
+            int emailAgreed = (email_opt_in != null) ? 1 : 0;
+            userService.saveUser(username, password, email, phone, emailAgreed);
             model.addAttribute("successMessage", "User registered successfully! Please log in.");
-
-            // Redirect to login with signup success message
             return "redirect:/login";
-        } catch(IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             model.addAttribute("error", e.getMessage());
             return "signup";
         }
-        
     }
 }
