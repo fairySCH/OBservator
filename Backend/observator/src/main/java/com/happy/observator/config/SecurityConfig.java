@@ -14,7 +14,7 @@ public class SecurityConfig {
 
     @SuppressWarnings("unused")
     @Autowired
-    private UserDetailsService userDetailsService;  // Field injection
+    private UserDetailsService userDetailsService;
 
     public SecurityConfig(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
@@ -23,14 +23,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .authorizeHttpRequests((authz) -> authz
-                .requestMatchers("/signup", "/login", "/h2-console/**").permitAll()
-                .requestMatchers("/profile", "/trade").authenticated()
-                .anyRequest().authenticated()
+            .csrf(csrf -> csrf.disable())  // CSRF 비활성화
+            .cors(cors -> cors.disable())  // CORS 비활성화 (임시로 설정, 이후 필요에 맞게 수정)
+            .authorizeHttpRequests(authz -> authz
+                .requestMatchers("/signup", "/login", "/h2-console/**", "/oauth2/**", "/login/oauth2/**", "/api/auth/google").permitAll()  // 허용 경로
+                .anyRequest().authenticated()  // 그 외 모든 요청은 인증 필요
             )
-            .csrf(csrf -> csrf.disable())  // Disable CSRF protection for H2 console
-            .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))  // Allow H2 frames
-            .formLogin((form) -> form
+            .formLogin(form -> form
                 .loginPage("/login")
                 .failureUrl("/login?error=true")
                 .defaultSuccessUrl("/home", true)
@@ -41,9 +40,15 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/login")
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID")
-                .permitAll());
+                .permitAll()
+            )
+            .oauth2Login(oauth2 -> oauth2
+                .loginPage("/login")
+                .defaultSuccessUrl("/home", true)
+                .failureUrl("/login?error=true")
+                .permitAll()
+            );
 
         return http.build();
     }
 }
-
