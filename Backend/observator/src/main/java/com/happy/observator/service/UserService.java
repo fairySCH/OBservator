@@ -58,18 +58,20 @@ public class UserService implements UserDetailsService{
         }
     }
 
-    public void saveUser(String username, String password, String email, String phoneNumber){
-        try{
-        if(userRepositary.findByUsername(username).isPresent()){
-            throw new IllegalArgumentException("Username already taken");
-        }
-        User user = new User(username, passwordEncoder.encode(password), email, phoneNumber);
-        userRepositary.save(user);
-        logger.info("User {} saved successfully!", username);
-        } catch (Exception e){
+    public void saveUser(String username, String password, String email, String phoneNumber, int emailAgreed) {
+        try {
+            if (userRepositary.findByUsername(username).isPresent()) {
+                throw new IllegalArgumentException("Username already taken");
+            }
+            User user = new User(username, passwordEncoder.encode(password), email, phoneNumber);
+            user.setEmailAgreed(emailAgreed);
+            userRepositary.save(user);
+            logger.info("User {} saved successfully!", username);
+        } catch (Exception e) {
             logger.error("Error saving user: {}", e.getMessage(), e);
         }
     }
+    
 
 
     public void updateUpbitKeys(String username, String upbitAccessKey, String upbitSecretKey) {
