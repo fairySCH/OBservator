@@ -14,10 +14,12 @@ public class ObservatorApplication {
 		SpringApplication.run(ObservatorApplication.class, args);
 	}
 
+    // 서버-Mysql 연결시 이미 들옥된 계정이므로 주석 처리
+    // 사용 저장소에 따라 application.properties의 저장소 주석 변경
 	@Bean
     CommandLineRunner run(UserService userService) {
         return args -> {
-            //userService.saveUser("user", "password");
+            userService.saveUser("user", "password");
         };
     }
 }
