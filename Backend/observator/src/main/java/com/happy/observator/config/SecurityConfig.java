@@ -23,10 +23,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())  // CSRF 비활성화
-            .cors(cors -> cors.disable())  // CORS 비활성화 (임시로 설정, 이후 필요에 맞게 수정)
+            .csrf(csrf -> csrf.disable())
+            .cors(cors -> cors.disable())
             .authorizeHttpRequests(authz -> authz
-                .requestMatchers("/signup", "/login", "/h2-console/**", "/oauth2/**", "/login/oauth2/**", "/api/auth/google").permitAll()  // 허용 경로
+                .requestMatchers("/signup", "/login", "/h2-console/**", "/oauth2/**", "/login/oauth2/**", "/api/auth/google", "/api/check-username").permitAll()  // 허용 경로
                 .anyRequest().authenticated()  // 그 외 모든 요청은 인증 필요
             )
             .formLogin(form -> form

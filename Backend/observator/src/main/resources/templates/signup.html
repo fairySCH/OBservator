@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
     <title>OBservator</title>
     <style>
         body {
@@ -168,8 +169,28 @@
         th {
             background-color: #f2f2f2;
         }
+        #check-username-btn {
+            font-size: 12px;
+            padding: 5px 10px;
+            width: auto;
+            margin-left: 10px;
+            background-color: #e73535;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #check-username-btn:hover {
+            background-color: #cc2e2e;
+        }
+        #check-username-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
     </style>
     <script>
+        let isUsernameChecked = false;
+
         function viewTerms() {
             var modal = document.getElementById("terms-modal");
             modal.style.display = "block";
@@ -228,15 +249,14 @@
             var submitButton = document.querySelector("button[type='submit']");
             var isCustomDomain = emailDomain === "custom";
             var emailValid = emailLocal !== "" && (isCustomDomain ? emailDomainCustom !== "" : emailDomain !== "");
-            
             if (password.length >= 8 && password.length <= 16 && /[!@#$%^&*(),.?":{}|<>]/.test(password) 
-                && confirmPassword === password && termsChecked && emailValid) {
+                && confirmPassword === password && termsChecked && emailValid && isUsernameChecked) {
                 submitButton.disabled = false;
             } else {
                 submitButton.disabled = true;
             }
         }
-
+        
         function handleEmailDomainChange() {
             var emailDomainSelect = document.getElementById("email_domain");
             var emailDomainInput = document.getElementById("email_domain_custom");
@@ -249,6 +269,49 @@
             }
             validateForm();
         }
+
+        function checkUsername() {
+            var username = document.getElementById("username").value;
+            var usernameError = document.getElementById("username-error");
+            var submitButton = document.querySelector("button[type='submit']");
+            
+            if (username === "") {
+                usernameError.textContent = "아이디를 입력해주세요.";
+                return;
+            }
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/api/check-username", true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            var response = JSON.parse(xhr.responseText);
+                            usernameError.textContent = response.message;
+                            if (!response.exists) {
+                                alert("사용할 수 있는 아이디입니다.");
+                                document.getElementById("username").readOnly = true;
+                                document.getElementById("check-username-btn").disabled = true;
+                                isUsernameChecked = true;
+                                validateForm();
+                            } else {
+                                isUsernameChecked = false;
+                            }
+                        } catch (error) {
+                            console.error("Error parsing JSON:", error);
+                            usernameError.textContent = "서버 응답 처리 중 오류 발생.";
+                            isUsernameChecked = false;
+                        }
+                    } else {
+                        usernameError.textContent = "서버와 통신 중 문제가 발생했습니다.";
+                        isUsernameChecked = false;
+                    }
+                    validateForm();
+                }
+            };
+            xhr.send(JSON.stringify({ username: username }));
+        }        
     </script>
 </head>
 <body>
@@ -257,10 +320,12 @@
         <p th:if="${errorMessage}" style="color:red;">[[${errorMessage}]]</p>
         <p th:if="${successMessage}" style="color:green;">[[${successMessage}]]</p>
         <form action="/signup" method="post">
-            <div>
-                <input type="text" id="username" name="username" placeholder="아이디">
-                <div class="username-requirements">특수문자 없이 4자~20자로 입력해주세요.</div>
+            <div style="display: flex; align-items: center;">
+                <input type="text" id="username" name="username" placeholder="아이디" style="flex: 1;">
+                <button type="button" id="check-username-btn" onclick="checkUsername()">중복확인</button>
             </div>
+            <div id="username-error" class="error-message"></div>
+            <div class="username-requirements">특수문자 없이 4자~20자로 입력해주세요.(중복확인 필수)</div>
             <div style="display: flex; align-items: center;">
                 <input type="text" id="email_local" name="email_local" placeholder="이메일" style="width: 50%; margin-right: 5px;" oninput="validateForm();"> @ 
                 <select id="email_domain" name="email_domain" style="width: 50%; margin-left: 5px;" onchange="handleEmailDomainChange();">
@@ -309,7 +374,7 @@
     <div id="terms-modal">
         <div id="terms-modal-content">
             <span id="close-terms" onclick="closeTerms()">&times;</span>
-            <h3>서비스 이용약관</h3>
+            <h3>OBservator 서비스 이용약관</h3>
             <table>
                 <thead>
                     <tr>
