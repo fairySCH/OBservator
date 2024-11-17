@@ -14,12 +14,36 @@
         <button type="submit" name="action" value="buy">Buy Bitcoin</button>
     </form>
 
+    <form th:action="@{/scheduleBuy}" method="post">
+        <div>
+            <label for="buyPrice">Amount to Buy (KRW):</label>
+            <input type="text" id="buyPrice" name="price" placeholder="Enter amount in KRW" required />
+        </div>
+        <div>
+            <label for="buyTime">Target Time (HH:mm:ss):</label>
+            <input type="text" id="buyTime" name="targetTime" placeholder="e.g., 15:30:00" required />
+        </div>
+        <button type="submit">Schedule Buy Order</button>
+    </form>
+
     <form th:action="@{/sell}" method="post">
         <div>
             <label for="price">Volume to Sell (BTC):</label>
             <input type="text" id="volume" name="volume" placeholder="Enter Bitcoin volume to sell" required />
         </div>
         <button type="submit" name="action" value="sell">Sell Bitcoin</button>
+    </form>
+
+    <form th:action="@{/scheduleSell}" method="post">
+        <div>
+            <label for="sellVolume">Volume to Sell (BTC):</label>
+            <input type="text" id="sellVolume" name="volume" placeholder="Enter Bitcoin volume" required />
+        </div>
+        <div>
+            <label for="sellTime">Target Time (HH:mm:ss):</label>
+            <input type="text" id="sellTime" name="targetTime" placeholder="e.g., 15:30:00" required />
+        </div>
+        <button type="submit">Schedule Sell Order</button>
     </form>
 
     <p th:if="${errorMessage}" style="color:red;">[[${errorMessage}]]</p>

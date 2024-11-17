@@ -22,10 +22,11 @@ public class User {
     private String password;
 
     private String email;
-    private String phoneNumber;
+    private String phone = "";
     private String upbitAccessKey;
     private String upbitSecretKey;
     private boolean upbitKeysSet;
+    private int emailAgreed;
 
     public User() {}
     
@@ -34,11 +35,11 @@ public class User {
         this.password = password;
     }
 
-    public User(String username, String password, String email, String phoneNumber) {
+    public User(String username, String password, String email, String phone) {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.phoneNumber = phoneNumber;
+        this.phone = phone;
 
     }
 
@@ -75,11 +76,11 @@ public class User {
     }
 
     public String getPhoneNumber() {
-        return this.phoneNumber;
+        return this.phone;
     }
 
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+    public void setPhoneNumber(String phone) {
+        this.phone = phone;
     }
 
     public String getUpbitAccessKey() {
@@ -104,5 +105,13 @@ public class User {
 
     public void setUpbitKeysSet(boolean upbitKeysSet) {
         this.upbitKeysSet = upbitKeysSet;
+    }
+
+    public int getEmailAgreed() {
+        return emailAgreed;
+    }
+
+    public void setEmailAgreed(int emailAgreed) {
+        this.emailAgreed = emailAgreed;
     }
 }

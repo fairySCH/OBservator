@@ -1,5 +1,11 @@
 package com.happy.observator.model;
 
+import java.time.Duration;
+import java.time.LocalTime;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -16,6 +22,7 @@ public class TradeController {
 
     private final UserService userService;
     private final UpbitService upbitService;
+    private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
 
     public TradeController(UserService userService, UpbitService upbitService){
         this.userService = userService;
@@ -54,4 +61,57 @@ public class TradeController {
 
         return "trade";  // Render the same page with success or error message
     }
+
+    @PostMapping("/scheduleBuy")
+    public String scheduleBuyBitcoin(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("price") String price, @RequestParam String targetTime, Model model) {
+        String username = userDetails.getUsername();
+        User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+
+        LocalTime target = LocalTime.parse(targetTime);
+        LocalTime now = LocalTime.now();
+        long delay = Duration.between(now, target).getSeconds();
+        
+        if (delay < 0) {
+            model.addAttribute("errorMessage", "Target time has already passed.");
+            return "trade";
+        }
+
+        scheduler.schedule(() -> {
+            try {
+                String response = upbitService.placeBuyOrder(user.getUpbitAccessKey(), user.getUpbitSecretKey(), "KRW-BTC", price);
+                model.addAttribute("successMessage", "Buy order placed successfully at" + targetTime + ": " + response);
+            } catch (Exception e) {
+                model.addAttribute("errorMessage", "Failed to place buy order: " + e.getMessage());
+            }
+        }, delay, TimeUnit.SECONDS);
+
+        return "trade";  // Render the same page with success or error message
+    }
+
+    @PostMapping("/scheduleSell")
+    public String scheduleSellBitcoin(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("volume") String volume, @RequestParam String targetTime, Model model) {
+        String username = userDetails.getUsername();
+        User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+
+        LocalTime target = LocalTime.parse(targetTime);
+        LocalTime now = LocalTime.now();
+        long delay = Duration.between(now, target).getSeconds();
+
+        if (delay < 0) {
+            model.addAttribute("errorMessage", "Target time has already passed.");
+            return "trade";
+        }
+
+        scheduler.schedule(() -> {
+            try {
+                String response = upbitService.placeSellOrder(user.getUpbitAccessKey(), user.getUpbitSecretKey(), "KRW-BTC", volume);
+                model.addAttribute("successMessage", "Sell order placed successfully at" + targetTime + ": " + response);
+            } catch (Exception e) {
+                model.addAttribute("errorMessage", "Failed to place sell order: " + e.getMessage());
+            }
+        }, delay, TimeUnit.SECONDS);
+
+        return "trade";  // Render the same page with success or error message
+    }
+
 }

@@ -85,12 +85,51 @@
             cursor: pointer;
         }
     </style>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+        function handleCredentialResponse(response) {
+            console.log("Encoded JWT ID token: " + response.credential);
+    
+            // 서버로 토큰을 전송하여 검증하는 작업
+            fetch('https://observator.ngrok.dev/api/auth/google', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token: response.credential })
+            })
+            
+            .then(response => {
+                if (response.ok) {
+                    // 서버에서 성공적으로 로그인 처리 -> /home으로 리디렉션
+                    window.location.href = "https://observator.ngrok.dev/home";
+                } else {
+                    console.error("Authentication failed");
+                }
+            })
+            .catch(error => {
+                console.error("Error during authentication", error);
+            });
+        }
+    
+        window.onload = function () {
+            google.accounts.id.initialize({
+                client_id: "1052925642956-2550ukjm4u2qms261ukbl189hncdngfd.apps.googleusercontent.com",
+                callback: handleCredentialResponse,
+                ux_mode: "popup"
+            });
+            google.accounts.id.renderButton(
+                document.querySelector(".g_id_signin"),
+                { theme: "icon", size: "large" }  // customization attributes
+            );
+            google.accounts.id.prompt();  // Display the One Tap dialog
+        }
+    </script>    
 </head>
 <body>
-<form th:action="@{/login}" method="post">
     <div class="login-container">
         <h1>로그인</h1>
-        <form action="home.html" method="post">
+        <form action="/login" method="post">
             <div>
                 <input type="text" id="username" name="username" placeholder="아이디">
             </div>
@@ -113,8 +152,17 @@
                 <button type="button" class="signup-button" onclick="location.href='/signup'">회원가입</button>
             </div>
         </form>
+        <div class="social-login">
+            <p>소셜 계정으로 로그인</p>
+            <div id="g_id_onload"
+                 data-client_id="1052925642956-2550ukjm4u2qms261ukbl189hncdngfd.apps.googleusercontent.com"
+                 data-callback="handleCredentialResponse"
+                 data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin" data-type="icon" data-size="large"
+                 data-theme="filled_blue" data-text="signin_with" data-shape="pill" data-logo_alignment="left">
+            </div>
+        </div>        
     </div>
-</form>
-
 </body>
 </html>
