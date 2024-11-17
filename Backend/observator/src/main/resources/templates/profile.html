@@ -56,11 +56,34 @@
             <td th:text="${balance.avgBuyPrice}"></td>
         </tr>
     </table>
-
+    <div style="margin-top: 10px;">
+        <button type="button" onclick="sendEmail()">Send Test Email</button>
+    </div>
     <div style="margin-top: 10px;">
         <a th:href="@{/home}">
             <button type="button">Go Back to Home</button>
         </a>
     </div>
+    <script>
+        function sendEmail() {
+            fetch('/email/send-email', {
+                method: 'POST'
+            })
+            .then(response => response.text().then(message => ({ status: response.status, message })))
+            .then(result => {
+                if (result.status === 200) {
+                    alert('Email sent successfully!');
+                } else if (result.status === 400) {
+                    alert('Failed to send email: ' + result.message);
+                } else {
+                    alert('An unexpected error occurred: ' + result.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while sending the email.');
+            });
+        }        
+    </script>
 </body>
 </html>
