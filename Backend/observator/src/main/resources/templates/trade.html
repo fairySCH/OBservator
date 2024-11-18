@@ -68,48 +68,46 @@
     <p th:if="${successMessage}" style="color:green;">[[${successMessage}]]</p>
 
     <h3>Scheduled Orders</h3>
-<table>
-    <thead>
-        <tr>
-            <th>Time</th>
-            <th>Action</th>
-            <th>Amount</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr th:each="entry : ${scheduledOrders}">
-            <td th:text="${entry.key}"></td>
-            <td th:text="${entry.value.action}"></td>
-            <td th:text="${entry.value.amount}"></td>
-        </tr>
-    </tbody>
-</table>
+    <table id="scheduledOrdersTable">
+        <thead>
+            <tr>
+                <th>Time</th>
+                <th>Action</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Rows will be dynamically populated -->
+        </tbody>
+    </table>
 
-<button id="reloadButton" type="button">Reload Scheduled Orders</button>
-<script>
-    document.getElementById("reloadButton").addEventListener("click", function () {
-        fetch('/reloadScheduledOrders')
-            .then(response => response.json())
-            .then(data => {
-                const tableBody = document.querySelector("#scheduledOrdersTable tbody");
-                tableBody.innerHTML = ""; // Clear the current table rows
-
-                for (const [time, order] of Object.entries(data)) {
-                    const row = document.createElement("tr");
-                    row.innerHTML = `
-                        <td>${time}</td>
-                        <td>${order.action}</td>
-                        <td>${order.amount}</td>
-                    `;
-                    tableBody.appendChild(row);
-                }
-            })
-            .catch(error => console.error("Error reloading scheduled orders:", error));
-    });
-</script>
-
+    <button id="reloadButton" type="button">Reload Scheduled Orders</button>
     <div>
         <a href="/home"><button type="button">Back to Home</button></a>
     </div>
+
+    <script>
+        document.getElementById("reloadButton").addEventListener("click", function () {
+            fetch('/reloadScheduledOrders')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.querySelector("#scheduledOrdersTable tbody");
+                    tableBody.innerHTML = ""; // Clear the current table rows
+
+                    console.log("Fetched Scheduled Orders:", data);
+    
+                    data.forEach(order => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${order.targetTime}</td>
+                            <td>${order.action}</td>
+                            <td>${order.amount}</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error("Error reloading scheduled orders:", error));
+        });
+    </script>
 </body>
 </html>
