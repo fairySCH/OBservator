@@ -122,4 +122,48 @@ public class UpbitService {
             throw new RuntimeException("Error placing buy order: " + e.getMessage(), e);
         }
     }
+
+    public String placeOrder(String accessKey, String secretKey, String market, String type, String value) {
+        try {
+            Map<String, String> params = new HashMap<>();
+            params.put("market", market);
+            params.put("side", type.equalsIgnoreCase("buy") ? "bid" : "ask");
+    
+            if (type.equalsIgnoreCase("buy")) {
+                params.put("price", value);
+                params.put("ord_type", "price");
+            } else if (type.equalsIgnoreCase("sell")) {
+                params.put("volume", value);
+                params.put("ord_type", "market");
+            } else {
+                throw new IllegalArgumentException("Invalid order type. Type must be one of 'buy' or 'sell'.");
+            }
+    
+            ArrayList<String> queryElements = new ArrayList<>();
+            for (Map.Entry<String, String> entity : params.entrySet()) {
+                queryElements.add(entity.getKey() + "=" + entity.getValue());
+            }
+    
+            String queryString = String.join("&", queryElements.toArray(new String[0]));
+    
+            String jwtToken = UpbitApiUtil.generateJwtToken(accessKey, secretKey, queryString);
+    
+            HttpHeaders headers = new HttpHeaders();
+            headers.set("Authorization", "Bearer " + jwtToken);
+            headers.set("Content-Type", "application/json");
+            HttpEntity<String> entity = new HttpEntity<>(new Gson().toJson(params), headers);
+    
+            ResponseEntity<String> response = restTemplate.exchange(
+                    UPBIT_ORDER_URL, HttpMethod.POST, entity, String.class
+            );
+    
+            if (response.getStatusCode().is2xxSuccessful()) {
+                return response.getBody(); // Return the response body on success
+            } else {
+                throw new RuntimeException("Order failed: " + response.getBody());
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error placing order: " + e.getMessage(), e);
+        }
+    }
 }
