@@ -11,6 +11,26 @@
                 alert('Your information has been saved successfully!');
             }
         };
+
+        function sendEmail() {
+            fetch('/email/send-email', {
+                method: 'POST'
+            })
+            .then(response => response.text().then(message => ({ status: response.status, message })))
+            .then(result => {
+                if (result.status === 200) {
+                    alert('Email sent successfully!');
+                } else if (result.status === 400) {
+                    alert('Failed to send email: ' + result.message);
+                } else {
+                    alert('An unexpected error occurred: ' + result.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while sending the email.');
+            });
+        }        
     </script>
 </head>
 <body>
@@ -41,6 +61,10 @@
         </form>
 
         <h3>Upbit Balance Information</h3>
+
+        <div class="email-container">
+            <button type="button" onclick="sendEmail()" class="email-button">Send Email</button>
+        </div>
 
         <p th:if="${errorMessage}" class="error-message">[[${errorMessage}]]</p>
 

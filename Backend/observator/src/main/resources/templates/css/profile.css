@@ -74,6 +74,29 @@ input[type="text"]:focus {
     transform: scale(1.05);
 }
 
+/* 이메일 버튼 */
+.email-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.email-button {
+    padding: 7px 14px;
+    background-color: #28a745;
+    color: #ffffff;
+    border: none;
+    border-radius: 25px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}        
+
+.email-button:hover {
+    background-color: #218838;
+    transform: scale(1.05);
+}
+
 /* 테이블 */
 .balance-table {
     width: 100%;
@@ -119,4 +142,10 @@ input[type="text"]:focus {
     background-color: #007BFF;
     color: #ffffff;
     transform: scale(1.05);
+}
+
+.email-container {
+    position: relative;
+    text-align: right;
+    margin-bottom: 20px;
 }
