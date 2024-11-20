@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OBservator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .login-container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+        .login-container h1 {
+            color: #e73535;
+        }
+        .login-container input[type="text"],
+        .login-container input[type="password"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .login-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #e73535;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .login-button:hover {
+            background-color: #cc2e2e;
+        }
+        .signup-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #ffffff;
+            color: #000;
+            border: 1px solid #000;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .signup-button:hover {
+            background-color: #f0f0f0;
+            color: #000;
+        }
+        .remember-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 10px 0;
+        }
+        .remember-container input[type="checkbox"] {
+            margin-right: 5px;
+        }
+        .login-container a {
+            text-decoration: none;
+            color: #808080;
+        }
+        .login-container a:hover {
+            text-decoration: underline;
+        }
+        .social-login {
+            margin-top: 20px;
+        }
+        .social-login img {
+            width: 40px;
+            height: 40px;
+            margin: 5px;
+            cursor: pointer;
+        }
+    </style>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+        function handleCredentialResponse(response) {
+            console.log("Encoded JWT ID token: " + response.credential);
+    
+            // 서버로 토큰을 전송하여 검증하는 작업
+            fetch('https://observator.ngrok.dev/api/auth/google', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ token: response.credential })
+            })
+            
+            .then(response => {
+                if (response.ok) {
+                    // 서버에서 성공적으로 로그인 처리 -> /home으로 리디렉션
+                    window.location.href = "https://observator.ngrok.dev/home";
+                } else {
+                    console.error("Authentication failed");
+                }
+            })
+            .catch(error => {
+                console.error("Error during authentication", error);
+            });
+        }
+    
+        window.onload = function () {
+            google.accounts.id.initialize({
+                client_id: "1052925642956-2550ukjm4u2qms261ukbl189hncdngfd.apps.googleusercontent.com",
+                callback: handleCredentialResponse,
+                ux_mode: "popup"
+            });
+            google.accounts.id.renderButton(
+                document.querySelector(".g_id_signin"),
+                { theme: "icon", size: "large" }  // customization attributes
+            );
+            google.accounts.id.prompt();  // Display the One Tap dialog
+        }
+    </script>    
+</head>
+<body>
+    <div class="login-container">
+        <h1>로그인</h1>
+        <form action="/login" method="post">
+            <div>
+                <input type="text" id="username" name="username" placeholder="아이디">
+            </div>
+            <div>
+                <input type="password" id="password" name="password" placeholder="비밀번호">
+            </div>
+            <div class="remember-container">
+                <div>
+                    <input type="checkbox" id="remember" name="remember">
+                    <label for="remember">아이디 저장</label>
+                </div>
+                <div>
+                    <a href="/find-id">아이디 찾기</a> | <a href="/find-password">비밀번호 찾기</a>
+                </div>
+            </div>
+            <div>
+                <button type="submit" class="login-button">로그인</button>
+            </div>
+            <div>
+                <button type="button" class="signup-button" onclick="location.href='/signup'">회원가입</button>
+            </div>
+        </form>
+        <div class="social-login">
+            <p>소셜 계정으로 로그인</p>
+            <div id="g_id_onload"
+                 data-client_id="1052925642956-2550ukjm4u2qms261ukbl189hncdngfd.apps.googleusercontent.com"
+                 data-callback="handleCredentialResponse"
+                 data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin" data-type="icon" data-size="large"
+                 data-theme="filled_blue" data-text="signin_with" data-shape="pill" data-logo_alignment="left">
+            </div>
+        </div>        
+    </div>
+</body>
+</html>

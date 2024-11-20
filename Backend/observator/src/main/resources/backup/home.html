@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Home</title>
+</head>
+<body>
+    <h1>Welcome to the Home Page!</h1>
+    <p>You have successfully logged in.</p>
+
+    <div>
+        <a th:href="@{/profile}">
+            <button type="button">Go to Profile</button>
+        </a>
+    </div>
+    <div>
+        <a th:href="@{/trade}">
+            <button type="button">Go to Trade Page</button>
+        </a>
+    </div>  
+
+    <form th:action="@{/logout}" method="post">
+        <button type="submit">Log Out</button>
+    </form>
+
+</body>
+</html>

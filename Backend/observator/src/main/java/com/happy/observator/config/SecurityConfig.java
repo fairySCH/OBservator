@@ -26,7 +26,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.disable())
             .authorizeHttpRequests(authz -> authz
-                .requestMatchers("/signup", "/login", "/h2-console/**", "/oauth2/**", "/login/oauth2/**", "/api/auth/google", "/api/check-username").permitAll()  // 허용 경로
+                .requestMatchers("/signup", "/login", "/h2-console/**", "/oauth2/**", "/login/oauth2/**", "/api/auth/google", "/api/check-username", "/css/**", "/js/**").permitAll()  // 허용 경로
                 .anyRequest().authenticated()  // 그 외 모든 요청은 인증 필요
             )
             .formLogin(form -> form

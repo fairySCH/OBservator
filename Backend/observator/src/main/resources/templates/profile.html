@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Profile</title>
+    <link rel="stylesheet" href="/css/profile.css">
     <script>
         // Check if the URL contains the success parameter and show an alert
         window.onload = function() {
@@ -13,77 +14,60 @@
     </script>
 </head>
 <body>
-    <h2>Update Profile</h2>
+    <div class="profile-container">
+        <h2>Update Profile</h2>
 
-    <p>
-        Upbit Keys Set:
-        <span th:text="${user.upbitKeysSet ? 'Yes' : 'No'}"></span>
-    </p>
+        <p class="upbit-status">
+            Upbit Keys Set:
+            <span th:text="${user.upbitKeysSet ? 'Yes' : 'No'}"></span>
+        </p>
 
-    <form th:action="@{/profile}" method="post">
-        <div>
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" th:value="${user.username}" readonly />
+        <form th:action="@{/profile}" method="post">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" th:value="${user.username}" readonly />
+            </div>
+            <div class="form-group">
+                <label for="upbitAccessKey">Upbit Access Key:</label>
+                <input type="text" id="upbitAccessKey" name="upbitAccessKey" th:value="${user.upbitAccessKey}" />
+            </div>
+            <div class="form-group">
+                <label for="upbitSecretKey">Upbit Secret Key:</label>
+                <input type="text" id="upbitSecretKey" name="upbitSecretKey" th:value="${user.upbitSecretKey}" />
+            </div>
+            <div class="form-group">
+                <button type="submit" class="save-button">Save Changes</button>
+            </div>
+        </form>
+
+        <h3>Upbit Balance Information</h3>
+
+        <p th:if="${errorMessage}" class="error-message">[[${errorMessage}]]</p>
+
+        <table th:if="${hasKeys}" class="balance-table">
+            <thead>
+                <tr>
+                    <th>Currency</th>
+                    <th>Balance</th>
+                    <th>Locked</th>
+                    <th>Avg Buy Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="balance : ${balances}">
+                    <td th:text="${balance.currency}"></td>
+                    <td th:text="${balance.balance}"></td>
+                    <td th:text="${balance.locked}"></td>
+                    <td th:text="${balance.avgBuyPrice}"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="back-button-container">
+            <a th:href="@{/home}"><br><br>
+                <button type="button" class="back-button">Go Back to Home</button>
+            </a>
         </div>
-        <div>
-            <label for="upbitAccessKey">Upbit Access Key:</label>
-            <input type="text" id="upbitAccessKey" name="upbitAccessKey" th:value="${user.upbitAccessKey}" />
-        </div>
-        <div>
-            <label for="upbitSecretKey">Upbit Secret Key:</label>
-            <input type="text" id="upbitSecretKey" name="upbitSecretKey" th:value="${user.upbitSecretKey}" />
-        </div>
-        <div>
-            <button type="submit">Save Changes</button>
-        </div>
-    </form>
-
-    <h3>Upbit Balance Information</h3>
-
-    <p th:if="${errorMessage}" style="color:red;">[[${errorMessage}]]</p>
-
-    <table th:if="${hasKeys}" border="1">
-        <tr>
-            <th>Currency</th>
-            <th>Balance</th>
-            <th>Locked</th>
-            <th>Avg Buy Price</th>
-        </tr>
-        <tr th:each="balance : ${balances}">
-            <td th:text="${balance.currency}"></td>
-            <td th:text="${balance.balance}"></td>
-            <td th:text="${balance.locked}"></td>
-            <td th:text="${balance.avgBuyPrice}"></td>
-        </tr>
-    </table>
-    <div style="margin-top: 10px;">
-        <button type="button" onclick="sendEmail()">Send Test Email</button>
     </div>
-    <div style="margin-top: 10px;">
-        <a th:href="@{/home}">
-            <button type="button">Go Back to Home</button>
-        </a>
-    </div>
-    <script>
-        function sendEmail() {
-            fetch('/email/send-email', {
-                method: 'POST'
-            })
-            .then(response => response.text().then(message => ({ status: response.status, message })))
-            .then(result => {
-                if (result.status === 200) {
-                    alert('Email sent successfully!');
-                } else if (result.status === 400) {
-                    alert('Failed to send email: ' + result.message);
-                } else {
-                    alert('An unexpected error occurred: ' + result.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while sending the email.');
-            });
-        }        
-    </script>
 </body>
 </html>
