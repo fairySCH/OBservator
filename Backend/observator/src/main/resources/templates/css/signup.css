@@ -16,7 +16,7 @@ body {
     text-align: center;
 }
 .signup-container h2 {
-    color: #e73535;
+    color: black;
     margin-bottom: 10px;
 }
 .signup-container input[type="text"],
@@ -50,14 +50,15 @@ body {
 .signup-container button {
     width: 100%;
     padding: 10px;
-    background-color: #e73535;
+    background-color: #007BFF;
     color: #fff;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    transition: background-color 0.3s;
 }
 .signup-container button:hover {
-    background-color: #cc2e2e;
+    background-color: #0056b3;
 }
 .signup-container button:disabled {
     background-color: #ccc;
@@ -90,6 +91,10 @@ body {
     cursor: pointer;
     margin-left: 10px;
     width: auto;
+}
+.terms-container button:hover {
+    background-color: #fff;
+    transform: scale(1.03)
 }
 #terms-modal {
     display: none;
@@ -162,4 +167,22 @@ th, td {
 }
 th {
     background-color: #f2f2f2;
+}
+#check-username-btn {
+    font-size: 12px;
+    width: auto;
+    margin-left: 10px;
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+#check-username-btn:hover {
+    background-color: #0056b3;
+}
+#check-username-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }
