@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <title>OBservator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .signup-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+        .signup-container h2 {
+            color: #e73535;
+            margin-bottom: 10px;
+        }
+        .signup-container input[type="text"],
+        .signup-container input[type="password"],
+        .signup-container input[type="email"],
+        .signup-container select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .signup-container .password-container {
+            position: relative;
+        }
+        .signup-container .password-container input[type="password"] {
+            width: calc(100% - 40px);
+            padding-right: 30px;
+        }
+        .signup-container .password-container .toggle-password {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 0;
+        }
+        .signup-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #e73535;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .signup-container button:hover {
+            background-color: #cc2e2e;
+        }
+        .signup-container button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .signup-container a {
+            text-decoration: none;
+            color: #0073e6;
+        }
+        .signup-container a:hover {
+            text-decoration: underline;
+        }
+        .terms-container {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+        }
+        .terms-container input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .terms-container label {
+            font-size: 12px;
+        }
+        .terms-container button {
+            background-color: #fff;
+            color: #000;
+            border: 1px solid #000;
+            padding: 2px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            margin-left: 10px;
+            width: auto;
+        }
+        #terms-modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+        }
+        #terms-modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 8px;
+        }
+        #close-terms {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        #close-terms:hover,
+        #close-terms:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .error-message {
+            color: red;
+            font-size: 12px;
+            text-align: left;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
+        .password-requirements {
+            color: #aaa;
+            font-size: 12px;
+            text-align: left;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
+        .username-requirements {
+            color: #aaa;
+            font-size: 12px;
+            text-align: left;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
+        .contact-container {
+            text-align: left;
+            margin-top: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        #check-username-btn {
+            font-size: 12px;
+            padding: 5px 10px;
+            width: auto;
+            margin-left: 10px;
+            background-color: #e73535;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #check-username-btn:hover {
+            background-color: #cc2e2e;
+        }
+        #check-username-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+    <script>
+        let isUsernameChecked = false;
+
+        function viewTerms() {
+            var modal = document.getElementById("terms-modal");
+            modal.style.display = "block";
+        }
+
+        function closeTerms() {
+            var modal = document.getElementById("terms-modal");
+            modal.style.display = "none";
+        }
+
+        window.onclick = function(event) {
+            var modal = document.getElementById("terms-modal");
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+
+        function togglePasswordVisibility(inputId) {
+            var passwordInput = document.getElementById(inputId);
+            var toggleButton = document.getElementById(inputId + "-toggle");
+            if (passwordInput.type === "password") {
+                passwordInput.type = "text";
+                toggleButton.textContent = "🔓";
+            } else {
+                passwordInput.type = "password";
+                toggleButton.textContent = "🔒";
+            }
+        }
+
+        function validatePassword() {
+            var password = document.getElementById("password").value;
+            var confirmPassword = document.getElementById("confirm_password").value;
+            var passwordError = document.getElementById("password-error");
+            var submitButton = document.querySelector("button[type='submit']");
+            var termsChecked = document.getElementById("terms").checked;
+
+            if (password.length < 8 || password.length > 16 || !/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+                passwordError.textContent = "비밀번호는 특수문자를 포함하여 8~16자로 입력해주세요.";
+                submitButton.disabled = true;
+            } else if (confirmPassword !== password) {
+                passwordError.textContent = "비밀번호가 일치하지 않습니다.";
+                submitButton.disabled = true;
+            } else {
+                passwordError.textContent = "";
+                submitButton.disabled = !termsChecked;
+            }
+        }
+
+        function validateForm() {
+            var password = document.getElementById("password").value;
+            var confirmPassword = document.getElementById("confirm_password").value;
+            var termsChecked = document.getElementById("terms").checked;
+            var emailLocal = document.getElementById("email_local").value;
+            var emailDomain = document.getElementById("email_domain").value;
+            var emailDomainCustom = document.getElementById("email_domain_custom").value;
+            var submitButton = document.querySelector("button[type='submit']");
+            var isCustomDomain = emailDomain === "custom";
+            var emailValid = emailLocal !== "" && (isCustomDomain ? emailDomainCustom !== "" : emailDomain !== "");
+            if (password.length >= 8 && password.length <= 16 && /[!@#$%^&*(),.?":{}|<>]/.test(password) 
+                && confirmPassword === password && termsChecked && emailValid && isUsernameChecked) {
+                submitButton.disabled = false;
+            } else {
+                submitButton.disabled = true;
+            }
+        }
+        
+        function handleEmailDomainChange() {
+            var emailDomainSelect = document.getElementById("email_domain");
+            var emailDomainInput = document.getElementById("email_domain_custom");
+            if (emailDomainSelect.value === "custom") {
+                emailDomainInput.style.display = "inline-block";
+                emailDomainInput.value = "";
+            } else {
+                emailDomainInput.style.display = "none";
+                emailDomainInput.value = emailDomainSelect.value;
+            }
+            validateForm();
+        }
+
+        function checkUsername() {
+            var username = document.getElementById("username").value;
+            var usernameError = document.getElementById("username-error");
+            var submitButton = document.querySelector("button[type='submit']");
+            
+            if (username === "") {
+                usernameError.textContent = "아이디를 입력해주세요.";
+                return;
+            }
+            
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/api/check-username", true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            var response = JSON.parse(xhr.responseText);
+                            usernameError.textContent = response.message;
+                            if (!response.exists) {
+                                alert("사용할 수 있는 아이디입니다.");
+                                document.getElementById("username").readOnly = true;
+                                document.getElementById("check-username-btn").disabled = true;
+                                isUsernameChecked = true;
+                                validateForm();
+                            } else {
+                                isUsernameChecked = false;
+                            }
+                        } catch (error) {
+                            console.error("Error parsing JSON:", error);
+                            usernameError.textContent = "서버 응답 처리 중 오류 발생.";
+                            isUsernameChecked = false;
+                        }
+                    } else {
+                        usernameError.textContent = "서버와 통신 중 문제가 발생했습니다.";
+                        isUsernameChecked = false;
+                    }
+                    validateForm();
+                }
+            };
+            xhr.send(JSON.stringify({ username: username }));
+        }        
+    </script>
+</head>
+<body>
+    <div class="signup-container">
+        <h2>회원가입</h2>
+        <p th:if="${errorMessage}" style="color:red;">[[${errorMessage}]]</p>
+        <p th:if="${successMessage}" style="color:green;">[[${successMessage}]]</p>
+        <form action="/signup" method="post">
+            <div style="display: flex; align-items: center;">
+                <input type="text" id="username" name="username" placeholder="아이디" style="flex: 1;">
+                <button type="button" id="check-username-btn" onclick="checkUsername()">중복확인</button>
+            </div>
+            <div id="username-error" class="error-message"></div>
+            <div class="username-requirements">특수문자 없이 4자~20자로 입력해주세요.(중복확인 필수)</div>
+            <div style="display: flex; align-items: center;">
+                <input type="text" id="email_local" name="email_local" placeholder="이메일" style="width: 50%; margin-right: 5px;" oninput="validateForm();"> @ 
+                <select id="email_domain" name="email_domain" style="width: 50%; margin-left: 5px;" onchange="handleEmailDomainChange();">
+                    <option value="">도메인 선택</option>
+                    <option value="naver.com">naver.com</option>
+                    <option value="gmail.com">gmail.com</option>
+                    <option value="daum.net">daum.net</option>
+                    <option value="custom">직접 입력</option>
+                </select>
+                <input type="text" id="email_domain_custom" name="email_domain_custom" placeholder="직접 입력" style="display: none; width: 50%; margin-left: 5px;" oninput="validateForm();">
+            </div>
+            <div class="contact-container">
+                <label for="phone1">연락처: </label>
+                <input type="text" id="phone1" name="phone1" value="010" readonly style="width: 50px;"> -
+                <input type="text" id="phone2" name="phone2" maxlength="4" style="width: 60px;"> -
+                <input type="text" id="phone3" name="phone3" maxlength="4" style="width: 60px;">
+            </div>
+            <div class="password-container">
+                <input type="password" id="password" name="password" placeholder="비밀번호" oninput="validatePassword(); validateForm();">
+                <button type="button" class="toggle-password" id="password-toggle" onclick="togglePasswordVisibility('password')">🔒</button>
+                <div class="password-requirements">특수문자를 포함한 8~16자로 입력해주세요.</div>
+            </div>
+            <div class="password-container">
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="비밀번호 확인" oninput="validatePassword(); validateForm();">
+                <button type="button" class="toggle-password" id="confirm_password-toggle" onclick="togglePasswordVisibility('confirm_password')">🔒</button>
+                <div id="password-error" class="error-message"></div>
+            </div>
+            <div class="terms-container">
+                <input type="checkbox" id="terms" name="terms" onclick="validateForm()" required>
+                <label for="terms">(필수) 개인정보 수집 및 활용 동의</label>
+                <button type="button" onclick="viewTerms()">약관보기</button>
+            </div>
+            <div class="terms-container">
+                <input type="checkbox" id="email_opt_in" name="email_opt_in">
+                <label for="email_opt_in">(선택) 이메일 알림 서비스 수신 동의</label>
+            </div>
+            <div>
+                <button type="submit" disabled>가입하기</button>
+            </div>
+        </form>
+        <p>
+            이미 계정이 있으신가요? <a href="login.html">로그인</a>
+        </p>
+    </div>
+    
+    <div id="terms-modal">
+        <div id="terms-modal-content">
+            <span id="close-terms" onclick="closeTerms()">&times;</span>
+            <h3>OBservator 서비스 이용약관</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>항목</th>
+                        <th>수집 및 이용 목적</th>
+                        <th>보유 및 이용 기간</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>이름, 아이디, 연락처</td>
+                        <td>회원 식별 및 서비스 제공</td>
+                        <td>서비스 탈퇴 시</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>
+                * 동의를 거부할 권리가 있습니다. 다만, 거부 시 서비스가 제한될 수 있습니다.<br>
+                * 가입시 입력한 개인정보는 서비스 제공을 위한 목적 이외로는 사용되지 않습니다.<br>
+            </p>
+        </div>
+    </div>
+</body>
+</html>

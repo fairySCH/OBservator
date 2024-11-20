@@ -10,10 +10,10 @@
     <table style="width: 50%; margin: 10px auto; border-collapse: collapse; background-color: #ffffff; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); border-radius: 10px; overflow: hidden;">
         <thead>
             <tr>
-                <th style="padding: 15px; border: 1px solid #ddd; text-align: center; background-color: #007BFF; color: white; font-weight: bold;">Currency</th>
-                <th style="padding: 15px; border: 1px solid #ddd; text-align: center; background-color: #007BFF; color: white; font-weight: bold;">Balance</th>
-                <th style="padding: 15px; border: 1px solid #ddd; text-align: center; background-color: #007BFF; color: white; font-weight: bold;">Locked</th>
-                <th style="padding: 15px; border: 1px solid #ddd; text-align: center; background-color: #007BFF; color: white; font-weight: bold;">Avg Buy Price</th>
+                <th style="padding: 15px; border: 1px solid #ddd; text-align: center; background-color: #e74c3c; color: white; font-weight: bold;">Currency</th>
+                <th style="padding: 15px; border: 1px solid #ddd; text-align: center; background-color: #e74c3c; color: white; font-weight: bold;">Balance</th>
+                <th style="padding: 15px; border: 1px solid #ddd; text-align: center; background-color: #e74c3c; color: white; font-weight: bold;">Locked</th>
+                <th style="padding: 15px; border: 1px solid #ddd; text-align: center; background-color: #e74c3c; color: white; font-weight: bold;">Avg Buy Price</th>
             </tr>
         </thead>
         <tbody>
@@ -30,7 +30,7 @@
 
     <div style="margin-top: 20px; font-size: 14px; color: #888; text-align: center;">
         <p>OBservator를 이용해 주셔서 감사합니다.</p>
-        <p>본 이메일은 발신 전용이며, 회신은 불가합니다.</p>
+        <p>본 이메일은 발신 전용이며, 회신하지 말아주세요.</p>
     </div>
 </body>
 </html>
