@@ -12,7 +12,6 @@
             <tr>
                 <th style="padding: 15px; border: 1px solid #ddd; text-align: center; background-color: #007BFF; color: white; font-weight: bold;">Currency</th>
                 <th style="padding: 15px; border: 1px solid #ddd; text-align: center; background-color: #007BFF; color: white; font-weight: bold;">Balance</th>
-                <th style="padding: 15px; border: 1px solid #ddd; text-align: center; background-color: #007BFF; color: white; font-weight: bold;">Locked</th>
                 <th style="padding: 15px; border: 1px solid #ddd; text-align: center; background-color: #007BFF; color: white; font-weight: bold;">Avg Buy Price</th>
             </tr>
         </thead>
@@ -21,7 +20,6 @@
                 <tr style="background-color: #f2f2f2;">
                     <td style="padding: 15px; border: 1px solid #ddd; text-align: center;">${balance.currency}</td>
                     <td style="padding: 15px; border: 1px solid #ddd; text-align: center;">${balance.balance}</td>
-                    <td style="padding: 15px; border: 1px solid #ddd; text-align: center;">${balance.locked}</td>
                     <td style="padding: 15px; border: 1px solid #ddd; text-align: center;">${balance.avgBuyPrice}</td>
                 </tr>
             </#list>

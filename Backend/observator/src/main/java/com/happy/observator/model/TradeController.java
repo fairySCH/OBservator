@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.happy.observator.service.UpbitService;
 import com.happy.observator.service.UserService;
+import com.happy.observator.Upbit.UpbitBalance;
 import com.happy.observator.repository.OrderRepositary;
 import com.happy.observator.repository.UserRepositary;
 
@@ -45,7 +46,27 @@ public class TradeController {
     }
 
     @GetMapping("/trade")
-    public String showTradePage() {
+    public String showTradePage(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        String username = userDetails.getUsername();
+        User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Check if keys are present
+        boolean hasKeys = user.getUpbitAccessKey() != null && user.getUpbitSecretKey() != null;
+
+        if (hasKeys){
+            try {
+                List<UpbitBalance> balances = upbitService.getBalances(user.getUpbitAccessKey(), user.getUpbitSecretKey());
+                model.addAttribute("balances", balances);
+            } catch (Exception e) {
+                model.addAttribute("errorMessage", "Failed to fetch balance: " + e.getMessage());
+            }
+        } else {
+            model.addAttribute("errorMessage", "Please input your Upbit API keys to view balance.");
+        }
+        
+        model.addAttribute("user", user);
+        model.addAttribute("hasKeys", hasKeys);
+
         return "trade";  // Return the name of the template (trade.html)
     }
 
