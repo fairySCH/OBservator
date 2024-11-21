@@ -155,11 +155,27 @@
                 <p>Risk Level: <span id="risk-level-display">5</span></p>
                 <input type="range" id="risk-slider" min="1" max="10" value="5">
             </div>
-            <div class="section">
+            <div th:if="${hasKeys}" class="section">
                 <h3>My Assets</h3>
-                <p>Total Value: <span id="total-value">9,948,000 KRW</span></p>
-                <p>Profit/Loss: <span id="profit-loss">+46,000 KRW</span></p>
+            
+                <!-- Display error message if fetching balances fails -->
+                <div th:if="${errorMessage}" class="error-message">
+                    <p th:text="${errorMessage}"></p>
+                </div>
+            
+                <!-- Display balances if available -->
+                <div th:if="${balances}">
+                    <p><span id="my-assets"></span></p>
+                    <ul>
+                        <!-- Iterate through the balances list -->
+                        <li th:each="balance : ${balances}">
+                            <span th:text="${balance.currency}">Currency</span>: 
+                            <span th:text="${balance.balance}">Balance</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
+            
             <div class="section">
                 <h3>Trade Bitcoin</h3>
                 <form class="trade-form">
@@ -231,6 +247,40 @@
                 orderbookBody.appendChild(row);
             },);
         }
+
+        async function fetchAccountInfo() {
+            try {
+                // Upbit API에서 보유 자산 정보 가져오기
+                const accountResponse = await fetch('/proxy/upbit/account');
+                const accountData = await accountResponse.json();
+        
+                // KRW-BTC의 현재가 가져오기
+                const tickerResponse = await fetch('/proxy/upbit/ticker?markets=KRW-BTC');
+                const tickerData = await tickerResponse.json();
+                const currentPrice = tickerData[0].trade_price;
+        
+                // 총 자산 계산
+                let totalAssets = 0;
+                accountData.forEach(asset => {
+                    if (asset.currency === 'KRW') {
+                        totalAssets += parseFloat(asset.balance); // 한화 잔액 추가
+                    } else if (asset.currency === 'BTC') {
+                        totalAssets += parseFloat(asset.balance) * currentPrice; // 비트코인 잔액 계산
+                    }
+                });
+        
+                // 결과 업데이트
+                document.querySelector("#my-assets").textContent = totalAssets.toLocaleString('ko-KR', { style: 'currency', currency: 'KRW' });
+            } catch (error) {
+                console.error("Failed to fetch account info:", error);
+            }
+        }
+        
+        // 1초 간격으로 자산 정보 업데이트
+        setInterval(fetchAccountInfo, 1000);
+        
+        // 초기 호출
+        fetchAccountInfo();        
 
         // Chart 업데이트
         let lineChart;
