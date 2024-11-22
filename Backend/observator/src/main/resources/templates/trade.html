@@ -175,17 +175,26 @@
                     </ul>
                 </div>
             </div>
-            
+
             <div class="section">
                 <h3>Trade Bitcoin</h3>
-                <form class="trade-form">
-                    <label for="buy-price">Price to Buy (KRW):</label>
-                    <input type="text" id="buy-price" placeholder="Enter price in KRW">
-                    <button type="button" class="buy-button">Buy</button>
-                    <label for="sell-volume">Volume to Sell (BTC):</label>
-                    <input type="text" id="sell-volume" placeholder="Enter volume in BTC">
-                    <button type="button" class="sell-button">Sell</button>
+                <form th:action="@{/buy}" method="post">
+                    <div class="trade-form">
+                        <label for="price">Price to Buy (KRW):</label>
+                        <input type="text" id="price" name="price" placeholder="Enter price in KRW" required />
+                    </div>
+                    <button type="submit" class="buy-button" name="action" value="buy">Buy</button>
                 </form>
+                <form th:action="@{/sell}" method="post">
+                    <div class="trade-form">
+                        <label for="price">Volume to Sell (BTC):</label>
+                        <input type="text" id="volume" name="volume" placeholder="Enter Bitcoin volume to sell" required />
+                    </div>
+                    <button type="submit" class="sell-button" name="action" value="sell">Sell</button>
+                </form>
+
+                <p th:if="${errorMessage}" style="color:red;">[[${errorMessage}]]</p>
+                <p th:if="${successMessage}" style="color:green;">[[${successMessage}]]</p>
             </div>
         </div>
 
