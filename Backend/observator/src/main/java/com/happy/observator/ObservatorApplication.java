@@ -6,6 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import com.happy.observator.server.HighSpeedTcpServer;
+import com.happy.observator.service.UserService;
+import com.happy.observator.model.TradingOrderProcessor;
 
 @SpringBootApplication
 public class ObservatorApplication {
