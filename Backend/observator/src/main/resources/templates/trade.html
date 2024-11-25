@@ -192,7 +192,7 @@
                     </div>
                     <button type="submit" class="sell-button" name="action" value="sell">Sell</button>
                 </form>
-            <!-- code left for time-scheduled testing
+
                 <form th:action="@{/scheduleOrder}" method="post">
                     <div>
                         <label for="orderType">Order Type:</label>
@@ -227,7 +227,6 @@
                         </tr>
                     </tbody>
                 </table>
-                -->
 
                 <p th:if="${errorMessage}" style="color:red;">[[${errorMessage}]]</p>
                 <p th:if="${successMessage}" style="color:green;">[[${successMessage}]]</p>
