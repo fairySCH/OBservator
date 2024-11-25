@@ -192,6 +192,42 @@
                     </div>
                     <button type="submit" class="sell-button" name="action" value="sell">Sell</button>
                 </form>
+            <!-- code left for time-scheduled testing
+                <form th:action="@{/scheduleOrder}" method="post">
+                    <div>
+                        <label for="orderType">Order Type:</label>
+                        <select id="orderType" name="action" required>
+                            <option value="buy">Buy</option>
+                            <option value="sell">Sell</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="orderAmount">Amount (KRW for Buy / BTC for Sell):</label>
+                        <input type="text" id="orderAmount" name="amount" placeholder="Enter amount" required />
+                    </div>
+                    <div>
+                        <label for="targetTime">Target Time (hh:mm:ss):</label>
+                        <input type="text" id="targetTime" name="targetTime" placeholder="e.g., 15:30:00" required />
+                    </div>
+                    <button type="submit">Schedule Order</button>
+                </form>
+                <table id="scheduledOrdersTable">
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Action</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="entry : ${scheduledOrders}">
+                            <td th:text="${entry.key}"></td>
+                            <td th:text="${entry.value.action}"></td>
+                            <td th:text="${entry.value.amount}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                -->
 
                 <p th:if="${errorMessage}" style="color:red;">[[${errorMessage}]]</p>
                 <p th:if="${successMessage}" style="color:green;">[[${successMessage}]]</p>
