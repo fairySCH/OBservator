@@ -8,5 +8,6 @@ import com.happy.observator.model.User;
 
 public interface UserRepositary extends JpaRepository<User, Integer>{
     Optional<User> findByUsername(String username);
+    User findById(int Id);
     boolean existsByUsername(String username);
 } 
