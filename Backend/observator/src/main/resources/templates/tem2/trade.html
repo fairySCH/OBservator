@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitcoin Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f7fa;
+            color: #333333;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .left-panel {
+            flex: 2;
+        }
+
+        .chart-section {
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #dddddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 400px;
+        }
+
+        .right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .section {
+            background-color: #ffffff;
+            border: 1px solid #dddddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .section h3 {
+            color: #007BFF;
+            margin-bottom: 15px;
+        }
+
+        .trade-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .trade-form label {
+            font-weight: bold;
+        }
+
+        .trade-form input {
+            padding: 10px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+        }
+
+        .trade-form button {
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .buy-button {
+            background-color: #28a745;
+            color: #ffffff;
+        }
+
+        .sell-button {
+            background-color: #dc3545;
+            color: #ffffff;
+        }
+
+        .orderbook-section {
+            width: 100%;
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #dddddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .orderbook-section h3 {
+            color: #007BFF;
+        }
+
+        .orderbook-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+        }
+
+        .orderbook-table th, .orderbook-table td {
+            padding: 10px;
+            border-bottom: 1px solid #dddddd;
+        }
+
+        .orderbook-table th {
+            background-color: #f5f5f5;
+        }
+
+        .orderbook-table td {
+            color: #333333;
+        }
+
+        .orderbook-table .buy {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+        }
+
+        .orderbook-table .sell {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+        }
+
+
+        
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+
+    <div class="container">
+    
+        <div class="left-panel">
+            <div class="chart-section">
+                <!-- 시세 정보 헤더 -->
+                <div class="price-header">
+                    <div class="price-info">
+                        <div class="titile_bit">
+                            <img
+                                class="bit_img"
+                                src="./assets/bit_sim.png"
+                                alt=""
+                                style="width: 40px; height: 40px; object-fit: cover; margin-right: 10px; vertical-align: middle;">
+                            <a style="font-weight: bold; font-size: large;">비트코인 BTC/KRW</a>
+                        </div>
+                        <h1 class="current-price" style="color: #333333;">-</h1>
+                        <p class="price-change">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+
+                                <div>
+                                    <span class="change-percent" 
+                                            style="
+                                                color: #dc3545; 
+                                                font-weight: bold; 
+                                                font-size: x-large; 
+                                                width: 80px; 
+                                                display: inline-block; 
+                                                text-align: center;">
+                                            +2.07%
+                                     </span>
+                                    <span class="change-amount" style="color: #dc3545;font-size: x-large;">▲ 2,756,000</span>
+                                </div>
+                                <div>
+                                    최고가 : <span class="high-price" style="color: #dc3545;">137,650,000</span>
+                                    <br>
+                                    최저가 : <span class="low-price" style="color: #007bff;">133,001,000</span>
+                                </div>
+                                <div class="a>dditional-info">
+                                    24h 총거래 :  <span class="volume">8,149.673 BTC</span><br>
+                                    24h 총거래액 : <span class="trade-amount">1,084,180,672,622</span>
+                                </div>
+                            </div>       
+                        </p>
+                    </div>
+                    <!-- 고가, 저가 -->
+                    
+                </div>
+                
+                <!-- 거래소별 가격 -->
+                
+                
+         <div class="exchange-prices">
+            <style>
+                .exchange-prices {
+                    background: #ffffff;
+                    padding: 20px;
+                    border: 1px solid #dddddd;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                    margin-bottom: 20px;
+                }
+        
+                .exchange-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+        
+                .exchange-table th,
+                .exchange-table td {
+                    padding: 10px;
+                    font-size: 14px;
+                    border-bottom: 1px solid #ddd;
+                }
+        
+                .exchange-table th {
+                    background: #f5f5f5;
+                    font-weight: bold;
+                }
+        
+                .exchange-table td {
+                    text-align: right;
+                }
+        
+                .exchange-table td:first-child,
+                .exchange-table th:first-child {
+                    text-align: left;
+                }
+            </style>
+        
+            <table class="exchange-table">
+                        <td style="color: #007BFF;">비트플라이어</td>
+                        <td id="bitflyer-price">-</td>
+                        <td style="color: #28a745;">바이낸스</td>
+                        <td id="binance-price">-</td>
+                        <td style="color: chocolate;">코인베이스</td>
+                        <td id="coinbase-price">-</td>
+            </table>
+        </div>
+         
+         <!-- 비트코인 차트 -->
+
+
+                <div class="chart-container">
+                    <canvas id="btcChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+
+        
+        <!-- 오른쪽 패널 -->
+        <div class="right-panel">
+            <div class="section">
+                <h3>Risk Management</h3>
+                <p>Risk Level: <span id="risk-level-display">5</span></p>
+                <input type="range" id="risk-slider" min="1" max="10" value="5">
+                <button type="button" style="
+            padding: 10px 15px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #0055ff;
+            color: #ffffff;
+            margin: 0 10px;"
+            onmouseover="this.style.backgroundColor='#218838'; this.style.boxShadow='0 6px 12px rgba(0, 0, 0, 0.2)'; this.style.transform='translateY(-2px)';"
+            onmouseout="this.style.backgroundColor='#28a745'; this.style.boxShadow='0 4px 8px rgba(0, 0, 0, 0.1)'; this.style.transform='translateY(0)';"
+            onmousedown="this.style.backgroundColor='#1e7e34'; this.style.transform='translateY(2px)';"
+            onmouseup="this.style.backgroundColor='#218838'; this.style.transform='translateY(0)';">
+            자동매매 시작
+        </button>
+        <button type="button" style="
+              padding: 10px 15px;
+              font-size: 0.7rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #cf3328;
+            color: #ffffff;
+            margin: 0 0.4px;"
+            onmouseover="this.style.backgroundColor='#c82333'; this.style.boxShadow='0 6px 12px rgba(0, 0, 0, 0.2)'; this.style.transform='translateY(-2px)';"
+            onmouseout="this.style.backgroundColor='#dc3545'; this.style.boxShadow='0 4px 8px rgba(0, 0, 0, 0.1)'; this.style.transform='translateY(0)';"
+            onmousedown="this.style.backgroundColor='#bd2130'; this.style.transform='translateY(2px)';"
+            onmouseup="this.style.backgroundColor='#c82333'; this.style.transform='translateY(0)';">
+            자동매매 중지
+        </button>
+            </div>
+            <div class="section">
+                <h3>My Assets</h3>
+                <p>Total Value: <span id="total-value">9,948,000 KRW</span></p>
+                <p>Profit/Loss: <span id="profit-loss">+46,000 KRW</span></p>
+            </div>
+            <div class="section">
+                <h3>Trade Bitcoin</h3>
+                <form class="trade-form">
+                    <label for="buy-price">Price to Buy (KRW):</label>
+                    <input type="text" id="buy-price" placeholder="Enter price in KRW">
+                    <button type="button" class="buy-button">Buy</button>
+                    <label for="sell-volume">Volume to Sell (BTC):</label>
+                    <input type="text" id="sell-volume" placeholder="Enter volume in BTC">
+                    <button type="button" class="sell-button">Sell</button>
+                    
+                </form>
+            </div>
+        </div>
+
+        <!-- 오더북 섹션 -->
+        <div class="orderbook-section">
+            <h3>Order Book (KRW-BTC)</h3>
+            <table class="orderbook-table">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Price</th>
+                        <th>Volume</th>
+                    </tr>
+                </thead>
+                <tbody id="orderbook-body">
+                    <!-- 데이터가 여기에 삽입됩니다 -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        
+let cumulativeData = [];
+let volumeData = [];
+let predictedData = [];
+
+// Fetch Bitcoin data
+async function fetchBitcoinData() {
+    const response = await fetch("https://api.upbit.com/v1/candles/minutes/1?market=KRW-BTC&count=1");
+    const data = await response.json();
+    return {
+        time: new Date(data[0].timestamp).toLocaleTimeString(),
+        price: data[0].trade_price,
+        volume: data[0].candle_acc_trade_volume
+    };
+}
+
+// 업비트 Orderbook data
+async function fetchOrderBook() {
+    const response = await fetch("https://api.upbit.com/v1/orderbook?markets=KRW-BTC");
+    const data = await response.json();
+    return data[0].orderbook_units.slice(0, 15);
+}
+
+// Update Order Book
+async function updateOrderBook() {
+    const orderBook = await fetchOrderBook();
+    const orderbookBody = document.getElementById("orderbook-body");
+    orderbookBody.innerHTML = "";
+
+    orderBook.forEach((order, index) => {
+        const row = document.createElement("tr");
+        row.className = index < 7 ? "sell" : "buy";
+        row.innerHTML = `
+            <td>${index < 7 ? "Sell" : "Buy"}</td>
+            <td>${index < 7 ? order.ask_price : order.bid_price}</td>
+            <td>${index < 7 ? order.ask_size : order.bid_size}</td>
+        `;
+        orderbookBody.appendChild(row);
+    });
+}
+
+// Generate dummy predicted data
+function generateDummyPredictedData(currentPrice) {
+    const fluctuation = (Math.random() - 0.5) * 0.02 * currentPrice; // ±2% fluctuation
+    return currentPrice + fluctuation;
+}
+
+// Chart 업데이트
+let lineChart;
+async function updateChart() {
+    const dataPoint = await fetchBitcoinData();
+    cumulativeData.push(dataPoint);
+    volumeData.push(dataPoint.volume);
+    predictedData.push({
+        time: dataPoint.time,
+        price: generateDummyPredictedData(dataPoint.price)
+    });
+
+    if (!lineChart) {
+        const ctx = document.getElementById("btcChart").getContext("2d");
+        lineChart = new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: cumulativeData.map((item) => item.time),
+                datasets: [
+                    {
+                        label: "Bitcoin Price (KRW)",
+                        data: cumulativeData.map((item) => item.price),
+                        borderColor: "rgba(54, 162, 235, 1)",
+                        borderWidth: 2,
+                        tension: 0.4, // Smoother curve
+                        pointRadius: 0
+                    },
+                    {
+                        label: "Volume",
+                        data: volumeData,
+                        type: "bar",
+                        backgroundColor: "rgba(153, 102, 255, 0.2)",
+                        borderColor: "rgba(153, 102, 255, 1)",
+                        borderWidth: 1,
+                        yAxisID: "volume-axis"
+                    },
+                    {
+                        label: "Predicted Price (KRW)",
+                        data: predictedData.map((item) => item.price),
+                        borderColor: "rgba(255, 99, 132, 1)",
+                        borderWidth: 2,
+                        tension: 0.4, // Smoother curve
+                        pointRadius: 0 // No points for smoother visualization
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: "Time"
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: "Price (KRW)"
+                        }
+                    },
+                    "volume-axis": {
+                        position: "right",
+                        title: {
+                            display: true,
+                            text: "Volume"
+                        },
+                        grid: {
+                            drawOnChartArea: false
+                        }
+                    }
+                }
+            }
+        });
+    } else {
+        lineChart.data.labels = cumulativeData.map((item) => item.time);
+        lineChart.data.datasets[0].data = cumulativeData.map((item) => item.price);
+        lineChart.data.datasets[1].data = volumeData;
+        lineChart.data.datasets[2].data = predictedData.map((item) => item.price);
+        lineChart.update();
+    }
+}
+
+// Initialize and update chart and order book every 0.5 seconds
+setInterval(() => {
+    updateChart();
+    updateOrderBook();
+}, 500);
+
+// Risk slider
+document.getElementById("risk-slider").addEventListener("input", (e) => {
+    document.getElementById("risk-level-display").textContent = e.target.value;
+});
+
+// 초 상단 제목 
+
+// https://docs.upbit.com/reference/%EC%B4%88second-%EC%BA%94%EB%93%A4
+// API 확인 : 멘토님추천 
+
+async function fetchHeaderData() {
+    const response = await fetch("https://api.upbit.com/v1/ticker?markets=KRW-BTC");
+    const data = await response.json();
+    const priceData = data[0];
+
+    document.querySelector(".current-price").textContent = priceData.trade_price.toLocaleString() + " KRW";
+    document.querySelector(".change-percent").textContent = (priceData.signed_change_rate * 100).toFixed(2) + "%";
+    document.querySelector(".change-amount").textContent = (priceData.signed_change_price > 0 ? "▲ " : "▼ ") + priceData.signed_change_price.toLocaleString();
+    document.querySelector(".volume").textContent = priceData.acc_trade_volume_24h.toFixed(3) + " BTC";
+    document.querySelector(".trade-amount").textContent = priceData.acc_trade_price_24h.toLocaleString() + " KRW";
+}
+
+// 메인 그래프 
+async function fetchRealTimePrice() {
+    try {
+        const response = await fetch("https://api.upbit.com/v1/ticker?markets=KRW-BTC");
+        const data = await response.json();
+        const priceData = data[0];
+
+        // 가격 업데이트
+        const priceElement = document.querySelector(".current-price");
+        const currentPrice = parseFloat(priceData.trade_price).toLocaleString() + " KRW";
+        priceElement.textContent = currentPrice;
+
+        // 변동률 및 금액 업데이트
+        const changePercent = (priceData.signed_change_rate * 500).toFixed(2) + "%";
+        const changeAmount = (priceData.signed_change_price > 0 ? "▲ " : "▼ ") + parseFloat(priceData.signed_change_price).toLocaleString();
+        document.querySelector(".change-percent").textContent = changePercent;
+        document.querySelector(".change-amount").textContent = changeAmount;
+
+        // 거래량 및 거래대금 업데이트
+        const volume = parseFloat(priceData.acc_trade_volume_24h).toFixed(3) + " BTC";
+        const tradeAmount = parseFloat(priceData.acc_trade_price_24h).toLocaleString() + " KRW";
+        document.querySelector(".volume").textContent = volume;
+        document.querySelector(".trade-amount").textContent = tradeAmount;
+
+        // 가격 변동에 따른 색상 업데이트
+        priceElement.style.color = priceData.signed_change_price > 0 ? "#28a745" : "#dc3545";
+    } catch (error) {
+        console.error("Failed to fetch Bitcoin price data:", error);
+    }
+}
+
+async function fetchPrices() {
+            try {
+                
+                const prices = {
+                    bitflyer: Math.floor(Math.random() * (137000000 - 135000000) + 135000000),
+                    binance: Math.floor(Math.random() * (137000000 - 135000000) + 135000000),
+                    coinbase: Math.floor(Math.random() * (137000000 - 135000000) + 135000000),
+                };
+
+                // 각 거래소의 가격 업데이트
+                document.getElementById("bitflyer-price").textContent = prices.bitflyer.toLocaleString();
+                document.getElementById("binance-price").textContent = prices.binance.toLocaleString();
+                document.getElementById("coinbase-price").textContent = prices.coinbase.toLocaleString();
+            } catch (error) {
+                console.error("가격 데이터를 가져오는 중 오류가 발생했습니다:", error);
+            }
+        }
+
+// 1초마다 가격 업데이트
+setInterval(fetchRealTimePrice, 1000);
+fetchRealTimePrice();
+
+// 5초마다 업데이트
+setInterval(fetchHeaderData, 5000);
+fetchHeaderData();
+
+// Initialize
+updateChart();
+updateOrderBook();
+
+// 가격 데이터를 5초마다 업데이트
+setInterval(fetchPrices, 1000);
+
+// 초기 데이터 로드
+fetchPrices();
+
+
+</script>
+
+</body>
+</html>
+
+
+
+<!-- 
+myassets
+- 거래역 (업비트 확인)
+- 기타 요소 
+
+투자 손익 그래프 (업비트 확인)
+-->
