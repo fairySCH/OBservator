@@ -19,7 +19,7 @@ public class ObservatorApplication {
 	@Bean
     CommandLineRunner run(UserService userService) {
         return args -> {
-            //userService.saveUser("user", "password");
+            userService.saveUser("user", "password");
         };
     }
 }

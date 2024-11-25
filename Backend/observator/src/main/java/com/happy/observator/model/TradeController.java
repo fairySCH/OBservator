@@ -2,6 +2,7 @@ package com.happy.observator.model;
 
 import java.time.Duration;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -157,27 +158,29 @@ public class TradeController {
         
         // Create a unique ID for the order
         String orderId = UUID.randomUUID().toString();
-        
+
         // Check if there's an existing order for the target time and delete it
-        LocalTime target = LocalTime.parse(targetTime);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+        LocalTime target = LocalTime.parse(targetTime, formatter);
         Optional<S_Order> existingOrder = orderRepository.findByUserIdAndTargetTime(user.getId(), target);
         if (existingOrder.isPresent()) {
                 orderRepository.delete(existingOrder.get());
                 System.out.println("Deleted existing order: " + existingOrder);
         }
+
         // Save new order
         S_Order order = new S_Order(orderId, user.getId(), action, amount, "KRW-BTC", target);
         orderRepository.save(order);
 
         LocalTime now = LocalTime.now();
-        long delay = Duration.between(now, target).getSeconds();
+        long delay = Duration.between(now, target).toMillis();
         
         if (delay < 0) {
             model.addAttribute("errorMessage", "Target time has already passed.");
             return "trade";
         }
 
-        scheduler.schedule(() -> executeOrder(order, user), delay, TimeUnit.SECONDS);
+        scheduler.schedule(() -> executeOrder(order, user), delay, TimeUnit.MILLISECONDS);
         model.addAttribute("successMessage", action + " order scheduled for " + targetTime);
         model.addAttribute("scheduledOrders", scheduledOrders);  // Add orders to the model
 
