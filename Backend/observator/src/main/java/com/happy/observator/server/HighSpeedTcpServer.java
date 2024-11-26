@@ -3,14 +3,21 @@ package com.happy.observator.server;
 import java.io.*;
 import java.net.*;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import com.happy.observator.model.TradingOrderProcessor;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 public class HighSpeedTcpServer implements Runnable {
 
+    @Autowired
+    private TradingOrderProcessor tradingOrderProcessor;
+
     @Override
     public void run() {
-        try (ServerSocket serverSocket = new ServerSocket(9000)) {  // 포트 9000
+        try (ServerSocket serverSocket = new ServerSocket(9000)) {  // Port 9000
             System.out.println("Server is ready to receive data on port 9000...");
 
             while (true) {
@@ -25,6 +32,14 @@ public class HighSpeedTcpServer implements Runnable {
                     }
 
                     System.out.println("Received data: " + receivedData.toString().trim());
+
+                    // Convert received data to JSON format
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    JsonNode jsonOrder = objectMapper.readTree(receivedData.toString().trim());
+
+                    // Convert JsonNode to String and process the order
+                    String jsonString = jsonOrder.toString();
+                    tradingOrderProcessor.processReceivedOrder(jsonString);
 
                     OutputStream outputStream = socket.getOutputStream();
                     PrintWriter writer = new PrintWriter(outputStream, true);
