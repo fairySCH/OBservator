@@ -147,3 +147,195 @@ body {
 .back-button:hover {
     background-color: #0056b3;
 }
+
+
+.price-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 15px 20px;
+    border-bottom: 1px solid #dddddd;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+}
+
+.price-info h1 {
+    font-size: 24px;
+    color: #333333;
+    margin: 0;
+}
+
+.price-info .current-price {
+    font-size: 50px;
+    font-weight: bold;
+    color: #ff5c00;
+    margin: 5px 0;
+}
+
+.price-info .price-change {
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.price-info .change-percent {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.price-info .change-amount {
+    color: #dc3545;
+}
+
+.volume-info {
+    text-align: right;
+}
+
+.volume-info p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #333333;
+}
+
+.volume-info span {
+    font-weight: bold;
+    color: #007BFF;
+}
+
+.price-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 15px 20px;
+    border-bottom: 1px solid #dddddd;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
+}
+
+.price-info h1 {
+    font-size: 24px;
+    color: #333333;
+    margin: 0;
+}
+
+.price-info .current-price {
+    font-size: 50px;
+    font-weight: bold;
+    color: #333333;
+    margin: 5px 0;
+}
+
+.price-info .price-change {
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.price-info .change-percent {
+    font-weight: bold;
+}
+
+.price-info .change-amount {
+    font-weight: bold;
+}
+
+.volume-info {
+    text-align: right;
+}
+
+.volume-info p {
+    margin: 5px 0;
+    font-size: 14px;
+    color: #333333;
+}
+
+.volume-info span {
+    font-weight: bold;
+    color: #007BFF;
+}
+
+/* 고점, 저점 및 거래 정보 */
+.additional-info {
+    display: flex;
+    justify-content: space-between;
+    background-color: #f9f9f9;
+    padding: 15px 20px;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    margin: 20px 0;
+    font-size: 16px;
+    font-weight: bold;
+    color: #333333;
+}
+
+.additional-info p {
+    margin: 0;
+    text-align: left;
+}
+
+.additional-info .high-price {
+    color: #dc3545; /* 빨간색 */
+}
+
+.additional-info .low-price {
+    color: #007bff; /* 파란색 */
+}
+
+/* 거래소별 가격 섹션 */
+.exchange-prices {
+    margin: 20px 0;
+    background-color: #ffffff;
+    padding: 20px;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.exchange-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.exchange-table th, .exchange-table td {
+    padding: 10px;
+    border-bottom: 1px solid #dddddd;
+    text-align: center;
+}
+
+.exchange-table th {
+    background-color: #f5f5f5;
+    font-size: 16px;
+    color: #333333;
+    font-weight: bold;
+}
+
+.exchange-table td {
+    font-size: 14px;
+    color: #333333;
+}
+
+.exchange-table tr:hover {
+    background-color: #f1f1f1; /* 호버 시 색상 */
+}
+
+/* 전반적인 UI 간격 및 통일 */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+.chart-container {
+    margin: 20px 0;
+    text-align: center;
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
