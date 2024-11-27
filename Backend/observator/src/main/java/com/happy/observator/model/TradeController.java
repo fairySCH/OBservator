@@ -82,7 +82,7 @@ public class TradeController {
             model.addAttribute("errorMessage", "Failed to place buy order: " + e.getMessage());
         }
 
-        return "trade";  // Render the same page with success or error message
+        return "redirect:/trade";  // Render the same page with success or error message
     }
 
     @PostMapping("/sell")
@@ -96,7 +96,7 @@ public class TradeController {
             model.addAttribute("errorMessage", "Failed to place sell order: " + e.getMessage());
         }
 
-        return "trade";  // Render the same page with success or error message
+        return "redirect:/trade";  // Render the same page with success or error message
     }
 
     @PostMapping("/scheduleBuy")
@@ -122,7 +122,7 @@ public class TradeController {
             }
         }, delay, TimeUnit.SECONDS);
 
-        return "trade";  // Render the same page with success or error message
+        return "redirect:/trade";  // Render the same page with success or error message
     }
 
     @PostMapping("/scheduleSell")
@@ -148,7 +148,7 @@ public class TradeController {
             }
         }, delay, TimeUnit.SECONDS);
 
-        return "trade";  // Render the same page with success or error message
+        return "redirect:/trade";  // Render the same page with success or error message
     }
 
     @PostMapping("/scheduleOrder")
@@ -177,14 +177,14 @@ public class TradeController {
         
         if (delay < 0) {
             model.addAttribute("errorMessage", "Target time has already passed.");
-            return "trade";
+            return "redirect:/trade";
         }
 
         scheduler.schedule(() -> executeOrder(order, user), delay, TimeUnit.MILLISECONDS);
         model.addAttribute("successMessage", action + " order scheduled for " + targetTime);
         model.addAttribute("scheduledOrders", scheduledOrders);  // Add orders to the model
 
-        return "trade";  // Render the same page with success or error message
+        return "redirect:/trade";  // Render the same page with success or error message
     }
 
     private void executeOrder(S_Order order, User user) {
