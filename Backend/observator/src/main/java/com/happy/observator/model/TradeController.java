@@ -214,4 +214,16 @@ public class TradeController {
             .filter(order -> order.getUserId() == user.getId())
             .toList();  // Return only the current user's scheduled orders
     }
+
+    @PostMapping("/start")
+    private String startTrade(){
+
+        return "redirect:/trade";
+    }
+
+    @PostMapping("/end")
+    private String endTrade(){
+
+        return "redirect:/trade";
+    }
 }

@@ -247,6 +247,12 @@
         <div class="right-panel">
             <div class="section">
                 <h3>Risk Management</h3>
+                <form th:action="@{/start}" method="post">
+                    <!-- add Feature to start auto trading-->
+                </form>
+                <form th:action="@{/end}" method="post">
+                    <!-- add Feature to end auto trading-->
+                </form>
                 <p>Risk Level: <span id="risk-level-display">5</span></p>
                 <input type="range" id="risk-slider" min="1" max="10" value="5">
                 <button type="button" style="
