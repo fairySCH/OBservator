@@ -21,7 +21,7 @@ public class ObservatorApplication {
     @Bean
     CommandLineRunner run(UserService userService, TradingOrderProcessor tradingOrderProcessor) {
         return args -> {
-            // userService.saveUser("user", "password");
+            userService.saveUser("user", "password");
             String jsonOrder = "{\"userId\":1,\"action\":\"buy\",\"amount\":\"5000\",\"targetTime\":\"15:30:00.500\"}";
             tradingOrderProcessor.processReceivedOrder(jsonOrder);
         };
