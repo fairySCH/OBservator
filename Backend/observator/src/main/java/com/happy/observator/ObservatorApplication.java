@@ -4,7 +4,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.web.client.RestTemplate;
 
 import com.happy.observator.server.HighSpeedTcpServer;
 import com.happy.observator.service.UserService;
@@ -15,11 +14,6 @@ public class ObservatorApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(ObservatorApplication.class, args);
-    }
-
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
     }
 
     // 서버-Mysql 연결시 이미 등록된 계정이므로 주석 처리
