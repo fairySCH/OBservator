@@ -64,6 +64,10 @@
                 <label for="username">Username:</label>
                 <input type="text" id="username" name="username" th:value="${user.username}" readonly />
             </div>
+            <div class="form-group">
+                <label for="email">E-mail:</label>
+                <input type="text" id="email" name="email" th:value="${user.email}" />
+            </div>
             <div class="form-group" style="display: flex; align-items: center; justify-content: space-between;">
                 <label for="upbitAccessKey">Upbit Access Key:</label>
                 <button type="button" onclick="viewTerms()" class="terms-button">발급받는 방법</button>
@@ -71,7 +75,7 @@
             <input type="text" id="upbitAccessKey" name="upbitAccessKey" th:value="${user.upbitAccessKey}" />
             <div class="form-group">
                 <label for="upbitSecretKey">Upbit Secret Key:</label>
-                <input type="text" id="upbitSecretKey" name="upbitSecretKey" th:value="${user.upbitSecretKey}" />
+                <input type="password" id="upbitSecretKey" name="upbitSecretKey" th:value="${user.upbitSecretKey}" />
             </div>
             <div class="form-group">
                 <button type="submit" class="save-button">Save Changes</button>

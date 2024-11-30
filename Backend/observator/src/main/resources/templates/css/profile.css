@@ -63,6 +63,14 @@ border-radius: 4px;
 background: #ffffff;
 }
 
+.form-group input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #ffffff;
+    }
+
 .terms-button {
 background-color: #ffffff;
 color: #007BFF;

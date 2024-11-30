@@ -245,52 +245,51 @@
         
         <!-- 오른쪽 패널 -->
         <div class="right-panel">
-            <div class="section">
+            <div th:if="${hasKeys}" class="section">
                 <h3>Risk Management</h3>
                 <form th:action="@{/start}" method="post">
-                    <!-- add Feature to start auto trading-->
+                    <p>Risk Level: <span id="risk-level-display">5</span></p>
+                    <input type="range" id="risk-slider" name="riskLevel" min="1" max="10" value="5" oninput="updateRiskLevelDisplay(this.value)">
+                    <input type="hidden" id="hidden-risk-level" name="riskLevel" value="5">
+                    <button type="submit" style="
+                        padding: 10px 15px;
+                        font-size: 0.7rem;
+                        font-weight: bold;
+                        border: none;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                        background-color: #0055ff;
+                        color: #ffffff;
+                        margin: 0 10px;"
+                        onmouseover="this.style.backgroundColor='#218838'; this.style.boxShadow='0 6px 12px rgba(0, 0, 0, 0.2)'; this.style.transform='translateY(-2px)';"
+                        onmouseout="this.style.backgroundColor='#28a745'; this.style.boxShadow='0 4px 8px rgba(0, 0, 0, 0.1)'; this.style.transform='translateY(0)';"
+                        onmousedown="this.style.backgroundColor='#1e7e34'; this.style.transform='translateY(2px)';"
+                        onmouseup="this.style.backgroundColor='#218838'; this.style.transform='translateY(0)';">
+                        자동매매 시작
+                    </button>
                 </form>
                 <form th:action="@{/end}" method="post">
-                    <!-- add Feature to end auto trading-->
+                    <button type="submit" style="
+                        padding: 10px 15px;
+                        font-size: 0.7rem;
+                        font-weight: bold;
+                        border: none;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        transition: all 0.3s ease;
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                        background-color: #cf3328;
+                        color: #ffffff;
+                        margin: 0 0.4px;"
+                        onmouseover="this.style.backgroundColor='#c82333'; this.style.boxShadow='0 6px 12px rgba(0, 0, 0, 0.2)'; this.style.transform='translateY(-2px)';"
+                        onmouseout="this.style.backgroundColor='#dc3545'; this.style.boxShadow='0 4px 8px rgba(0, 0, 0, 0.1)'; this.style.transform='translateY(0)';"
+                        onmousedown="this.style.backgroundColor='#bd2130'; this.style.transform='translateY(2px)';"
+                        onmouseup="this.style.backgroundColor='#c82333'; this.style.transform='translateY(0)';">
+                        자동매매 중지
+                    </button>
                 </form>
-                <p>Risk Level: <span id="risk-level-display">5</span></p>
-                <input type="range" id="risk-slider" min="1" max="10" value="5">
-                <button type="button" style="
-            padding: 10px 15px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            background-color: #0055ff;
-            color: #ffffff;
-            margin: 0 10px;"
-            onmouseover="this.style.backgroundColor='#218838'; this.style.boxShadow='0 6px 12px rgba(0, 0, 0, 0.2)'; this.style.transform='translateY(-2px)';"
-            onmouseout="this.style.backgroundColor='#28a745'; this.style.boxShadow='0 4px 8px rgba(0, 0, 0, 0.1)'; this.style.transform='translateY(0)';"
-            onmousedown="this.style.backgroundColor='#1e7e34'; this.style.transform='translateY(2px)';"
-            onmouseup="this.style.backgroundColor='#218838'; this.style.transform='translateY(0)';">
-            자동매매 시작
-        </button>
-        <button type="button" style="
-            padding: 10px 15px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            background-color: #cf3328;
-            color: #ffffff;
-            margin: 0 0.4px;"
-            onmouseover="this.style.backgroundColor='#c82333'; this.style.boxShadow='0 6px 12px rgba(0, 0, 0, 0.2)'; this.style.transform='translateY(-2px)';"
-            onmouseout="this.style.backgroundColor='#dc3545'; this.style.boxShadow='0 4px 8px rgba(0, 0, 0, 0.1)'; this.style.transform='translateY(0)';"
-            onmousedown="this.style.backgroundColor='#bd2130'; this.style.transform='translateY(2px)';"
-            onmouseup="this.style.backgroundColor='#c82333'; this.style.transform='translateY(0)';">
-            자동매매 중지
-        </button>
             </div>
           
 
@@ -644,9 +643,18 @@
         }, 1000);
         
         // Risk slider
-        document.getElementById("risk-slider").addEventListener("input", (e) => {
-            document.getElementById("risk-level-display").textContent = e.target.value;
-        });
+        const riskSlider = document.getElementById("risk-slider");
+        const hiddenRiskLevel = document.getElementById("hidden-risk-level");
+        const riskLevelDisplay = document.getElementById("risk-level-display");
+
+        function updateRiskLevelDisplay(value) {
+            riskLevelDisplay.textContent = value;
+            hiddenRiskLevel.value = value;
+        }  
+        updateRiskLevelDisplay(riskSlider.value);
+        //document.getElementById("risk-slider").addEventListener("input", (e) => {
+        //    document.getElementById("risk-level-display").textContent = e.target.value;
+        //});
         
         // 초 상단 제목 
         // https://docs.upbit.com/reference/%EC%B4%88second-%EC%BA%94%EB%93%A4
