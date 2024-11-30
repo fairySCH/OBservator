@@ -53,9 +53,10 @@ public class ProfileController {
     @PostMapping("/profile")
     public String updateProfile(@AuthenticationPrincipal UserDetails userDetails,
                                 @RequestParam String upbitAccessKey,
-                                @RequestParam String upbitSecretKey) {
+                                @RequestParam String upbitSecretKey,
+                                @RequestParam String email) {
         String username = userDetails.getUsername();
-        userService.updateUpbitKeys(username, upbitAccessKey, upbitSecretKey);
+        userService.updateUserInfo(username, upbitAccessKey, upbitSecretKey, email);
         return "redirect:/profile?success=true";
     }
 }

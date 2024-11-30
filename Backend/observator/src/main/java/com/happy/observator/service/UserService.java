@@ -66,10 +66,11 @@ public class UserService implements UserDetailsService {
         logger.info("User '{}' with email '{}' saved successfully!", username, email);
     }
 
-    public void updateUpbitKeys(String username, String upbitAccessKey, String upbitSecretKey) {
+    public void updateUserInfo(String username, String upbitAccessKey, String upbitSecretKey, String email) {
         User user = userRepositary.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
 
+        user.setEmail(email);
         user.setUpbitAccessKey(upbitAccessKey);
         user.setUpbitSecretKey(upbitSecretKey);
         boolean keysSet = !upbitAccessKey.isBlank() && !upbitSecretKey.isBlank();

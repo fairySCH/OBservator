@@ -216,14 +216,18 @@ public class TradeController {
     }
 
     @PostMapping("/start")
-    private String startTrade(){
-
+    private String startTrade(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("riskLevel") int riskLevel){
+        String username = userDetails.getUsername();
+        User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+        System.out.println("Received risk level: " + riskLevel + ". User ID: " + user.getId());
         return "redirect:/trade";
     }
 
     @PostMapping("/end")
-    private String endTrade(){
-
+    private String endTrade(@AuthenticationPrincipal UserDetails userDetails){
+        String username = userDetails.getUsername();
+        User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+        System.out.println("End Trade User ID: " + user.getId());
         return "redirect:/trade";
     }
 }
