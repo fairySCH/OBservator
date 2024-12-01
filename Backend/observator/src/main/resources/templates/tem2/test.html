@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitcoin Dashboard</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f7fa;
+            color: #333333;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: #007BFF;
+            color: #ffffff;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 18px;
+            font-weight: bold;
+            z-index: 1000;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 80px auto 20px; /* Adjust for fixed header */
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .left-panel {
+            flex: 2;
+        }
+
+        .chart-section {
+            padding: 20px;
+            background-color: #ffffff;
+            border: 1px solid #dddddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 400px;
+        }
+
+        .right-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .section {
+            background-color: #ffffff;
+            border: 1px solid #dddddd;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        .section h3 {
+            color: #007BFF;
+            margin-bottom: 15px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="header" id="btc-header">
+        Bitcoin Price: <span id="btc-price-header">Loading...</span>
+    </div>
+    <div class="container">
+        <!-- 왼쪽 패널 -->
+        <div class="left-panel">
+            <div class="chart-section">
+                <h3 style="text-align: center;">Bitcoin Price Chart</h3>
+                <div class="chart-container">
+                    <canvas id="btcChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 오른쪽 패널 -->
+        <div class="right-panel">
+            <div class="section">
+                <h3>Risk Management</h3>
+                <p>Risk Level: <span id="risk-level-display">5</span></p>
+                <input type="range" id="risk-slider" min="1" max="10" value="5">
+            </div>
+            <div class="section">
+                <h3>My Assets</h3>
+                <p>Total Value: <span id="total-value">9,948,000 KRW</span></p>
+                <p>Profit/Loss: <span id="profit-loss">+46,000 KRW</span></p>
+            </div>
+            <div class="section">
+                <h3>Trade Bitcoin</h3>
+                <form class="trade-form">
+                    <label for="buy-price">Price to Buy (KRW):</label>
+                    <input type="text" id="buy-price" placeholder="Enter price in KRW">
+                    <button type="button" class="buy-button">Buy</button>
+                    <label for="sell-volume">Volume to Sell (BTC):</label>
+                    <input type="text" id="sell-volume" placeholder="Enter volume in BTC">
+                    <button type="button" class="sell-button">Sell</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fetch Bitcoin data
+        async function fetchBitcoinData() {
+            const response = await fetch("https://api.upbit.com/v1/candles/minutes/1?market=KRW-BTC&count=1");
+            const data = await response.json();
+            return {
+                time: new Date(data[0].timestamp).toLocaleTimeString(),
+                price: data[0].trade_price
+            };
+        }
+
+        // Update header price
+        async function updateHeaderPrice() {
+            const data = await fetchBitcoinData();
+            document.getElementById("btc-price-header").textContent = `${data.price.toLocaleString()} KRW`;
+        }
+
+        // Initialize and update header every second
+        setInterval(() => {
+            updateHeaderPrice();
+        }, 1000);
+
+        // Initialize
+        updateHeaderPrice();
+    </script>
+</body>
+</html>
+
+
+<!-- 
+* 셀바이 오더북데이터 옆에 
+* 실제 예측값 추가 (현 차트 아래)
+* 마이에셋 세분화
+* 셀데이터 바이데이터 거래량 따로 분리하기 -민재 
+-->
