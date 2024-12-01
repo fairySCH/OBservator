@@ -133,17 +133,23 @@ async def merge_and_send_to_client():
                             if not initial_data_sent:
                                 # 첫 180개 데이터를 전송
                                 data_to_send = merged_data.tail(MERGED_QUEUE_SIZE)
-                                json_data = data_to_send.to_json(orient="records")
-                                client_socket.sendall(json_data.encode('utf-8'))
-                                client_socket.sendall(b"END")  # 종료 플래그 전송
+                                json_data = data_to_send.to_json(orient="records") + "\n"
+                                try:
+                                    client_socket.sendall(json_data.encode('utf-8'))
+                                    print("Data successfully sent to client.")
+                                except Exception as e:
+                                    print(f"Error while sending data to client: {e}")
                                 initial_data_sent = True
                                 print("Initial 180 data sent.")
                             else:
                                 # 이후에는 5초 간격으로 최근 180개 데이터를 전송
                                 data_to_send = merged_data.tail(MERGED_QUEUE_SIZE)
-                                json_data = data_to_send.to_json(orient="records")
-                                client_socket.sendall(json_data.encode('utf-8'))
-                                client_socket.sendall(b"END")  # 종료 플래그 전송
+                                json_data = data_to_send.to_json(orient="records") + "\n"
+                                try:
+                                    client_socket.sendall(json_data.encode('utf-8'))
+                                    print("Data successfully sent to client.")
+                                except Exception as e:
+                                    print(f"Error while sending data to client: {e}")
                                 print("Recent 180 records sent.")
                         else:
                             print("Insufficient data to send.")
@@ -168,4 +174,7 @@ async def main():
     await asyncio.gather(*tasks)
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except Exception as e:
+        print(f"Error in main execution: {e}")
