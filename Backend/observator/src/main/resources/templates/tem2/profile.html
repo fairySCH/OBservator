@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Profile</title>
+    <link rel="stylesheet" href="styles-profile.css">
+    <script>
+        // Check if the URL contains the success parameter and show an alert
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('success')) {
+                alert('Your information has been saved successfully!');
+            }
+        };
+    </script>
+  
+</head>
+<body>
+    <!-- 헤더 -->
+    <header class="header">
+        <div class="logo"> 프로필 </div>
+        <nav>
+            <a href="./trade.html">대시보드</a>
+            <a href="./profile.html">프로필</a>
+            <a href="#about">About</a>
+            <a href="#about"></a>
+        </nav>
+    </header>
+  <br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <!-- 프로필 업데이트 섹션 -->
+    <div class="profile-container">
+        <h2>Update Profile</h2>
+
+        <p class="upbit-status">
+            Upbit Keys Set:
+            <span th:text="${user.upbitKeysSet ? 'Yes' : 'No'}"></span>
+        </p>
+
+        <form th:action="@{/profile}" method="post">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" th:value="${user.username}" readonly />
+            </div>
+            <div class="form-group">
+                <label for="upbitAccessKey">Upbit Access Key:</label>
+                <input type="text" id="upbitAccessKey" name="upbitAccessKey" th:value="${user.upbitAccessKey}" />
+            </div>
+            <div class="form-group">
+                <label for="upbitSecretKey">Upbit Secret Key:</label>
+                <input type="text" id="upbitSecretKey" name="upbitSecretKey" th:value="${user.upbitSecretKey}" />
+            </div>
+            <div class="form-group">
+                <button type="submit" class="save-button">Save Changes</button>
+            </div>
+        </form>
+
+        <h3>Upbit Balance Information</h3>
+
+        <p th:if="${errorMessage}" class="error-message">[[${errorMessage}]]</p>
+
+        <table th:if="${hasKeys}" class="balance-table">
+            <thead>
+                <tr>
+                    <th>Currency</th>
+                    <th>Balance</th>
+                    <th>Locked</th>
+                    <th>Avg Buy Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="balance : ${balances}">
+                    <td th:text="${balance.currency}"></td>
+                    <td th:text="${balance.balance}"></td>
+                    <td th:text="${balance.locked}"></td>
+                    <td th:text="${balance.avgBuyPrice}"></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="back-button-container">
+            <a th:href="@{/home}">
+                <button type="button" class="back-button">Go Back to Home</button>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
