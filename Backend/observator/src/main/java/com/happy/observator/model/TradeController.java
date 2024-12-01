@@ -12,7 +12,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -38,7 +37,6 @@ public class TradeController {
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final Map<LocalTime, S_Order> scheduledOrders = new ConcurrentHashMap<>();
 
-    @Autowired
     public TradeController(UserService userService, UpbitService upbitService, OrderRepositary orderRepositary, UserRepositary userRepository){
         this.userService = userService;
         this.upbitService = upbitService;
@@ -216,10 +214,11 @@ public class TradeController {
     }
 
     @PostMapping("/start")
-    private String startTrade(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("riskLevel") int riskLevel){
+    private String startTrade(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("ThresholdLevel") float thresholdLevel){
         String username = userDetails.getUsername();
         User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
-        System.out.println("Received risk level: " + riskLevel + ". User ID: " + user.getId());
+        float threshold = thresholdLevel/10000;
+        System.out.println("Received Threshold level: " + threshold + ". User ID: " + user.getId());
         return "redirect:/trade";
     }
 

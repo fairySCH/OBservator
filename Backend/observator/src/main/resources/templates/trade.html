@@ -246,11 +246,11 @@
         <!-- 오른쪽 패널 -->
         <div class="right-panel">
             <div th:if="${hasKeys}" class="section">
-                <h3>Risk Management</h3>
+                <h3>Profit Threshold</h3>
                 <form th:action="@{/start}" method="post">
-                    <p>Risk Level: <span id="risk-level-display">5</span></p>
-                    <input type="range" id="risk-slider" name="riskLevel" min="1" max="10" value="5" oninput="updateRiskLevelDisplay(this.value)">
-                    <input type="hidden" id="hidden-risk-level" name="riskLevel" value="5">
+                    <p>Threshold Level: <span id="Threshold-level-display">1</span></p>
+                    <input type="range" id="Threshold-slider" name="ThresholdLevel" min="1" max="10" value="1" oninput="updateThresholdLevelDisplay(this.value)">
+                    <input type="hidden" id="hidden-Threshold-level" name="ThresholdLevel" value="1">
                     <button type="submit" style="
                         padding: 10px 15px;
                         font-size: 0.7rem;
@@ -642,18 +642,23 @@
             updateOrderBook();
         }, 1000);
         
-        // Risk slider
-        const riskSlider = document.getElementById("risk-slider");
-        const hiddenRiskLevel = document.getElementById("hidden-risk-level");
-        const riskLevelDisplay = document.getElementById("risk-level-display");
+        // Threshold slider
+        const ThresholdSlider = document.getElementById("Threshold-slider");
+        const hiddenThresholdLevel = document.getElementById("hidden-Threshold-level");
+        const ThresholdLevelDisplay = document.getElementById("Threshold-level-display");
 
-        function updateRiskLevelDisplay(value) {
-            riskLevelDisplay.textContent = value;
-            hiddenRiskLevel.value = value;
+        function updateThresholdLevelDisplay(value) {
+            if(value != 10){
+                ThresholdLevelDisplay.textContent = "0.0" + value +"%";
+                hiddenThresholdLevel.value = parseFloat("0.000" + value);
+            } else{
+                ThresholdLevelDisplay.textContent = "0.1%";
+                hiddenThresholdLevel.value = 0.001;
+            }
         }  
-        updateRiskLevelDisplay(riskSlider.value);
-        //document.getElementById("risk-slider").addEventListener("input", (e) => {
-        //    document.getElementById("risk-level-display").textContent = e.target.value;
+        updateThresholdLevelDisplay(ThresholdSlider.value);
+        //document.getElementById("Threshold-slider").addEventListener("input", (e) => {
+        //    document.getElementById("Threshold-level-display").textContent = e.target.value;
         //});
         
         // 초 상단 제목 
