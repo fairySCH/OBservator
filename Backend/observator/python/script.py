@@ -10,10 +10,11 @@ import traceback
 jupbit = jinupbit.JinUpbit("", "")
 
 # 큐 크기 제한 설정
-ORDERBOOK_QUEUE_LIMIT = 210
-TICK_QUEUE_LIMIT = 210
+ORDERBOOK_QUEUE_LIMIT = 240
+TICK_QUEUE_LIMIT = 240
+MERGED_QUEUE_SIZE = 180
 
-# 주문서 및 체결 데이터 큐 초기화
+# 주문서 및 채결 데이터 큐 초기화
 orderbook_queue = deque(maxlen=ORDERBOOK_QUEUE_LIMIT)
 ticks_queue = deque(maxlen=TICK_QUEUE_LIMIT)
 
@@ -38,7 +39,7 @@ def preprocess_orderbook(orderbook_data):
         print(f"Orderbook Preprocessing Error: {e}")
         return None
 
-# 전처리 함수 - 체결 데이터
+# 전처리 함수 - 채결 데이터
 def preprocess_ticks(ticks_df):
     if not isinstance(ticks_df, pd.DataFrame):
         ticks_df = pd.DataFrame(ticks_df)
@@ -81,7 +82,7 @@ async def upbit_get_orderbook():
         except Exception as e:
             print(f"Orderbook Collection Error: {e}")
 
-# 비동기 체결 데이터 수집
+# 비동기 채결 데이터 수집
 async def upbit_get_ticks():
     global ticks_queue
     bf_sequential_id = 0
@@ -100,9 +101,10 @@ async def upbit_get_ticks():
         except Exception as e:
             print(f"Ticks Collection Error: {e}")
 
-# 병합 및 클라이언트로 전송
+# 별화 및 클라이언트로 전송
 async def merge_and_send_to_client():
     global orderbook_queue, ticks_queue
+    initial_data_sent = False
     try:
         # 서버 소켓 생성
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -110,27 +112,53 @@ async def merge_and_send_to_client():
         server_socket.listen(1)
         print(f"Server waiting at port {SERVER_PORT}...")
 
-        # 클라이언트 연결 수락
-        client_socket, client_address = server_socket.accept()
-        print(f"Connected: {client_address}")
-
         while True:
-            orderbook_df = pd.DataFrame(list(orderbook_queue))
-            ticks_df = pd.DataFrame(list(ticks_queue))
+            # 클라이언트 연결 수락
+            client_socket, client_address = server_socket.accept()
+            print(f"Client connected: {client_address}")
 
-            if not orderbook_df.empty and not ticks_df.empty:
-                processed_ticks_df = preprocess_ticks(ticks_df)
-                merged_data = pd.merge_asof(orderbook_df.sort_values('timestamp'),
-                                            processed_ticks_df.sort_values('timestamp'),
-                                            on='timestamp',
-                                            direction='nearest')
-                json_data = merged_data.to_json(orient="records")
-                print("Data sent:", json_data)  # 로그 추가
-                client_socket.sendall(json_data.encode('utf-8'))
-            else:
-                print("Insufficient data to send.")
+            try:
+                while True:
+                    orderbook_df = pd.DataFrame(list(orderbook_queue))
+                    ticks_df = pd.DataFrame(list(ticks_queue))
 
-            await asyncio.sleep(5)
+                    if not orderbook_df.empty and not ticks_df.empty:
+                        processed_ticks_df = preprocess_ticks(ticks_df)
+                        merged_data = pd.merge_asof(orderbook_df.sort_values('timestamp'),
+                                                    processed_ticks_df.sort_values('timestamp'),
+                                                    on='timestamp',
+                                                    direction='nearest')
+
+                        if len(merged_data) >= MERGED_QUEUE_SIZE:
+                            if not initial_data_sent:
+                                # 첫 180개 데이터를 전송
+                                data_to_send = merged_data.tail(MERGED_QUEUE_SIZE)
+                                json_data = data_to_send.to_json(orient="records") + "\n"
+                                try:
+                                    client_socket.sendall(json_data.encode('utf-8'))
+                                    print("Data successfully sent to client.")
+                                except Exception as e:
+                                    print(f"Error while sending data to client: {e}")
+                                initial_data_sent = True
+                                print("Initial 180 data sent.")
+                            else:
+                                # 이후에는 5초 간격으로 최근 180개 데이터를 전송
+                                data_to_send = merged_data.tail(MERGED_QUEUE_SIZE)
+                                json_data = data_to_send.to_json(orient="records") + "\n"
+                                try:
+                                    client_socket.sendall(json_data.encode('utf-8'))
+                                    print("Data successfully sent to client.")
+                                except Exception as e:
+                                    print(f"Error while sending data to client: {e}")
+                                print("Recent 180 records sent.")
+                        else:
+                            print("Insufficient data to send.")
+
+                    await asyncio.sleep(5)
+            except (socket.error, BrokenPipeError):
+                print(f"Client disconnected: {client_address}")
+            finally:
+                client_socket.close()
     except Exception as e:
         print(f"Merge and Send Error: {e}")
     finally:
@@ -146,4 +174,7 @@ async def main():
     await asyncio.gather(*tasks)
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except Exception as e:
+        print(f"Error in main execution: {e}")
