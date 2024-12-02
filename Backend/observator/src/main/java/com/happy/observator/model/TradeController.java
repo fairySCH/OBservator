@@ -97,6 +97,30 @@ public class TradeController {
 
         return "redirect:/trade";  // Render the same page with success or error message
     }
+
+    @PostMapping("/order")
+    public String orderBitcoin(@AuthenticationPrincipal UserDetails userDetails, @RequestParam String action, @RequestParam String amount, Model model) {
+        String username = userDetails.getUsername();
+        User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+        try {
+            String response;
+            if ("buy".equalsIgnoreCase(action)) {
+                response = upbitService.placeBuyOrder(user.getUpbitAccessKey(), user.getUpbitSecretKey(), "KRW-BTC", amount);
+                model.addAttribute("successMessage", "Buy order placed successfully: " + response);
+            } else if ("sell".equalsIgnoreCase(action)) {
+                response = upbitService.placeSellOrder(user.getUpbitAccessKey(), user.getUpbitSecretKey(), "KRW-BTC", amount);
+                model.addAttribute("successMessage", "Sell order placed successfully: " + response);
+            } else {
+                model.addAttribute("errorMessage", "Invalid action. Please specify 'buy' or 'sell'.");
+                return "redirect:/trade";
+        }
+        } catch (Exception e) {
+            model.addAttribute("errorMessage", "Failed to place sell order: " + e.getMessage());
+        }
+
+        return "redirect:/trade";  // Render the same page with success or error message
+    }
+
     /* all in schedule Order
     @PostMapping("/scheduleBuy")
     public String scheduleBuyBitcoin(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("price") String price, @RequestParam String targetTime, Model model) {

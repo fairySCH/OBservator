@@ -37,11 +37,38 @@ public class TradingOrderProcessor {
             OrderRequest orderRequest = objectMapper.readValue(receivedJson, OrderRequest.class);
 
             // Validate and process the order
-            scheduleOrder(orderRequest.getUserId(), orderRequest.getAction(),
-                    orderRequest.getAmount(), orderRequest.getExecute_time());
+            //scheduleOrder(orderRequest.getUserId(), orderRequest.getAction(), orderRequest.getAmount(), orderRequest.getExecute_time());
+            Order(orderRequest.getUserId(), orderRequest.getAction(), orderRequest.getAmount());
         } catch (Exception e) {
             System.err.println("Failed to process received order: " + e.getMessage());
         }
+    }
+
+    public String Order(int userId, String action, String amount) {
+        User user = userRepositary.findById(userId);
+        if (user != null) {
+            System.out.println(user.getUsername());
+        } else {
+            System.out.println("User not found");
+        }
+
+        try {
+            String response;
+            if ("buy".equalsIgnoreCase(action)) {
+                response = upbitService.placeBuyOrder(user.getUpbitAccessKey(), user.getUpbitSecretKey(), "KRW-BTC", amount);
+                System.out.println("Buy order placed successfully: " + response);
+            } else if ("sell".equalsIgnoreCase(action)) {
+                response = upbitService.placeSellOrder(user.getUpbitAccessKey(), user.getUpbitSecretKey(), "KRW-BTC", amount);
+                System.out.println("Sell order placed successfully: " + response);
+            } else {
+                System.out.println("Invalid action. Please specify 'buy' or 'sell'.");
+                return "redirect:/trade";
+        }
+        } catch (Exception e) {
+            System.err.println("Failed to place sell order: " + e.getMessage());
+        }
+
+        return "redirect:/trade";  // Render the same page with success or error message
     }
 
     public void scheduleOrder(int userId, String action, String amount, String targetTime) {
