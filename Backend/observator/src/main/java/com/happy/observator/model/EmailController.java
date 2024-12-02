@@ -1,22 +1,23 @@
 package com.happy.observator.model;
 
+import com.happy.observator.Upbit.UpbitBalance;
 import com.happy.observator.service.EmailService;
+import com.happy.observator.service.UpbitService;
 import com.happy.observator.service.UserService;
-import com.happy.observator.service.UserAssetService; // UserAsset 관련 서비스
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import freemarker.template.TemplateException;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import freemarker.template.Template;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
@@ -29,33 +30,26 @@ public class EmailController {
 
     private final EmailService emailService;
     private final UserService userService;
-    private final UserAssetService userAssetService;
+    private final UpbitService upbitService;
 
     @Autowired
     private FreeMarkerConfigurer freemarkerConfig;
 
-    public EmailController(EmailService emailService, UserService userService, UserAssetService userAssetService) {
+    public EmailController(EmailService emailService, UserService userService, UpbitService upbitService) {
         this.emailService = emailService;
         this.userService = userService;
-        this.userAssetService = userAssetService;
+        this.upbitService = upbitService;
     }
 
     @PostMapping("/send-email")
-    public ResponseEntity<String> sendTestEmail(Principal principal) {
+    public ResponseEntity<String> sendTestEmail(@AuthenticationPrincipal UserDetails userDetails) {
         try {
-            String username = principal.getName();
-            Optional<User> userOptional = userService.findByUsername(username);
+            String username = userDetails.getUsername();
+            User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
 
-            if (userOptional.isEmpty() || userOptional.get().getEmail() == null) {
-                logger.warn("Email not found for user: {}", username);
-                return ResponseEntity.badRequest().body("User email not found.");
-            }
+            List<UpbitBalance> balances = upbitService.getBalances(user.getUpbitAccessKey(), user.getUpbitSecretKey());
 
-            User user = userOptional.get();
-
-            List<UserAsset> assetData = userAssetService.getUserAssets(user.getId());
-
-            String htmlContent = generateHtmlContent(user, assetData);
+            String htmlContent = generateHtmlContent(user, balances);
 
             emailService.sendEmailWithHtml(user.getEmail(), "[OBservator] 업비트 자산 정보", htmlContent);
 
@@ -67,10 +61,10 @@ public class EmailController {
         }
     }
 
-    private String generateHtmlContent(User user, List<UserAsset> assetData) throws IOException, TemplateException {
+    private String generateHtmlContent(User user, List<UpbitBalance> balances) throws IOException, TemplateException {
         Map<String, Object> model = new HashMap<>();
         model.put("username", user.getUsername());
-        model.put("balances", assetData);
+        model.put("balances", balances);
 
         Template template = freemarkerConfig.getConfiguration().getTemplate("email-content.ftl");
         StringWriter stringWriter = new StringWriter();
