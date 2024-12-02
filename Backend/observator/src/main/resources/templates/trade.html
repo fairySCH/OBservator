@@ -81,6 +81,7 @@
             
         <!-- 오른쪽 패널 -->
         <div class="right-panel">
+            <!-- 자동 거래 시작 종료 -->
             <div class="section">
                 <h3>Profit Threshold</h3>
                 <form th:action="@{/start}" method="post">
@@ -126,7 +127,8 @@
                         자동매매 중지
                     </button>
                 </form>
-            </div>            
+            </div>
+            <!-- 자산 확인 -->
             <div class="section">
                 <h3>My Assets</h3>
                 <div class="total-value">
@@ -184,126 +186,126 @@
         
     <div style="gap: 20px; align-items: flex-start;">
 
-<div style="display: flex; gap: 20px; align-items: flex-start;">
+    <div style="display: flex; gap: 20px; align-items: flex-start;">
 
-    <!-- 거래 정보 섹션 -->
-    <div class="trade-info-container">
-        <h3 class="trade-info-header">주요 코인 거래 정보</h3>
-        
-        <table class="crypto-table-widget">
-            <thead class="crypto-table-header">
-                <tr>
-                    <th class="crypto-table-header-cell">코인명</th>
-                    <th class="crypto-table-header-cell">현재가</th>
-                    <th class="crypto-table-header-cell">전일 비</th>
-                    <th class="crypto-table-header-cell">거래량(KRW)</th>
-                </tr>
-            </thead>
-            <tbody id="crypto-table" class="crypto-table-body">
-                <!-- 데이터가 여기에 삽입됩니다 -->
-            </tbody>
-        </table>
-        <table class="trade-info-table">
-         
-            <tbody style="display: none;">
-                <tr class="table-row">
-                    <td class="table-cell">거래량</td>
-                    <td id="special-trade-volume" class="table-cell value-cell positive">-</td>
-                </tr>
-                <tr class="table-row">
-                    <td class="table-cell">거래대금</td>
-                    <td id="special-trade-amount" class="table-cell value-cell primary">-</td>
-                </tr>
-                <tr class="table-row">
-                    <td class="table-cell">52주 최고</td>
-                    <td id="special-year-high" class="table-cell value-cell negative">-</td>
-                </tr>
-                <tr class="table-row">
-                    <td class="table-cell">52주 최저</td>
-                    <td id="special-year-low" class="table-cell value-cell positive">-</td>
-                </tr>
-                <tr class="table-row">
-                    <td class="table-cell">전일 고가</td>
-                    <td id="special-day-high" class="table-cell value-cell negative">-</td>
-                </tr>
-                <tr class="table-row">
-                    <td class="table-cell">전일 저가</td>
-                    <td id="special-day-low" class="table-cell value-cell primary">-</td>
-                </tr>
-            </tbody>
-        </table>
-
-    </div>
-    
-    <!-- 누적호가창 -->
-    <div class="accumulated-orderbook-container">
-        <h3 class="orderbook-header">누적호가창</h3>
-        <table class="orderbook-table">
-            <thead>
-                <tr class="table-header-row">
-                    <th class="table-header-cell">일반호가</th>
-                    <th class="table-header-cell">누적호가</th>
-                    <th class="table-header-cell">호가주문</th>
-                    <th class="table-header-cell"></th>
-                    <th class="table-header-cell">비율</th>
-                </tr>
-            </thead>
-            <tbody id="special-orderbook-body">
-                <!-- 데이터가 여기에 삽입됩니다 -->
-            </tbody>
-        </table>
-    </div>
-
-    <!-- Trade Bitcoin 섹션 -->
-    <div class="trade-section">
-        <h3 class="section-header">Trade Bitcoin</h3>
-        <!-- Buy Button Form -->
-        <form th:action="@{/buy}" method="post" class="trade-form">
-            <label for="buy-price">Price to Buy (KRW):</label>
-            <input type="text" id="buy-price" name="price" placeholder="Enter price in KRW" required>
-            <button type="submit" class="buy-button" value="buy">Buy</button>
-        </form>
-
-        <!-- Sell Button Form -->
-        <form th:action="@{/sell}" method="post" class="trade-form">
-            <label for="sell-volume">Volume to Sell (BTC):</label>
-            <input type="text" id="sell-volume" name="volume" placeholder="Enter volume in BTC" required>
-            <button type="submit" class="sell-button" value="sell">Sell</button>
-        </form>    
-        <br>
-        
-            <h3 class="section-header">Schedule Order</h3>
-            <form th:action="@{/scheduleOrder}" method="post" class="schedule-form">
-                <label for="orderType">Order Type:</label>
-                <select id="orderType" name="action" required>
-                    <option value="buy">Buy</option>
-                    <option value="sell">Sell</option>
-                </select>
-                <label for="orderAmount">Amount (KRW for Buy / BTC for Sell):</label>
-                <input type="text" id="orderAmount" name="amount" placeholder="Enter amount" required>
-                <label for="targetTime">Target Time (hh:mm:ss):</label>
-                <input type="text" id="targetTime" name="targetTime" placeholder="e.g., 15:30:00" required>
-                <button type="submit" class="schedule-button">Schedule Order</button>
-            </form>
-    
-            <table id="scheduledOrdersTable" class="orders-table">
-                <thead>
-                    <tr class="table-header">
-                        <th class="table-cell">Time</th>
-                        <th class="table-cell">Action</th>
-                        <th class="table-cell">Amount</th>
+        <!-- 거래 정보 섹션 -->
+        <div class="trade-info-container">
+            <h3 class="trade-info-header">주요 코인 거래 정보</h3>
+            
+            <table class="crypto-table-widget">
+                <thead class="crypto-table-header">
+                    <tr>
+                        <th class="crypto-table-header-cell">코인명</th>
+                        <th class="crypto-table-header-cell">현재가</th>
+                        <th class="crypto-table-header-cell">전일 비</th>
+                        <th class="crypto-table-header-cell">거래량(KRW)</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr class="table-row" th:each="entry : ${scheduledOrders}">
-                        <td th:text="${entry.key}" class="table-cell"></td>
-                        <td th:text="${entry.value.action}" class="table-cell"></td>
-                        <td th:text="${entry.value.amount}" class="table-cell"></td>
+                <tbody id="crypto-table" class="crypto-table-body">
+                    <!-- 데이터가 여기에 삽입됩니다 -->
+                </tbody>
+            </table>
+            <table class="trade-info-table">
+            
+                <tbody style="display: none;">
+                    <tr class="table-row">
+                        <td class="table-cell">거래량</td>
+                        <td id="special-trade-volume" class="table-cell value-cell positive">-</td>
+                    </tr>
+                    <tr class="table-row">
+                        <td class="table-cell">거래대금</td>
+                        <td id="special-trade-amount" class="table-cell value-cell primary">-</td>
+                    </tr>
+                    <tr class="table-row">
+                        <td class="table-cell">52주 최고</td>
+                        <td id="special-year-high" class="table-cell value-cell negative">-</td>
+                    </tr>
+                    <tr class="table-row">
+                        <td class="table-cell">52주 최저</td>
+                        <td id="special-year-low" class="table-cell value-cell positive">-</td>
+                    </tr>
+                    <tr class="table-row">
+                        <td class="table-cell">전일 고가</td>
+                        <td id="special-day-high" class="table-cell value-cell negative">-</td>
+                    </tr>
+                    <tr class="table-row">
+                        <td class="table-cell">전일 저가</td>
+                        <td id="special-day-low" class="table-cell value-cell primary">-</td>
                     </tr>
                 </tbody>
             </table>
+
+        </div>
+        
+        <!-- 누적호가창 -->
+        <div class="accumulated-orderbook-container">
+            <h3 class="orderbook-header">누적호가창</h3>
+            <table class="orderbook-table">
+                <thead>
+                    <tr class="table-header-row">
+                        <th class="table-header-cell">일반호가</th>
+                        <th class="table-header-cell">누적호가</th>
+                        <th class="table-header-cell">호가주문</th>
+                        <th class="table-header-cell"></th>
+                        <th class="table-header-cell">비율</th>
+                    </tr>
+                </thead>
+                <tbody id="special-orderbook-body">
+                    <!-- 데이터가 여기에 삽입됩니다 -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Trade Bitcoin 섹션 -->
+        <div class="trade-section">
+            <h3 class="section-header">Trade Bitcoin</h3>
+            <!-- Buy Button Form -->
+            <form th:action="@{/buy}" method="post" class="trade-form">
+                <label for="buy-price">Price to Buy (KRW):</label>
+                <input type="text" id="buy-price" name="price" placeholder="Enter price in KRW" required>
+                <button type="submit" class="buy-button" value="buy">Buy</button>
+            </form>
+
+            <!-- Sell Button Form -->
+            <form th:action="@{/sell}" method="post" class="trade-form">
+                <label for="sell-volume">Volume to Sell (BTC):</label>
+                <input type="text" id="sell-volume" name="volume" placeholder="Enter volume in BTC" required>
+                <button type="submit" class="sell-button" value="sell">Sell</button>
+            </form>    
+            <br>
+            
+                <h3 class="section-header">Schedule Order</h3>
+                <form th:action="@{/scheduleOrder}" method="post" class="schedule-form">
+                    <label for="orderType">Order Type:</label>
+                    <select id="orderType" name="action" required>
+                        <option value="buy">Buy</option>
+                        <option value="sell">Sell</option>
+                    </select>
+                    <label for="orderAmount">Amount (KRW for Buy / BTC for Sell):</label>
+                    <input type="text" id="orderAmount" name="amount" placeholder="Enter amount" required>
+                    <label for="targetTime">Target Time (hh:mm:ss):</label>
+                    <input type="text" id="targetTime" name="targetTime" placeholder="e.g., 15:30:00" required>
+                    <button type="submit" class="schedule-button">Schedule Order</button>
+                </form>
+        
+                <table id="scheduledOrdersTable" class="orders-table">
+                    <thead>
+                        <tr class="table-header">
+                            <th class="table-cell">Time</th>
+                            <th class="table-cell">Action</th>
+                            <th class="table-cell">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="table-row" th:each="entry : ${scheduledOrders}">
+                            <td th:text="${entry.key}" class="table-cell"></td>
+                            <td th:text="${entry.value.action}" class="table-cell"></td>
+                            <td th:text="${entry.value.amount}" class="table-cell"></td>
+                        </tr>
+                    </tbody>
+                </table>
+        </div>
     </div>
-</div>
 
 <script src="/assets/js/scripts.js" defer></script>
 </body>

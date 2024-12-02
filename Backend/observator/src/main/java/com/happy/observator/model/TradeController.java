@@ -12,36 +12,37 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.happy.observator.service.UpbitService;
 import com.happy.observator.service.UserService;
 import com.happy.observator.Upbit.UpbitBalance;
 import com.happy.observator.repository.OrderRepositary;
-import com.happy.observator.repository.UserRepositary;
 
 @Controller
 public class TradeController {
 
     private final UserService userService;
     private final UpbitService upbitService;
-    private final UserRepositary userRepository;
     private final OrderRepositary orderRepository;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final Map<LocalTime, S_Order> scheduledOrders = new ConcurrentHashMap<>();
 
-    public TradeController(UserService userService, UpbitService upbitService, OrderRepositary orderRepositary, UserRepositary userRepository){
+    public TradeController(UserService userService, UpbitService upbitService, OrderRepositary orderRepositary){
         this.userService = userService;
         this.upbitService = upbitService;
         this.orderRepository = orderRepositary;
-        this.userRepository = userRepository;
     }
 
     @GetMapping("/trade")
@@ -96,7 +97,7 @@ public class TradeController {
 
         return "redirect:/trade";  // Render the same page with success or error message
     }
-
+    /* all in schedule Order
     @PostMapping("/scheduleBuy")
     public String scheduleBuyBitcoin(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("price") String price, @RequestParam String targetTime, Model model) {
         String username = userDetails.getUsername();
@@ -148,7 +149,7 @@ public class TradeController {
 
         return "redirect:/trade";  // Render the same page with success or error message
     }
-
+    */
     @PostMapping("/scheduleOrder")
     public String scheduleOrderBitcoin(@AuthenticationPrincipal UserDetails userDetails, @RequestParam String action, @RequestParam String amount, @RequestParam String targetTime, Model model) {
         String username = userDetails.getUsername();
@@ -204,13 +205,34 @@ public class TradeController {
         }
     }
 
-    @GetMapping("/reloadScheduledOrders")
-    @ResponseBody
-    public List<S_Order> getScheduledOrders(@AuthenticationPrincipal UserDetails userDetails) {
-        User user = userRepository.findByUsername(userDetails.getUsername()).orElseThrow(() -> new RuntimeException("User not found"));
-        return orderRepository.findAll().stream()
-            .filter(order -> order.getUserId() == user.getId())
-            .toList();  // Return only the current user's scheduled orders
+    @RestController
+    @RequestMapping("/api/tradebalances")
+    public class BalanceRestController {
+
+        @Autowired
+        private UserService userService;
+
+        @Autowired
+        private UpbitService upbitService;
+
+        @GetMapping
+        public ResponseEntity<?> getBalances(@AuthenticationPrincipal UserDetails userDetails) {
+            String username = userDetails.getUsername();
+            User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+
+            // Check if keys are present
+            if (user.getUpbitAccessKey() != null && user.getUpbitSecretKey() != null) {
+                try {
+                    List<UpbitBalance> balances = upbitService.getBalances(user.getUpbitAccessKey(), user.getUpbitSecretKey());
+                    //System.out.println(balances);
+                    return ResponseEntity.ok(balances);
+                } catch (Exception e) {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to fetch balances: " + e.getMessage());
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("API keys are missing.");
+            }
+        }
     }
 
     @PostMapping("/start")

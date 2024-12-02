@@ -110,7 +110,7 @@
                     <th>Avg Buy Price</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="balanceTableBody">
                 <tr th:each="balance : ${balances}">
                     <td th:text="${balance.currency}"></td>
                     <td th:text="${balance.balance}"></td>
@@ -118,6 +118,38 @@
                 </tr>
             </tbody>
         </table>
+
+        <script>
+            function fetchBalances() {
+                fetch('/api/balances')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Error fetching balances: " + response.statusText);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        //console.log(data);
+                        const tableBody = document.getElementById('balanceTableBody');
+                        tableBody.innerHTML = ''; // Clear existing rows
+        
+                        data.forEach(balance => {
+                            const row = `
+                                <tr>
+                                    <td>${balance.currency}</td>
+                                    <td>${balance.balance}</td>
+                                    <td>${balance.avg_buy_price}</td>
+                                </tr>
+                            `;
+                            tableBody.innerHTML += row; // Append new rows
+                        });
+                    })
+                    .catch(error => console.error(error));
+            }
+        
+            // Fetch balances every second
+            setInterval(fetchBalances, 1000);
+        </script>
 
         <div class="back-button-container">
             <a th:href="@{/home}"><br><br>

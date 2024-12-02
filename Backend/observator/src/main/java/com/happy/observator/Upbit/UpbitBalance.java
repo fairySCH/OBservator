@@ -9,9 +9,15 @@ public class UpbitBalance {
     
     @JsonProperty("avg_buy_price")
     private String avgBuyPrice;
-    
-    @JsonProperty("avg_buy_price_modified")
-    private boolean avgBuyPriceModified;
+
+    @Override
+    public String toString() {
+        return "UpbitBalance{" +
+                "currency='" + currency + '\'' +
+                ", balance=" + balance +
+                ", avgBuyPrice=" + avgBuyPrice +
+                '}';
+    }
 
     public String getCurrency() {
         return this.currency;
@@ -43,13 +49,5 @@ public class UpbitBalance {
 
     public void setAvgBuyPrice(String avgBuyPrice) {
         this.avgBuyPrice = avgBuyPrice;
-    }
-
-    public boolean isAvgBuyPriceModified() {
-        return this.avgBuyPriceModified;
-    }
-
-    public void setAvgBuyPriceModified(boolean avgBuyPriceModified) {
-        this.avgBuyPriceModified = avgBuyPriceModified;
     }
 }
