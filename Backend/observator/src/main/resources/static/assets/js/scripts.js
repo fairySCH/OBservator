@@ -265,3 +265,32 @@ function updateCryptoPrices(data) {
         tableBody.appendChild(row);
     }
 }
+
+function fetchBalances() {
+    fetch('/api/tradebalances')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Error fetching balances: " + response.statusText);
+            }
+            return response.json();
+        })/*
+        .then(data => {
+            console.log(data);
+            const tableBody = document.getElementById('balanceTableBody');
+            tableBody.innerHTML = ''; // Clear existing rows
+
+            data.forEach(balance => {
+                const row = `
+                    <tr>
+                        <td>${balance.currency}</td>
+                        <td>${balance.balance}</td>
+                        <td>${balance.avg_buy_price}</td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row; // Append new rows
+            });
+        })*/
+        .catch(error => console.error(error));
+}
+// Fetch balances every second
+setInterval(fetchBalances, 1000);

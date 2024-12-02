@@ -2,13 +2,18 @@ package com.happy.observator.model;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.happy.observator.Upbit.UpbitBalance;
 import com.happy.observator.service.UpbitService;
@@ -57,6 +62,36 @@ public class ProfileController {
                                 @RequestParam String email) {
         String username = userDetails.getUsername();
         userService.updateUserInfo(username, upbitAccessKey, upbitSecretKey, email);
-        return "redirect:/profile?success=true";
+        return "redirect:/profile";
+    }
+
+    @RestController
+    @RequestMapping("/api/balances")
+    public class BalanceRestController {
+
+        @Autowired
+        private UserService userService;
+
+        @Autowired
+        private UpbitService upbitService;
+
+        @GetMapping
+        public ResponseEntity<?> getBalances(@AuthenticationPrincipal UserDetails userDetails) {
+            String username = userDetails.getUsername();
+            User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+
+            // Check if keys are present
+            if (user.getUpbitAccessKey() != null && user.getUpbitSecretKey() != null) {
+                try {
+                    List<UpbitBalance> balances = upbitService.getBalances(user.getUpbitAccessKey(), user.getUpbitSecretKey());
+                    //System.out.println(balances);
+                    return ResponseEntity.ok(balances);
+                } catch (Exception e) {
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to fetch balances: " + e.getMessage());
+                }
+            } else {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("API keys are missing.");
+            }
+        }
     }
 }

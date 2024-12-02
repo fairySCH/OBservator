@@ -1,8 +1,5 @@
 package com.happy.observator.model;
 
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,18 +28,4 @@ public class ProxyController {
         RestTemplate restTemplate = new RestTemplate();
         return restTemplate.getForObject(url, Object.class);
     }
-
-    @GetMapping("/account")
-    public Object getAccountInfo() {
-        String url = "https://api.upbit.com/v1/accounts";
-        RestTemplate restTemplate = new RestTemplate();
-
-        // 인증 헤더 추가 (필수)
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer YOUR_ACCESS_TOKEN"); // 개인 API 키 추가
-
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-        return restTemplate.exchange(url, HttpMethod.GET, entity, Object.class).getBody();
-    }
-
 }
