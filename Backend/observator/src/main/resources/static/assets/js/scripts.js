@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     initializeWebSocketConnections();
     initializeUIElements();
+    setInterval(fetchBalances, 1000);
 });
 
 // 실시간 시장 데이터에 대한 WebSocket 연결
@@ -25,6 +26,7 @@ function initializeWebSocketConnections() {
         reader.onload = function () {
             const data = JSON.parse(reader.result);
             if (data.type === "ticker") {
+                currentBitcoinPrice = data.trade_price; // 실시간 비트코인 시세를 업데이트
                 updateTickerData(data);
                 updateChartData(data);
             } else if (data.type === "orderbook") {
@@ -34,6 +36,15 @@ function initializeWebSocketConnections() {
             }
         };
         reader.readAsText(event.data);
+    };
+
+    upbitWebSocket.onerror = (error) => {
+        console.error("WebSocket error:", error);
+    };
+
+    upbitWebSocket.onclose = () => {
+        console.warn("WebSocket closed. Reconnecting...");
+        initializeWebSocketConnections(); // 연결이 끊어지면 다시 연결
     };
 
     // bitFlyer WebSocket 설정
@@ -266,6 +277,7 @@ function updateCryptoPrices(data) {
     }
 }
 
+// fetchBalances 함수에서 실시간 비트코인 시세를 반영
 function fetchBalances() {
     fetch('/api/tradebalances')
         .then(response => {
@@ -273,24 +285,45 @@ function fetchBalances() {
                 throw new Error("Error fetching balances: " + response.statusText);
             }
             return response.json();
-        })/*
+        })
         .then(data => {
-            console.log(data);
-            const tableBody = document.getElementById('balanceTableBody');
-            tableBody.innerHTML = ''; // Clear existing rows
+            const totalValueElement = document.getElementById('total-value');
+            const ProfitValueElement = document.getElementById('profit-loss');
+            const BTCValueElement = document.getElementById('BTC-value');
+            const KRWValueElement = document.getElementById('KRW-value');
+            
+            let totalValue = 0;
+            let profitValue = 0;
+            let baseValue = 0;
+            let BTCValue = 0;
+            let KRWValue = 0;
 
             data.forEach(balance => {
-                const row = `
-                    <tr>
-                        <td>${balance.currency}</td>
-                        <td>${balance.balance}</td>
-                        <td>${balance.avg_buy_price}</td>
-                    </tr>
-                `;
-                tableBody.innerHTML += row; // Append new rows
+                // Calculate total value
+                if (balance.currency === 'BTC') {
+                    BTCValue = parseFloat(balance.balance) * currentBitcoinPrice;
+                    totalValue += parseFloat(balance.balance) * currentBitcoinPrice;
+                    baseValue += parseFloat(balance.balance) * parseFloat(balance.avg_buy_price);
+                } else if (balance.currency === 'KRW') {
+                    KRWValue = parseFloat(balance.balance);
+                    totalValue += parseFloat(balance.balance);
+                    baseValue += parseFloat(balance.balance)
+                }
             });
-        })*/
+            profitValue = totalValue - baseValue;
+
+            // Update total value in the DOM
+            totalValueElement.textContent = `${totalValue.toFixed(2).toLocaleString()} KRW`;
+            if (profitValue >= 0){
+                ProfitValueElement.textContent = `+ ${profitValue.toFixed(2).toLocaleString()} KRW`;
+            } else {
+                ProfitValueElement.textContent = `- ${profitValue.toFixed(2).toLocaleString()} KRW`;
+            }
+            BTCValueElement.textContent = `${BTCValue.toFixed(2).toLocaleString()} KRW`;
+            KRWValueElement.textContent = `${KRWValue.toFixed(2).toLocaleString()} KRW`;
+        })
         .catch(error => console.error(error));
 }
+
 // Fetch balances every second
 setInterval(fetchBalances, 1000);
