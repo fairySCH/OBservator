@@ -38,13 +38,13 @@ public class TradingOrderProcessor {
 
             // Validate and process the order
             //scheduleOrder(orderRequest.getUserId(), orderRequest.getAction(), orderRequest.getAmount(), orderRequest.getExecute_time());
-            Order(orderRequest.getUserId(), orderRequest.getAction(), orderRequest.getAmount());
+            nonScheduledOrder(orderRequest.getUserId(), orderRequest.getAction(), orderRequest.getAmount());
         } catch (Exception e) {
             System.err.println("Failed to process received order: " + e.getMessage());
         }
     }
 
-    public String Order(int userId, String action, String amount) {
+    public String nonScheduledOrder(int userId, String action, String amount) {
         User user = userRepositary.findById(userId);
         if (user != null) {
             System.out.println(user.getUsername());
