@@ -1,5 +1,7 @@
 package com.happy.observator.model;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -38,6 +40,8 @@ public class TradeController {
     private final OrderRepositary orderRepository;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
     private final Map<LocalTime, S_Order> scheduledOrders = new ConcurrentHashMap<>();
+    private Process pythonProcess;
+    private boolean isAutoTrading = false;
 
     public TradeController(UserService userService, UpbitService upbitService, OrderRepositary orderRepositary){
         this.userService = userService;
@@ -66,6 +70,7 @@ public class TradeController {
         
         model.addAttribute("user", user);
         model.addAttribute("hasKeys", hasKeys);
+        model.addAttribute("isAutoTrading", isAutoTrading);
 
         return "trade";  // Return the name of the template (trade.html)
     }
@@ -260,19 +265,61 @@ public class TradeController {
     }
 
     @PostMapping("/start")
-    private String startTrade(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("ThresholdLevel") float thresholdLevel){
+    private String startTrade(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("ThresholdLevel") float thresholdLevel, Model model) {
         String username = userDetails.getUsername();
         User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
-        float threshold = thresholdLevel/10000;
+        float threshold = thresholdLevel / 10000;
         System.out.println("Received Threshold level: " + threshold + ". User ID: " + user.getId());
+
+        try {
+            // Python 스크립트를 실행, user ID와 threshold를 전달
+            ProcessBuilder processBuilder = new ProcessBuilder(
+                "python3",
+                "/home/ubuntu/project/OBservator/Backend/observator/python/test.py",
+                String.valueOf(threshold),
+                String.valueOf(user.getId()) // User ID 추가
+            );
+            processBuilder.redirectErrorStream(true);
+            pythonProcess = processBuilder.start();
+
+            // 상태 업데이트
+            isAutoTrading = true;
+
+            // Python 출력 로그 읽기
+            new Thread(() -> {
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(pythonProcess.getInputStream()))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        System.out.println("[Python Log]: " + line);
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error reading Python script output: " + e.getMessage());
+                }
+            }).start();
+        } catch (Exception e) {
+            System.err.println("Failed to start Python script: " + e.getMessage());
+        }
+
+        model.addAttribute("isAutoTrading", isAutoTrading); // 상태 전달
         return "redirect:/trade";
     }
 
+
     @PostMapping("/end")
-    private String endTrade(@AuthenticationPrincipal UserDetails userDetails){
+    private String endTrade(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         String username = userDetails.getUsername();
         User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
         System.out.println("End Trade User ID: " + user.getId());
+
+        if (pythonProcess != null && pythonProcess.isAlive()) {
+            pythonProcess.destroy();
+            System.out.println("Python script stopped successfully.");
+            isAutoTrading = false;
+        } else {
+            System.out.println("No Python script is currently running.");
+        }
+
+        model.addAttribute("isAutoTrading", isAutoTrading); // 상태 전달
         return "redirect:/trade";
     }
 }
