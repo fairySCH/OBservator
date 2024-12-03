@@ -73,21 +73,45 @@ function initializeWebSocketConnections() {
         document.getElementById("binance-price").textContent = `${(price * 1400).toLocaleString()} KRW`; // USD-KRW 환율 적용 (1400 가정)
     };
 
-    // Coinbase WebSocket 설정
-    const coinbaseWebSocket = new WebSocket("wss://ws-feed.pro.coinbase.com");
-    coinbaseWebSocket.onopen = () => {
-        coinbaseWebSocket.send(JSON.stringify({
-            type: "subscribe",
-            channels: [{ name: "ticker", product_ids: ["BTC-USD"] }]
-        }));
+    const okxWebSocket = new WebSocket("wss://ws.okx.com:8443/ws/v5/public");
+
+    // WebSocket 연결이 열리면 구독 요청 전송
+    okxWebSocket.onopen = () => {
+        console.log("WebSocket 연결 성공");
+        const subscribeMessage = JSON.stringify({
+            op: "subscribe",
+            args: [
+                {
+                    channel: "tickers",
+                    instId: "BTC-USDT", // 비트코인/USDT 거래쌍
+                },
+            ],
+        });
+        okxWebSocket.send(subscribeMessage);
+        console.log("구독 메시지 전송");
     };
 
-    coinbaseWebSocket.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        if (data.type === "ticker") {
-            const price = parseFloat(data.price);
-            document.getElementById("coinbase-price").textContent = `${(price * 1400).toLocaleString()} KRW`; // USD-KRW 환율 적용 (1400 가정)
+    // WebSocket에서 메시지 수신
+    okxWebSocket.onmessage = (event) => {
+        const response = JSON.parse(event.data);
+        if (response.event === "subscribe") {
+            console.log("구독 성공:", response);
+        } else if (response.arg && response.arg.channel === "tickers") {
+            const tickerData = response.data[0];
+            const price = parseFloat(tickerData.last);
+            const krwPrice = price * 1400;
+            document.getElementById("okx-price").textContent = `${krwPrice.toLocaleString()} KRW`;
         }
+    };
+
+    // WebSocket 오류 처리
+    okxWebSocket.onerror = (error) => {
+        console.error("WebSocket 오류:", error);
+    };
+
+    // WebSocket 연결 종료 처리
+    okxWebSocket.onclose = () => {
+        console.log("WebSocket 연결 종료");
     };
 
     // 다른 암호화폐 가격을 가져오기 위한 WebSocket 설정
@@ -145,7 +169,6 @@ function updateOrderBookData(data) {
                 <td style="width: 100px; text-align: left;">
                     <div style="height: 20px; background-color: ${type === "매수" ? "#28a745" : "#dc3545"}; width: ${percentage}%;"></div>
                 </td>
-                <td>${percentage.toFixed(2)}%</td>
             </tr>
         `;
 
@@ -317,7 +340,7 @@ function fetchBalances() {
             if (profitValue >= 0){
                 ProfitValueElement.textContent = `+ ${profitValue.toFixed(2).toLocaleString()} KRW`;
             } else {
-                ProfitValueElement.textContent = `- ${profitValue.toFixed(2).toLocaleString()} KRW`;
+                ProfitValueElement.textContent = `${profitValue.toFixed(2).toLocaleString()} KRW`;
             }
             BTCValueElement.textContent = `${BTCValue.toFixed(2).toLocaleString()} KRW`;
             KRWValueElement.textContent = `${KRWValue.toFixed(2).toLocaleString()} KRW`;
