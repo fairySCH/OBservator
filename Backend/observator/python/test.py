@@ -151,7 +151,7 @@ async def merge_and_send_to_client():
                                 client_socket.sendall(json_data.encode('utf-8'))
                                 client_socket.sendall(b"END")  # 종료 플래그 전송
                                 print("Recent 180 records sent.")
-                            print(json_data.encode('utf-8'))
+                            # print(json_data.encode('utf-8'))
                         else:
                             print("Insufficient data to send.")
 
