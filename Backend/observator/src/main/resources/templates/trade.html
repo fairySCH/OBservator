@@ -18,9 +18,7 @@
         </nav>
     </header>
 
-
     <div class="container">
-    
         <!-- 매인 차트 -->
         <div class="left-panel">
             <div class="chart-section">
@@ -28,17 +26,12 @@
                 <div class="price-header">
                     <div class="price-info">
                         <div class="titile_bit">
-                            <img
-                                class="bit_img"
-                                src="/assets/bit_sim.png"
-                                alt=""
-                            >
+                            <img class="bit_img" src="/assets/bit_sim.png" alt="">
                             <a>비트코인 BTC/KRW</a>
                         </div>
-                        <h7  class="current-price">-</h7>
+                        <h7 class="current-price">-</h7>
                         <aa class="price-change">
                             <div class="price-stats">
-                        
                                 <div>
                                     <span class="change-percent">+2.07%</span>
                                     <span class="change-amount">▲ 2,756,000</span>
@@ -85,14 +78,14 @@
             <div class="section">
                 <h3>Profit Threshold</h3>
                 <div>
-                    <form   th:action="@{/start}" method="post">
+                    <form th:action="@{/start}" method="post">
                         <p>Threshold Level: <span id="Threshold-level-display">1</span></p>
                         <input type="range" id="Threshold-slider" name="ThresholdLevel" min="1" max="10" value="1" oninput="updateThresholdLevelDisplay(this.value)">
                         <input type="hidden" id="hidden-Threshold-level" name="ThresholdLevel" value="1">
-                        
+
                         <br>
-                    <button  type="submit" style="
-                    margin-top: 10px;
+                        <button type="submit" style="
+                            margin-top: 10px;
                             padding: 10px 140px;
                             font-size: 0.7rem;
                             font-weight: bold;
@@ -102,8 +95,7 @@
                             transition: all 0.3s ease;
                             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
                             background-color: #0055ff;
-                            color: #ffffff;
-                            "
+                            color: #ffffff;"
                             onmouseover="this.style.backgroundColor='#218838'; this.style.boxShadow='0 6px 12px rgba(0, 0, 0, 0.2)'; this.style.transform='translateY(-2px)';"
                             onmouseout="this.style.backgroundColor='#28a745'; this.style.boxShadow='0 4px 8px rgba(0, 0, 0, 0.1)'; this.style.transform='translateY(0)';"
                             onmousedown="this.style.backgroundColor='#1e7e34'; this.style.transform='translateY(2px)';"
@@ -114,7 +106,6 @@
                     
                     <form style="display: flex; margin-top: 10px;" th:action="@{/end}" method="post">
                         <button type="submit" style="
-                            
                             padding: 10px 140px;
                             font-size: 0.7rem;
                             font-weight: bold;
@@ -149,6 +140,21 @@
                         <li>Won (KRW): <span id="KRW-value">0 KRW</span> </li>
                     </ul>
                 </div>
+                <div>
+                    <h4 style="color: #007BFF; margin-bottom: 10px;">Bitcoin News from cryptocompare</h4>
+                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead class="table-header">
+                            <tr>
+                                <tbody id="news-table-body">
+                                    <!-- 뉴스가 동적으로 추가됩니다 -->
+                                </tbody>
+                            </tr>
+                        </thead>
+                        <tbody class="table-body" id="news-table-body">
+                            <!-- 뉴스가 동적으로 추가됩니다 -->
+                        </tbody>
+                    </table>
+                </div>
                 <!-- <div>
                     <h4 style="color: #007BFF; margin-bottom: 10px;">Recent Transactions</h4>
                     <table style="width: 100%; border-collapse: collapse; text-align: left;">
@@ -173,8 +179,8 @@
 
     <div style="display: flex; gap: 20px; align-items: flex-start;">
 
-        <!-- 거래 정보 섹션
-        <div class="trade-info-container">
+        <!-- 거래 정보 섹션 -->
+        <!-- <div class="trade-info-container">
             <h3 class="trade-info-header">주요 코인 거래 정보</h3>
             
             <table class="crypto-table-widget">
@@ -183,15 +189,14 @@
                         <th class="crypto-table-header-cell">코인명</th>
                         <th class="crypto-table-header-cell">현재가</th>
                         <th class="crypto-table-header-cell">전일 비</th>
-                        <th class="crypto-table-header-cell">거래량(KRW)</th>
+                        <th class="crypto-table-header-cell">비중</th>
                     </tr>
                 </thead>
-                <tbody id="crypto-table" class="crypto-table-body">
+                <tbody id="crypto-table" class="crypto-table-body"> -->
                     <!-- 데이터가 여기에 삽입됩니다 -->
-                </tbody>
+                <!-- </tbody>
             </table>
-            <!-- <table class="trade-info-table">
-            
+            <table class="trade-info-table">
                 <tbody style="display: none;">
                     <tr class="table-row">
                         <td class="table-cell">거래량</td>
@@ -219,7 +224,6 @@
                     </tr>
                 </tbody>
             </table>
-
         </div> -->
         
         <!-- 누적호가창 -->
@@ -257,7 +261,6 @@
                 <button type="submit" class="sell-button" value="sell">Sell</button>
             </form>    
             <br>
-            
                 <h3 class="section-header">Schedule Order</h3>
                 <form th:action="@{/scheduleOrder}" method="post" class="schedule-form">
                     <label for="orderType">Order Type:</label>

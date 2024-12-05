@@ -624,3 +624,53 @@ body {
 .crypto-table-row:hover {
     background-color: #eaeaea;
 }
+
+/* 뉴스 테이블 스타일 */
+.news-section {
+    background-color: #ffffff;
+    padding: 20px;
+    border: 1px solid #dddddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.news-section h4 {
+    color: #007BFF;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+#news-table-body {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#news-table-body tr {
+    padding: 10px;
+    border-bottom: 1px solid #dddddd;
+}
+
+#news-table-body td {
+    padding: 10px;
+    font-size: 0.9rem;
+    vertical-align: middle;
+}
+
+#news-table-body a {
+    color: #007BFF;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#news-table-body a:hover {
+    text-decoration: underline;
+}
+
+.news-order {
+    font-weight: bold;
+    color: #333333;
+    text-align: center;
+    vertical-align: middle;
+}
