@@ -78,12 +78,13 @@
             <div class="section">
                 <h3>Profit Threshold</h3>
                 <div>
-                    <form th:action="@{/start}" method="post">
+                    <div>
                         <p>Threshold Level: <span id="Threshold-level-display">1</span></p>
                         <input type="range" id="Threshold-slider" name="ThresholdLevel" min="1" max="10" value="1" oninput="updateThresholdLevelDisplay(this.value)">
                         <input type="hidden" id="hidden-Threshold-level" name="ThresholdLevel" value="1">
-
                         <br>
+                    </div>
+                    <form id="form1", th:action="@{/start}" method="post" th:style="${showForm == 'form1' ? 'display: block;' : 'display: none;'}" onsubmit="addThresholdLevelToForm(this)">
                         <button type="submit" style="
                             margin-top: 10px;
                             padding: 10px 140px;
@@ -103,8 +104,29 @@
                             자동매매 시작
                         </button>
                     </form>
+
+                    <form id="form2" th:action="@{/change}" method="post" th:style="${showForm == 'form2' ? 'display: block;' : 'display: none;'}" onsubmit="addThresholdLevelToForm(this)">
+                        <button type="submit" style="
+                            margin-top: 10px;
+                            padding: 10px 140px;
+                            font-size: 0.7rem;
+                            font-weight: bold;
+                            border: none;
+                            border-radius: 8px;
+                            cursor: pointer;
+                            transition: all 0.3s ease;
+                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                            background-color: #0055ff;
+                            color: #ffffff;"
+                            onmouseover="this.style.backgroundColor='#218838'; this.style.boxShadow='0 6px 12px rgba(0, 0, 0, 0.2)'; this.style.transform='translateY(-2px)';"
+                            onmouseout="this.style.backgroundColor='#28a745'; this.style.boxShadow='0 4px 8px rgba(0, 0, 0, 0.1)'; this.style.transform='translateY(0)';"
+                            onmousedown="this.style.backgroundColor='#1e7e34'; this.style.transform='translateY(2px)';"
+                            onmouseup="this.style.backgroundColor='#218838'; this.style.transform='translateY(0)';">
+                            트레숄드 변경
+                        </button>
+                    </form>
                     
-                    <form style="display: flex; margin-top: 10px;" th:action="@{/end}" method="post">
+                    <form id="form3" style="display: flex; margin-top: 10px;" th:action="@{/end}" method="post">
                         <button type="submit" style="
                             padding: 10px 140px;
                             font-size: 0.7rem;
