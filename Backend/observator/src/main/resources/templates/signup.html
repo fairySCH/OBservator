@@ -165,57 +165,57 @@
         동영상 지원되지 않는 브라우저입니다.
     </video>
 <div class="signup-container">
-    <h2>회원가입</h2>
+    <h2 th:text="#{signup}">회원가입</h2>
     <p th:if="${errorMessage}" style="color:red;">[[${errorMessage}]]</p>
     <p th:if="${successMessage}" style="color:green;">[[${successMessage}]]</p>
     <form action="/signup" method="post">
         <div style="display: flex; align-items: center;">
-            <input type="text" id="username" name="username" placeholder="아이디" style="flex: 1;">
-            <button type="button" id="check-username-btn" onclick="checkUsername()">중복확인</button>
+            <input type="text" id="username" name="username" th:placeholder="#{ID_placeholder}" style="flex: 1;">
+            <button type="button" id="check-username-btn" onclick="checkUsername()" th:text="#{check_duplication}">중복확인</button>
         </div>
         <div id="username-error" class="error-message"></div>
-        <div class="username-requirements">특수문자 없이 4자~20자로 입력해주세요.(중복확인 필수)</div>
+        <div class="username-requirements" th:text="#{username_requirements}">특수문자 없이 4자~20자로 입력해주세요.(중복확인 필수)</div>
         <div style="display: flex; align-items: center;">
-            <input type="text" id="email_local" name="email_local" placeholder="이메일" style="width: 50%; margin-right: 5px;" oninput="validateForm();"> @ 
+            <input type="text" id="email_local" name="email_local" th:placeholder="#{email_placeholder}" style="width: 50%; margin-right: 5px;" oninput="validateForm();"> @ 
             <select id="email_domain" name="email_domain" style="width: 50%; margin-left: 5px;" onchange="handleEmailDomainChange();">
-                <option value="">도메인 선택</option>
+                <option value="" th:text="#{select_domain}">도메인 선택</option>
                 <option value="naver.com">naver.com</option>
                 <option value="gmail.com">gmail.com</option>
                 <option value="daum.net">daum.net</option>
-                <option value="custom">직접 입력</option>
+                <option value="custom" th:text="#{custom_domain}">직접 입력</option>
             </select>
             <input type="text" id="email_domain_custom" name="email_domain_custom" placeholder="직접 입력" style="display: none; width: 50%; margin-left: 5px;" oninput="validateForm();">
         </div>
         <div class="contact-container">
-            <label for="phone1">연락처: </label>
+            <label for="phone1" th:text="#{phone}">연락처: </label>
             <input type="text" id="phone1" name="phone1" value="010" readonly style="width: 50px;"> -
             <input type="text" id="phone2" name="phone2" maxlength="4" style="width: 60px;"> -
             <input type="text" id="phone3" name="phone3" maxlength="4" style="width: 60px;">
         </div>
         <div class="password-container">
-            <input type="password" id="password" name="password" placeholder="비밀번호" oninput="validatePassword(); validateForm();">
+            <input type="password" id="password" name="password" th:placeholder="#{password_placeholder}" oninput="validatePassword(); validateForm();">
             <button type="button" class="toggle-password" id="password-toggle" onclick="togglePasswordVisibility('password')">🔒</button>
-            <div class="password-requirements">특수문자를 포함한 8~16자로 입력해주세요.</div>
+            <div class="password-requirements" th:text="#{password_requirements}">특수문자를 포함한 8~16자로 입력해주세요.</div>
         </div>
         <div class="password-container">
-            <input type="password" id="confirm_password" name="confirm_password" placeholder="비밀번호 확인" oninput="validatePassword(); validateForm();">
+            <input type="password" id="confirm_password" name="confirm_password" th:placeholder="#{passwordcheck_placeholder}" oninput="validatePassword(); validateForm();">
             <button type="button" class="toggle-password" id="confirm_password-toggle" onclick="togglePasswordVisibility('confirm_password')">🔒</button>
             <div id="password-error" class="error-message"></div>
         </div>
         <div class="terms-container">
             <input type="checkbox" id="terms" name="terms" onclick="validateForm()" required>
-            <label for="terms">(필수) 개인정보 수집 및 활용 동의</label>
-            <button type="button" onclick="viewTerms()">약관보기</button>
+            <label for="terms" th:text="#{terms}">(필수) 개인정보 수집 및 활용 동의</label>
+            <button type="button" onclick="viewTerms()" th:text="#{view_terms}">약관보기</button>
         </div>
         <div class="terms-container">
             <input type="checkbox" id="email_opt_in" name="email_opt_in">
-            <label for="email_opt_in">(선택) 이메일 알림 서비스 수신 동의</label>
+            <label for="email_opt_in" th:text="#{optional}">(선택) 이메일 알림 서비스 수신 동의</label>
         </div>
         <div>
-            <button type="submit" disabled>가입하기</button>
+            <button type="submit" th:text="#{signup}" disabled>가입하기</button>
         </div>
     </form>
-    <p>
+    <p th:text="#{have_account}">
         이미 계정이 있으신가요? <a href="login.html">로그인</a>
     </p>
 </div>
@@ -223,40 +223,42 @@
 <div id="terms-modal">
     <div id="terms-modal-content">
         <span id="close-terms" onclick="closeTerms()">&times;</span>
-        <h3>OBservator 서비스 이용약관</h3>
+        <h3 th:text="#{terms_modal_title}">OBservator 서비스 이용약관</h3>
         <div>
-            <p>최종 수정일: [2024-11-21]</p>
-            <p>
-                본 이용약관(이하 "약관")은 OBservator 서비스(이하 "서비스")를 제공하는 행복해조 (이하 "운영팀")과 서비스를 이용하는 사용자(이하 "사용자") 간의 권리, 의무 및 책임을 규정합니다. 
+            <p th:text="#{terms_last_updated}">최종 수정일: [2024-11-21]</p>
+            <p th:text="#{terms_intro}">
+                본 이용약관(이하 "약관")은 OBservator 서비스(이하 "서비스")를 제공하는 행복해조 (이하 "운영팀")과
+                서비스를 이용하는 사용자(이하 "사용자") 간의 권리, 의무 및 책임을 규정합니다.
+            </p>
+            <p th:text="#{terms_purpose}">
                 본 서비스는 동국대학교 융합캡스톤디자인의 학습 프로젝트로, 상업적 목적이 없는 연구 목적으로만 제공됩니다.
             </p>
-            <h4>1. 서비스 개요</h4>
+            <h4 th:text="#{terms_section1_title}">1. 서비스 개요</h4>
             <ul>
-                <li>본 서비스는 사용자로부터 제공받은 Upbit API 키를 통해 비트코인 매매를 자동으로 실행합니다.</li>
-                <li>서비스는 연구 및 학습 목적으로 설계되었으며, 특정 투자 성과를 보장하지 않습니다.</li>
+                <li th:text="#{terms_section1_point1}">본 서비스는 사용자로부터 제공받은 Upbit API 키를 통해 비트코인 매매를 자동으로 실행합니다.</li>
+                <li th:text="#{terms_section1_point2}">서비스는 연구 및 학습 목적으로 설계되었으며, 특정 투자 성과를 보장하지 않습니다.</li>
             </ul>
-            <h4>2. API 키 및 개인 정보</h4>
+            <h4 th:text="#{terms_section2_title}">2. API 키 및 개인 정보</h4>
             <ul>
-                <li>사용자는 Upbit에서 생성한 API 키를 제공하며, 운영팀은 이를 오직 연구 목적으로만 사용합니다.</li>
-                <li>프로젝트 종료 시 제공된 모든 정보는 삭제됩니다.</li>
+                <li th:text="#{terms_section2_point1}">사용자는 Upbit에서 생성한 API 키를 제공하며, 운영팀은 이를 오직 연구 목적으로만 사용합니다.</li>
+                <li th:text="#{terms_section2_point2}">프로젝트 종료 시 제공된 모든 정보는 삭제됩니다.</li>
             </ul>
-            <h4>3. 서비스 이용 조건</h4>
+            <h4 th:text="#{terms_section3_title}">3. 서비스 이용 조건</h4>
             <ul>
-                <li>만 18세 이상이며, 사용자는 서비스가 실험적임을 이해하고 이를 수락해야 합니다.</li>
-                <li>서비스 사용으로 발생한 자산 손실에 대해 운영팀은 책임지지 않습니다.</li>
+                <li th:text="#{terms_section3_point1}">만 18세 이상이며, 사용자는 서비스가 실험적임을 이해하고 이를 수락해야 합니다.</li>
+                <li th:text="#{terms_section3_point2}">서비스 사용으로 발생한 자산 손실에 대해 운영팀은 책임지지 않습니다.</li>
             </ul>
-            <h4>4. 데이터 보유 및 삭제</h4>
+            <h4 th:text="#{terms_section4_title}">4. 데이터 보유 및 삭제</h4>
             <ul>
-                <li>모든 데이터는 암호화하여 보관하며, 프로젝트 종료 시 즉시 삭제합니다.</li>
+                <li th:text="#{terms_section4_point1}">모든 데이터는 암호화하여 보관하며, 프로젝트 종료 시 즉시 삭제합니다.</li>
             </ul>
-            <h4>5. 기타</h4>
+            <h4 th:text="#{terms_section5_title}">5. 기타</h4>
             <ul>
-                <li>서비스는 연구 목적으로 제공되며, 상업적 이용을 위한 안정성을 보장하지 않습니다.</li>
-                <li>문의사항이 있을 경우 observatoremail@gmail.com로 연락 바랍니다.</li>
+                <li th:text="#{terms_section5_point1}">서비스는 연구 목적으로 제공되며, 상업적 이용을 위한 안정성을 보장하지 않습니다.</li>
+                <li th:text="#{terms_section5_point2}">문의사항이 있을 경우 observatoremail@gmail.com로 연락 바랍니다.</li>
             </ul>
-            <p>
+            <p th:text="#{terms_disclaimer}">
                 * 동의를 거부할 권리가 있습니다. 다만, 거부 시 서비스 이용이 제한될 수 있습니다.<br>
-                * 본 약관은 행복해조의 학습 프로젝트를 위해 작성되었습니다.
             </p>
         </div>
     </div>
