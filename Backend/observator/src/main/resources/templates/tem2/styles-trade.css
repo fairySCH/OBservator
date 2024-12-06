@@ -269,7 +269,7 @@
         
         .chart-container {
             width: 100%;
-            height: 400px;
+            height: 500px;
         }
 
         
@@ -549,7 +549,9 @@
 
 .schedule-button {
     background-color: #007BFF;
+    padding: 10px;
     color: white;
+    border-radius: 6px;
 }
 
 /* Table Styles */
@@ -620,4 +622,167 @@
 }
 .crypto-table-row:hover {
     background-color: #eaeaea;
+}
+.chart-container {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.chart-tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.tab-button {
+    padding: 10px 20px;
+    margin: 0 5px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.tab-button.active {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
+
+.tab-button:hover {
+    background-color: #e9ecef;
+}
+
+.chart-container {
+    display: block;
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.hidden {
+    display: none;
+}
+
+
+
+.main-container {
+    display: flex;
+    width: 90%;
+    max-width: 1200px;
+    margin: 20px auto;
+    gap: 20px;
+}
+
+.left-panel, .right-panel {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    flex: 1; /* 균등 분배 */
+}
+
+.chart-section {
+    margin-bottom: 20px;
+}
+
+.price-header {
+    margin-bottom: 20px;
+}
+
+.price-header .titile_bit {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.price-header .bit_img {
+    width: 30px;
+    height: 30px;
+}
+
+.price-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sc_ipt{
+    padding: 10px;
+}
+
+.price-info .price-stats div {
+    margin-top: 5px;
+}
+
+.exchange-prices {
+    margin-top: 20px;
+}
+
+.exchange-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.exchange-table td {
+    padding: 10px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.exchange-name {
+    font-weight: bold;
+}
+
+.right-panel h3 {
+    margin-bottom: 20px;
+}
+
+.right-panel form {
+    margin-bottom: 10px;
+}
+
+.right-panel button {
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.right-panel button:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+}
+
+.right-panel button:active {
+    transform: translateY(2px);
+}
+
+.right-panel .start-button {
+    background-color: #0055ff;
+    color: #fff;
+}
+
+.right-panel .start-button:hover {
+    background-color: #0044cc;
+}
+
+.right-panel .stop-button {
+    background-color: #cf3328;
+    color: #fff;
+}
+
+.right-panel .stop-button:hover {
+    background-color: #bd2130;
+}
+
+#real_chart {
+    display: flex; /* Flexbox 컨테이너 */
+    gap: 30px; /* 요소 간 간격 */
+    margin: 20px;
 }
