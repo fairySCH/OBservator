@@ -425,3 +425,14 @@ function updateNewsTable(articles) {
     });
 }
 
+// 자동 트레이드 버튼에 threshold 정보 삽입
+function addThresholdLevelToForm(form) {
+    let hiddenInput = form.querySelector('input[name="ThresholdLevel"]');
+    if (!hiddenInput) {
+        hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'ThresholdLevel';
+        form.appendChild(hiddenInput);
+    }
+    hiddenInput.value = document.getElementById('hidden-Threshold-level').value;
+}

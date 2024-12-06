@@ -71,6 +71,7 @@ public class TradeController {
         model.addAttribute("user", user);
         model.addAttribute("hasKeys", hasKeys);
         model.addAttribute("isAutoTrading", isAutoTrading);
+        model.addAttribute("showForm", "form1");
 
         return "trade";  // Return the name of the template (trade.html)
     }
@@ -323,7 +324,19 @@ public class TradeController {
         }
 
         model.addAttribute("isAutoTrading", isAutoTrading); // 상태 전달
-        return "redirect:/trade";
+        model.addAttribute("showForm", "form2");
+        return "trade";
+    }
+
+    @PostMapping("/change")
+    private String changeTrade(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("ThresholdLevel") float thresholdLevel, Model model) {
+        String username = userDetails.getUsername();
+        User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+        float threshold = thresholdLevel / 10000;
+        System.out.println("Received Threshold level: " + threshold + ". User ID: " + user.getId());
+        model.addAttribute("showForm", "form2");
+        
+        return "trade";
     }
 
     @PostMapping("/end")
@@ -354,6 +367,7 @@ public class TradeController {
         // 상태 업데이트
         isAutoTrading = false;
         model.addAttribute("isAutoTrading", isAutoTrading); // 상태 전달
-        return "redirect:/trade";
+        model.addAttribute("showForm", "form1");
+        return "trade";
     }
 }
