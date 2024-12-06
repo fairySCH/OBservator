@@ -89,6 +89,9 @@
             <div>
                 <input type="password" id="password" name="password" placeholder="비밀번호">
             </div>
+            <div id="error-message" class="error-message" th:if="${param.error}" style="color: red; font-size: 0.9em;">
+                로그인 실패. 아이디와 비밀번호를 확인해주세요.
+            </div>
             <div class="remember-container">
                 <div>
                     <input type="checkbox" id="remember" name="remember">
@@ -112,7 +115,7 @@
                 data-callback="handleCredentialResponse"
                 data-auto_prompt="false">
             </div>
-            <!-- Google Sign-In 버튼이 렌더링될 요소
+            Google Sign-In 버튼이 렌더링될 요소
             <div class="g_id_signin"></div>
         </div> -->
     </div>
