@@ -272,7 +272,7 @@ public class TradeController {
         System.out.println("Received Threshold level: " + threshold + ". User ID: " + user.getId());
 
         try {
-            // Python 스크립트를 실행, user ID와 threshold를 전달
+            // Python 스크립트를 실행
             ProcessBuilder processBuilder = new ProcessBuilder(
                 "python3",
                 "/home/ubuntu/project/OBservator/Backend/observator/python/test.py",
@@ -281,9 +281,6 @@ public class TradeController {
             );
             processBuilder.redirectErrorStream(true);
             pythonProcess = processBuilder.start();
-
-            // 상태 업데이트
-            isAutoTrading = true;
 
             // Python 출력 로그 읽기
             new Thread(() -> {
@@ -296,6 +293,31 @@ public class TradeController {
                     System.err.println("Error reading Python script output: " + e.getMessage());
                 }
             }).start();
+
+            // service.sh 실행
+            new Thread(() -> {
+                try {
+                    ProcessBuilder bashProcessBuilder = new ProcessBuilder(
+                        "bash",
+                        "/home/ubuntu/project/OBservator/Backend/observator/src/main/java/com/happy/observator/server/service.sh"
+                    );
+                    bashProcessBuilder.redirectErrorStream(true);
+                    Process bashProcess = bashProcessBuilder.start();
+
+                    // Bash 스크립트 출력 로그 읽기
+                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(bashProcess.getInputStream()))) {
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            System.out.println("[Bash Log]: " + line);
+                        }
+                    }
+                } catch (Exception e) {
+                    System.err.println("Failed to execute service.sh: " + e.getMessage());
+                }
+            }).start();
+
+            // 상태 업데이트
+            isAutoTrading = true;
         } catch (Exception e) {
             System.err.println("Failed to start Python script: " + e.getMessage());
         }
@@ -304,21 +326,33 @@ public class TradeController {
         return "redirect:/trade";
     }
 
-
     @PostMapping("/end")
     private String endTrade(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         String username = userDetails.getUsername();
         User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
         System.out.println("End Trade User ID: " + user.getId());
 
+        // Python 프로세스 종료
         if (pythonProcess != null && pythonProcess.isAlive()) {
             pythonProcess.destroy();
             System.out.println("Python script stopped successfully.");
-            isAutoTrading = false;
         } else {
             System.out.println("No Python script is currently running.");
         }
 
+        // 특정 SSH 프로세스 종료
+        try {
+            String killCommand = "ps -ef | grep 'ssh -v fairy@14.32.188.229' | grep -v grep | awk '{print $2}' | xargs kill -9";
+            ProcessBuilder killProcessBuilder = new ProcessBuilder("bash", "-c", killCommand);
+            Process killProcess = killProcessBuilder.start();
+            killProcess.waitFor(); // 종료될 때까지 대기
+            System.out.println("SSH process stopped successfully.");
+        } catch (Exception e) {
+            System.err.println("Failed to stop SSH process: " + e.getMessage());
+        }
+
+        // 상태 업데이트
+        isAutoTrading = false;
         model.addAttribute("isAutoTrading", isAutoTrading); // 상태 전달
         return "redirect:/trade";
     }
