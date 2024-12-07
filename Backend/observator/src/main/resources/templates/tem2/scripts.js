@@ -1,111 +1,61 @@
-            // const socket = new WebSocket("wss://14.32.188.229:8765");
+// 민재 작업 ---------------------------------------------------------------
 
-            // socket.onerror = function (error) {
-            //     console.error("WebSocket error:", error);
-            // };
-            
-            // socket.onclose = function (event) {
-            //     console.log("WebSocket closed:", event);
-            // };
-            //     // WebSocket 이벤트 처리
-            // socket.onopen = function () {
-            //     console.log("Connected to WebSocket server!");
+const socket = new WebSocket("ws://14.32.188.229:8765");
 
-            //     // 서버에 메시지 전송
-            //     const message = {
-            //         type: "init",
-            //         content: "Hello, Server! Client connected.",
-            //     };
-            //     socket.send(JSON.stringify(message));
-            //     console.log("Message sent to server:", message);
-            // };
+socket.onopen = () => {
+    console.log("WebSocket connection established.");
+};
 
+socket.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    console.log("Prediction data received:", data);
+    // Update the chart or UI here
+};
 
-            // WebSocket을 통해 서버 연결
-        const serverWebSocket = new WebSocket("wss://14.32.188.229:8765");
+socket.onclose = () => {
+    console.log("WebSocket connection closed.");
+};
 
-        serverWebSocket.onopen = () => {
-            console.log("Connected to the server WebSocket");
-        };
+socket.onerror = (error) => {
+    console.error("WebSocket error:", error);
+};
+// 민재 작업 ---------------------------------------------------------------
 
-            serverWebSocket.onmessage = (event) => {
-                try {
-                    const data = JSON.parse(event.data);
+// WebSocket 연결 초기화
+function initializeWebSocketConnections() {
+    const upbitWebSocket = new WebSocket("wss://api.upbit.com/websocket/v1");
 
-                    // 데이터가 예상하는 형식인지 확인
-                    if (data.timestamp && data.predicted_price) {
-                        const time = new Date(data.timestamp).toLocaleTimeString();
-                        const predictedPrice = data.predicted_price;
+    upbitWebSocket.onopen = () => {
+       
+        const payload = [
+            { ticket: "test" },
+            { type: "ticker", codes: ["KRW-BTC"] } // 비트코인 티커 데이터
+        ];
+        upbitWebSocket.send(JSON.stringify(payload));
+    };
 
-                        // 데이터 업데이트
-                        cumulativeData.push({ time });
-                        predictedData.push({
-                            time,
-                            price: predictedPrice
-                        });
-
-                        // 차트 업데이트
-                        updateChart();
-                    } else {
-                        console.warn("Received unexpected data format:", data);
-                    }
-                } catch (error) {
-                    console.error("Error processing WebSocket message:", error);
-                }
-            };
-
-            serverWebSocket.onerror = (error) => {
-                console.error("WebSocket error:", error);
-            };
-
-            serverWebSocket.onclose = () => {
-                console.log("WebSocket connection closed");
-            };
-
-
-            // 실시간 시장 데이터에 대한 WebSocket 연결
-            function initializeWebSocketConnections() {
-                // Upbit WebSocket 설정
-                upbitWebSocket = new WebSocket("wss://api.upbit.com/websocket/v1");
-            
-                // KRW-BTC 티커, 호가창, 거래에 대한 구독
-                upbitWebSocket.onopen = () => {
-                    const payload = [
-                        { "ticket": "test" },
-                        { "type": "ticker", "codes": ["KRW-BTC"] },
-                        { "type": "orderbook", "codes": ["KRW-BTC"] },
-                        { "type": "trade", "codes": ["KRW-BTC"] }
-                    ];
-                    upbitWebSocket.send(JSON.stringify(payload));
-                };
-            
-                // 들어오는 메시지 처리
-                upbitWebSocket.onmessage = async (event) => {
-                    const reader = new FileReader();
-                    reader.onload = function () {
-                        const data = JSON.parse(reader.result);
-                        if (data.type === "ticker") {
-                            currentBitcoinPrice = data.trade_price; // 실시간 비트코인 시세를 업데이트
-                            updateTickerData(data);
-                            updateChartData(data);
-                        } else if (data.type === "orderbook") {
-                            updateOrderBookData(data);
-                        } else if (data.type === "trade") {
-                            updateTradeData(data);
-                        }
-                    };
-                    reader.readAsText(event.data);
-                };
-            
-                upbitWebSocket.onerror = (error) => {
-                    console.error("WebSocket error:", error);
-                };
-            
-                upbitWebSocket.onclose = () => {
-                    console.warn("WebSocket closed. Reconnecting...");
-                    initializeWebSocketConnections(); // 연결이 끊어지면 다시 연결
-                };
+    upbitWebSocket.onmessage = (event) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            const data = JSON.parse(reader.result);
+            if (data.type === "ticker") {
+                updateChartData(data); // 차트 업데이트
+                updateTickerData(data); // HTML에 실시간 가격 표시
             }
+        };
+        reader.readAsText(event.data);
+    };
+
+    upbitWebSocket.onerror = (error) => {
+        console.error("WebSocket 에러:", error);
+    };
+
+    upbitWebSocket.onclose = () => {
+        console.warn("WebSocket 연결 종료. 다시 연결 시도 중...");
+        setTimeout(initializeWebSocketConnections, 3000); // 3초 후 재연결
+    };
+}
+
 
 let btcChart;
 function updateChartData(data) {
@@ -114,14 +64,22 @@ function updateChartData(data) {
         btcChart = new Chart(ctx, {
             type: "line",
             data: {
-                labels: [],
+                labels: [], // X축 레이블 (시간)
                 datasets: [
                     {
                         label: "비트코인 가격 (KRW)",
-                        data: [],
+                        data: [], // Y축 데이터 (실시간 가격)
                         borderColor: "rgba(54, 162, 235, 1)",
                         borderWidth: 2,
-                        tension: 0.4, // 부드러운 곡선
+                        tension: 0.5, // 부드러운 곡선
+                        pointRadius: 0
+                    },
+                    {
+                        label: "예측 가격 (KRW)",
+                        data: [], // Y축 데이터 (예측 가격)
+                        borderColor: "rgba(255, 99, 132, 1)",
+                        borderWidth: 4,
+                        tension: 0.5,
                         pointRadius: 0
                     }
                 ]
@@ -146,12 +104,291 @@ function updateChartData(data) {
             }
         });
     }
-    btcChart.data.labels.push(new Date(data.timestamp).toLocaleTimeString());
+
+    // 현재 시간과 5초 뒤 시간 계산
+    const currentTime = new Date();
+    const futureTime = new Date(currentTime.getTime() + 5000);
+    const currentTimeString = currentTime.toLocaleTimeString();
+    const futureTimeString = futureTime.toLocaleTimeString();
+
+    // 현재 가격 데이터 추가
+    btcChart.data.labels.push(currentTimeString);
     btcChart.data.datasets[0].data.push(data.trade_price);
+
+    // 예측 가격 계산 (더미 데이터)
+    const predictedPrice = generatePrediction(data.trade_price);
+
+    // 예측 데이터 추가 (5초 뒤 시간)
+    btcChart.data.labels.push(futureTimeString);
+    btcChart.data.datasets[1].data.push(predictedPrice);
+
+    // 데이터 개수 제한 (최대 50개 유지)
+    if (btcChart.data.labels.length > 100) {
+        btcChart.data.labels.splice(0, 2); // 현재와 예측 데이터를 한 쌍으로 삭제
+        btcChart.data.datasets[0].data.shift();
+        btcChart.data.datasets[1].data.shift();
+    }
+
+    // 차트 업데이트
     btcChart.update();
 }
+// 더미 예측 데이터 생성 함수
+function generatePrediction(currentPrice) {
+    const fluctuation = (Math.random() - 0.5) * 0.010002 * currentPrice; // ±2% 변동
+    return currentPrice + fluctuation;
+}
 
+
+// 실시간 티커 데이터 업데이트
+function updateTickerData(data) {
+    document.getElementById("current-price").textContent = `${data.trade_price.toLocaleString()} KRW`;
+}
+
+// WebSocket 연결 초기화
+initializeWebSocketConnections();
+
+// 실시간 티커 데이터 업데이트
+function updateTickerData(data) {
+    document.getElementById("current-price").textContent = `${data.trade_price.toLocaleString()} KRW`;
+}
+// 실시간 호가 데이터 업데이트 (예제)
+function updateOrderBookData(data) {
+    console.log("호가 데이터:", data);
+}
+// 실시간 거래 내역 업데이트 (예제)
+function updateTradeData(data) {
+    console.log("거래 데이터:", data);
+}
+// WebSocket 연결 초기화
+initializeWebSocketConnections();
+
+// Chart.js 초기 설정
 const upbitWebSocket = new WebSocket("wss://api.upbit.com/websocket/v1");
+
+//// 최근 일주일 비트코인 가격 차트 만들기  
+//// 최근 일주일 비트코인 가격 차트 만들기  
+//// 최근 일주일 비트코인 가격 차트 만들기  
+
+// 최근 일주일 데이터 저장
+// 최근 7일 데이터 저장
+const weekData = {
+    timestamps: [], // 날짜 데이터
+    prices: []      // 가격 데이터
+};
+
+// 차트 초기화
+let btcWeekChart;
+function initializeWeekChart() {
+    const ctx = document.getElementById("btcWeekChart").getContext("2d");
+    btcWeekChart = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: weekData.timestamps, // X축 날짜
+            datasets: [{
+                label: "최근 7일 비트코인 가격",
+                data: weekData.prices,   // Y축 가격
+                borderColor: "rgba(255, 99, 132, 1)", // 선 색상 (분홍색)
+                backgroundColor: "rgba(255, 99, 132, 0.2)", // 배경색 (투명 분홍색)
+                tension: 0.4, // 부드러운 곡선
+                pointRadius: 4, // 데이터 포인트 크기
+                pointHoverRadius: 8, // 커서를 올릴 때 데이터 포인트 크기
+                fill: true // 선 아래를 채움
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    enabled: true, // 툴팁 활성화
+                    callbacks: {
+                        label: function (context) {
+                            const value = context.raw; // 해당 데이터 값
+                            return `가격: ${value.toLocaleString()} KRW`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: "날짜"
+                    },
+                    ticks: {
+                        maxTicksLimit: 7 // X축에 표시되는 최대 날짜 수
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: "가격 (KRW)"
+                    },
+                    ticks: {
+                        callback: function (value) {
+                            return value.toLocaleString() + " KRW"; // Y축 값 포맷
+                        }
+                    }
+                }
+            },
+            interaction: {
+                mode: "nearest", // 가장 가까운 데이터 포인트에 반응
+                intersect: false // 선 위에 있을 때도 반응
+            }
+        }
+    });
+}
+
+// Upbit API를 통해 최근 7일 데이터 가져오기
+async function fetchWeekData() {
+    const apiUrl = "https://api.upbit.com/v1/candles/days?market=KRW-BTC&count=7";
+
+    try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+
+        // 데이터 처리
+        weekData.timestamps = data.map((item) => item.candle_date_time_kst.split("T")[0]); // 날짜 (YYYY-MM-DD)
+        weekData.prices = data.map((item) => item.trade_price); // 종가
+
+        console.log("Fetched Week Data:", weekData);
+
+        // 차트 업데이트
+        btcWeekChart.data.labels = weekData.timestamps.reverse(); // 날짜 역순으로 변경
+        btcWeekChart.data.datasets[0].data = weekData.prices.reverse(); // 가격 역순으로 변경
+        btcWeekChart.update();
+    } catch (error) {
+        console.error("Error fetching week data:", error);
+    }
+}
+
+// 차트 초기화 및 데이터 가져오기
+initializeWeekChart();
+fetchWeekData();
+
+
+// ---------------------------------------------------------------
+
+// 최근 한달 차트 만들기 
+
+// 최근 한 달 데이터 저장
+const monthData = {
+    timestamps: [], // 날짜 데이터
+    prices: []      // 가격 데이터
+};
+
+// 차트 초기화
+let btcMonthChart;
+function initializeMonthChart() {
+    const ctx = document.getElementById("btcMonthChart").getContext("2d");
+    btcMonthChart = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: monthData.timestamps, // X축 날짜
+            datasets: [{
+                label: "최근 한 달 비트코인 가격",
+                data: monthData.prices,   // Y축 가격
+                borderColor: "rgba(75, 192, 192, 1)", // 선 색상
+                backgroundColor: "rgba(75, 192, 192, 0.2)", // 배경 색상
+                tension: 0.4, // 부드러운 곡선
+                pointRadius: 3, // 데이터 포인트 크기
+                pointHoverRadius: 6, // 커서를 올릴 때 데이터 포인트 크기
+                fill: true // 선 아래를 채움
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    enabled: true, // 툴팁 활성화
+                    callbacks: {
+                        label: function (context) {
+                            const value = context.raw; // 해당 데이터 값
+                            return `가격: ${value.toLocaleString()} KRW`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: "날짜"
+                    },
+                    ticks: {
+                        maxTicksLimit: 10 // X축에 표시되는 최대 날짜 수
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: "가격 (KRW)"
+                    },
+                    ticks: {
+                        callback: function (value) {
+                            return value.toLocaleString() + " KRW"; // Y축 값 포맷
+                        }
+                    }
+                }
+            },
+            interaction: {
+                mode: "nearest", // 가장 가까운 데이터 포인트에 반응
+                intersect: false // 선 위에 있을 때도 반응
+            }
+        }
+    });
+}
+
+// Upbit API를 통해 최근 한 달 데이터 가져오기
+async function fetchMonthData() {
+    const apiUrl = "https://api.upbit.com/v1/candles/days?market=KRW-BTC&count=30";
+
+    try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+
+        // 데이터 처리
+        monthData.timestamps = data.map((item) => item.candle_date_time_kst.split("T")[0]); // 날짜 (YYYY-MM-DD)
+        monthData.prices = data.map((item) => item.trade_price); // 종가
+
+        console.log("Fetched Month Data:", monthData);
+
+        // 차트 업데이트
+        btcMonthChart.data.labels = monthData.timestamps.reverse(); // 날짜 역순으로 변경
+        btcMonthChart.data.datasets[0].data = monthData.prices.reverse(); // 가격 역순으로 변경
+        btcMonthChart.update();
+    } catch (error) {
+        console.error("Error fetching month data:", error);
+    }
+}
+
+// 차트 초기화 및 데이터 가져오기
+initializeMonthChart();
+fetchMonthData();
+
+
+// --------------------
+
+
+function showChart(chartId) {
+    // 모든 차트를 숨김
+    const charts = document.querySelectorAll('.chart-container');
+    charts.forEach(chart => chart.classList.add('hidden'));
+
+    // 클릭된 차트만 표시
+    document.getElementById(`${chartId}-container`).classList.remove('hidden');
+
+    // 모든 버튼의 활성화 상태 제거
+    const buttons = document.querySelectorAll('.tab-button');
+    buttons.forEach(button => button.classList.remove('active'));
+
+    // 현재 버튼 활성화
+    const activeButton = document.querySelector(`button[onclick="showChart('${chartId}')"]`);
+    activeButton.classList.add('active');
+}
+
+
 
 // KRW-BTC 티커, 호가창, 거래에 대한 구독
 upbitWebSocket.onopen = () => {
@@ -216,7 +453,7 @@ function updateOrderBookData(data) {
                 <td style="width: 100px; text-align: left;">
                     <div style="height: 20px; background-color: ${type === "매수" ? "#28a745" : "#dc3545"}; width: ${percentage}%;"></div>
                 </td>
-                <td>${percentage.toFixed(2)}%</td>
+              
             </tr>
         `;
 
@@ -445,6 +682,7 @@ async function fetchBitcoinNews() {
 
 function updateNewsTable(articles) {
     const tableBody = document.getElementById("news-table-body");
+    
 
     // 기존 뉴스 목록 초기화
     tableBody.innerHTML = "";
@@ -470,6 +708,7 @@ function updateNewsTable(articles) {
         row.appendChild(titleCell);
 
         tableBody.appendChild(row);
+        
     });
 }
 
