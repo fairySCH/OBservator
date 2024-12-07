@@ -1,161 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="./css/styles.css">
     <title>Signup</title>
-    <link rel="stylesheet" href="/assets/css/signup.css">
-    <script>
-        let isUsernameChecked = false;
     
-        function viewTerms() {
-            var modal = document.getElementById("terms-modal");
-            modal.style.display = "block";
-        }
-    
-        function closeTerms() {
-            var modal = document.getElementById("terms-modal");
-            modal.style.display = "none";
-        }
-    
-        window.onclick = function(event) {
-            var modal = document.getElementById("terms-modal");
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
-        }
-    
-        function togglePasswordVisibility(inputId) {
-            var passwordInput = document.getElementById(inputId);
-            var toggleButton = document.getElementById(inputId + "-toggle");
-            if (passwordInput.type === "password") {
-                passwordInput.type = "text";
-                toggleButton.textContent = "🔓";
-            } else {
-                passwordInput.type = "password";
-                toggleButton.textContent = "🔒";
-            }
-        }
-    
-        function validatePassword() {
-            var password = document.getElementById("password").value;
-            var confirmPassword = document.getElementById("confirm_password").value;
-            var passwordError = document.getElementById("password-error");
-            var submitButton = document.querySelector("button[type='submit']");
-            var termsChecked = document.getElementById("terms").checked;
-    
-            if (password.length < 8 || password.length > 16 || !/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-                passwordError.textContent = "비밀번호는 특수문자를 포함하여 8~16자로 입력해주세요.";
-                submitButton.disabled = true;
-            } else if (confirmPassword !== password) {
-                passwordError.textContent = "비밀번호가 일치하지 않습니다.";
-                submitButton.disabled = true;
-            } else {
-                passwordError.textContent = "";
-                submitButton.disabled = !termsChecked;
-            }
-        }
-    
-        function validateForm() {
-            var password = document.getElementById("password").value;
-            var confirmPassword = document.getElementById("confirm_password").value;
-            var termsChecked = document.getElementById("terms").checked;
-            var emailLocal = document.getElementById("email_local").value;
-            var emailDomain = document.getElementById("email_domain").value;
-            var emailDomainCustom = document.getElementById("email_domain_custom").value;
-            var submitButton = document.querySelector("button[type='submit']");
-            var isCustomDomain = emailDomain === "custom";
-            var emailValid = emailLocal !== "" && (isCustomDomain ? emailDomainCustom !== "" : emailDomain !== "");
-            if (password.length >= 8 && password.length <= 16 && /[!@#$%^&*(),.?":{}|<>]/.test(password) 
-                && confirmPassword === password && termsChecked && emailValid && isUsernameChecked) {
-                submitButton.disabled = false;
-            } else {
-                submitButton.disabled = true;
-            }
-        }
-        
-        function handleEmailDomainChange() {
-            var emailDomainSelect = document.getElementById("email_domain");
-            var emailDomainInput = document.getElementById("email_domain_custom");
-            if (emailDomainSelect.value === "custom") {
-                emailDomainInput.style.display = "inline-block";
-                emailDomainInput.value = "";
-            } else {
-                emailDomainInput.style.display = "none";
-                emailDomainInput.value = emailDomainSelect.value;
-            }
-            validateForm();
-        }
-    
-        function checkUsername() {
-            var username = document.getElementById("username").value;
-            var usernameError = document.getElementById("username-error");
-            var submitButton = document.querySelector("button[type='submit']");
-            
-            if (username === "") {
-                usernameError.textContent = "아이디를 입력해주세요.";
-                return;
-            }
-            
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "/api/check-username", true);
-            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4) {
-                    if (xhr.status === 200) {
-                        try {
-                            var response = JSON.parse(xhr.responseText);
-                            usernameError.textContent = response.message;
-                            if (!response.exists) {
-                                alert("사용할 수 있는 아이디입니다.");
-                                document.getElementById("username").readOnly = true;
-                                document.getElementById("check-username-btn").disabled = true;
-                                isUsernameChecked = true;
-                                validateForm();
-                            } else {
-                                isUsernameChecked = false;
-                            }
-                        } catch (error) {
-                            console.error("Error parsing JSON:", error);
-                            usernameError.textContent = "서버 응답 처리 중 오류 발생.";
-                            isUsernameChecked = false;
-                        }
-                    } else {
-                        usernameError.textContent = "서버와 통신 중 문제가 발생했습니다.";
-                        isUsernameChecked = false;
-                    }
-                    validateForm();
-                }
-            };
-            xhr.send(JSON.stringify({ username: username }));
-        }
-    </script>
+
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            overflow: hidden;
-        }
-        .video-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: -1;
-        }
-        .login-container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 300px;
-            text-align: center;
-            background-color: rgba(255, 255, 255, 0.8);
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        }
+      
+
     </style>
 </head>
 <body>
@@ -194,17 +46,18 @@
         </div>
         <div class="password-container">
             <input type="password" id="password" name="password" th:placeholder="#{password_placeholder}" oninput="validatePassword(); validateForm();">
-            <button type="button" class="toggle-password" id="password-toggle" onclick="togglePasswordVisibility('password')">🔒</button>
+            <button type="button" class="toggle-password" id="password-toggle" onclick="togglePasswordVisibility('password')">패스워드 확인 🔒</button>
             <div class="password-requirements" th:text="#{password_requirements}">특수문자를 포함한 8~16자로 입력해주세요.</div>
         </div>
+        <br>
         <div class="password-container">
             <input type="password" id="confirm_password" name="confirm_password" th:placeholder="#{passwordcheck_placeholder}" oninput="validatePassword(); validateForm();">
-            <button type="button" class="toggle-password" id="confirm_password-toggle" onclick="togglePasswordVisibility('confirm_password')">🔒</button>
+            <button type="button" class="toggle-password" id="confirm_password-toggle" onclick="togglePasswordVisibility('confirm_password')">패스워드 확인 🔒</button>
             <div id="password-error" class="error-message"></div>
         </div>
         <div class="terms-container">
             <input type="checkbox" id="terms" name="terms" onclick="validateForm()" required>
-            <label for="terms" th:text="#{terms}">(필수) 개인정보 수집 및 활용 동의</label>
+            <label style="padding-right: 20px;" for="terms" th:text="#{terms}">(필수) 개인정보 수집 및 활용 동의</label>
             <button type="button" onclick="viewTerms()" th:text="#{view_terms}">약관보기</button>
         </div>
         <div class="terms-container">
@@ -263,6 +116,131 @@
         </div>
     </div>
 </div>
+<script>
+    let isUsernameChecked = false;
+
+    function viewTerms() {
+        var modal = document.getElementById("terms-modal");
+        modal.style.display = "block";
+    }
+
+    function closeTerms() {
+        var modal = document.getElementById("terms-modal");
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        var modal = document.getElementById("terms-modal");
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    function togglePasswordVisibility(inputId) {
+        var passwordInput = document.getElementById(inputId);
+        var toggleButton = document.getElementById(inputId + "-toggle");
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            toggleButton.textContent = "🔓";
+        } else {
+            passwordInput.type = "password";
+            toggleButton.textContent = "🔒";
+        }
+    }
+
+    function validatePassword() {
+        var password = document.getElementById("password").value;
+        var confirmPassword = document.getElementById("confirm_password").value;
+        var passwordError = document.getElementById("password-error");
+        var submitButton = document.querySelector("button[type='submit']");
+        var termsChecked = document.getElementById("terms").checked;
+
+        if (password.length < 8 || password.length > 16 || !/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+            passwordError.textContent = "비밀번호는 특수문자를 포함하여 8~16자로 입력해주세요.";
+            submitButton.disabled = true;
+        } else if (confirmPassword !== password) {
+            passwordError.textContent = "비밀번호가 일치하지 않습니다.";
+            submitButton.disabled = true;
+        } else {
+            passwordError.textContent = "";
+            submitButton.disabled = !termsChecked;
+        }
+    }
+
+    function validateForm() {
+        var password = document.getElementById("password").value;
+        var confirmPassword = document.getElementById("confirm_password").value;
+        var termsChecked = document.getElementById("terms").checked;
+        var emailLocal = document.getElementById("email_local").value;
+        var emailDomain = document.getElementById("email_domain").value;
+        var emailDomainCustom = document.getElementById("email_domain_custom").value;
+        var submitButton = document.querySelector("button[type='submit']");
+        var isCustomDomain = emailDomain === "custom";
+        var emailValid = emailLocal !== "" && (isCustomDomain ? emailDomainCustom !== "" : emailDomain !== "");
+        if (password.length >= 8 && password.length <= 16 && /[!@#$%^&*(),.?":{}|<>]/.test(password) 
+            && confirmPassword === password && termsChecked && emailValid && isUsernameChecked) {
+            submitButton.disabled = false;
+        } else {
+            submitButton.disabled = true;
+        }
+    }
+    
+    function handleEmailDomainChange() {
+        var emailDomainSelect = document.getElementById("email_domain");
+        var emailDomainInput = document.getElementById("email_domain_custom");
+        if (emailDomainSelect.value === "custom") {
+            emailDomainInput.style.display = "inline-block";
+            emailDomainInput.value = "";
+        } else {
+            emailDomainInput.style.display = "none";
+            emailDomainInput.value = emailDomainSelect.value;
+        }
+        validateForm();
+    }
+
+    function checkUsername() {
+        var username = document.getElementById("username").value;
+        var usernameError = document.getElementById("username-error");
+        var submitButton = document.querySelector("button[type='submit']");
+        
+        if (username === "") {
+            usernameError.textContent = "아이디를 입력해주세요.";
+            return;
+        }
+        
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/api/check-username", true);
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    try {
+                        var response = JSON.parse(xhr.responseText);
+                        usernameError.textContent = response.message;
+                        if (!response.exists) {
+                            alert("사용할 수 있는 아이디입니다.");
+                            document.getElementById("username").readOnly = true;
+                            document.getElementById("check-username-btn").disabled = true;
+                            isUsernameChecked = true;
+                            validateForm();
+                        } else {
+                            isUsernameChecked = false;
+                        }
+                    } catch (error) {
+                        console.error("Error parsing JSON:", error);
+                        usernameError.textContent = "서버 응답 처리 중 오류 발생.";
+                        isUsernameChecked = false;
+                    }
+                } else {
+                    usernameError.textContent = "서버와 통신 중 문제가 발생했습니다.";
+                    isUsernameChecked = false;
+                }
+                validateForm();
+            }
+        };
+        xhr.send(JSON.stringify({ username: username }));
+    }
+</script>
 </body>
 </html>
 

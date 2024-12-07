@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title th:text="#{title}">OBservator - Welcome!</title>
-    <link rel="stylesheet" href="/assets/css/home.css">
+    <link rel="stylesheet" href="./tem2/styles.css">
 </head>
 <body>
     <header class="hero">
@@ -16,9 +16,10 @@
                 <a th:href="@{/profile}" class="button" th:text="#{go_to_profile}">Go to Profile</a>
                 <a th:href="@{/trade}" class="button secondary" th:text="#{go_to_trade}">Go to Trade Page</a>
             </div>
+            <br>
             <div class="logout-container">
                 <form th:action="@{/logout}" method="post">
-                    <button type="submit" class="logout-button" th:text="#{logout}">Logout</button>
+                    <button style="padding: 20px" type="submit" class="logout-button" th:text="#{logout}">Logout</button>
                 </form>
             </div>
         </div>

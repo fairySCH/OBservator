@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bitcoin Dashboard</title>
-    <link rel="stylesheet" href="/assets/css/trade.css">
+    <!-- <link rel="stylesheet" href="/assets/css/trade.css"> -->
+    <link rel="stylesheet" href="./css/styles-trade.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -18,20 +19,30 @@
         </nav>
     </header>
 
+
     <div class="container">
+    
         <!-- 매인 차트 -->
         <div class="left-panel">
+            
             <div class="chart-section">
+           <div id="real_chart">
+            <div id="box-left">
                 <!-- 시세 정보 헤더 -->
                 <div class="price-header">
                     <div class="price-info">
                         <div class="titile_bit">
-                            <img class="bit_img" src="/assets/bit_sim.png" alt="">
+                            <img
+                                class="bit_img"
+                                src="./tem2/assets/bit_sim.png"
+                                alt=""
+                            >
                             <a>비트코인 BTC/KRW</a>
                         </div>
-                        <h7 class="current-price">-</h7>
+                        <h7  class="current-price">-</h7>
                         <aa class="price-change">
                             <div class="price-stats">
+                        
                                 <div>
                                     <span class="change-percent">+2.07%</span>
                                     <span class="change-amount">▲ 2,756,000</span>
@@ -44,38 +55,30 @@
                                 <div class="additional-info">
                                     24h 총거래 : <span class="volume">8,149.673 BTC</span>
                                     <br>
-                                    24h 총거래액 : <span class="trade-amount">1,084,180,672,622</span>
+                                    24h 총거래 : <span class="trade-amount">1,084,180,672,622</span>
                                 </div>
                             </div>
                         </aa>
                     </div>
                 </div>
-                
-                <!-- 거래소별 가격 -->
                 <div class="exchange-prices">
                     <table class="exchange-table">
                         <tr>
                             <td class="exchange-name" style="color: #007BFF;">비트플라이어</td>
                             <td id="bitflyer-price">-</td>
+                            
                             <td class="exchange-name" style="color: #28a745;">바이낸스</td>
                             <td id="binance-price">-</td>
+                            
                             <td class="exchange-name" style="color: chocolate;">OKX</td>
                             <td id="okx-price">-</td>
                         </tr>
                     </table>
                 </div>
-                
-                <!-- 비트코인 차트 -->
-                <div class="chart-container">
-                    <canvas id="btcChart"></canvas>
-                </div>
             </div>
-        </div>
-            
-        <!-- 오른쪽 패널 -->
-        <div class="right-panel">
-            <!-- 자동 거래 시작 종료 -->
-            <div class="section">
+
+                
+            <div id="box-right" class="section">
                 <h3>Profit Threshold</h3>
                 <div>
                     <div>
@@ -148,106 +151,79 @@
                     </form> 
                 </div>
             </div>
-            <!-- 자산 확인 -->
-            <div class="section">
-                <h3>My Assets</h3>
-                <div class="total-value">
-                    <p>Total Value: <span id="total-value">0 KRW</span></p>
-                    <p>Profit/Loss: <span id="profit-loss">+0 KRW</span></p>
-                </div>
-                <div class="asset-breakdown">
-                    <h4>Asset Breakdown</h4>
-                    <ul>
-                        <li>Bitcoin (BTC): <span id="BTC-value">0 KRW</span> </li>
-                        <li>Won (KRW): <span id="KRW-value">0 KRW</span> </li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 style="color: #007BFF; margin-bottom: 10px;">Bitcoin News from cryptocompare</h4>
-                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                        <thead class="table-header">
-                            <tr>
-                                <tbody id="news-table-body">
-                                    <!-- 뉴스가 동적으로 추가됩니다 -->
-                                </tbody>
-                            </tr>
-                        </thead>
-                        <tbody class="table-body" id="news-table-body">
-                            <!-- 뉴스가 동적으로 추가됩니다 -->
-                        </tbody>
-                    </table>
-                </div>
-                <!-- <div>
-                    <h4 style="color: #007BFF; margin-bottom: 10px;">Recent Transactions</h4>
-                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                        <table class="transaction-table">
-                            <thead class="table-header">
-                                <tr>
-                                    <th class="table-cell header-cell">Date</th>
-                                    <th class="table-cell header-cell">Asset</th>
-                                    <th class="table-cell header-cell">Type</th>
-                                    <th class="table-cell header-cell">Amount</th>
-                                    <th class="table-cell header-cell">Value (KRW)</th>
-                                </tr>
-                            </thead>
-                        </table>
-                        
-                    </table>
-                </div> -->
+           </div>     
+
+            
+                  
+                   
+                               
+<div>
+    <div class="chart-tabs">
+        <button class="tab-button active" onclick="showChart('btcChart')">실시간</button>
+        <button class="tab-button" onclick="showChart('btcWeekChart')">최근 일주일</button>
+        <button class="tab-button" onclick="showChart('btcMonthChart')">최근 한 달</button>
+    </div>
+    
+    <div class="chart-container" id="btcChart-container">
+        <canvas id="btcChart" width="100%" height="600"></canvas>
+    </div>
+    
+    <div class="chart-container hidden" id="btcWeekChart-container">
+        <canvas id="btcWeekChart" width="100%" height="200"></canvas>
+    </div>
+    
+    <div class="chart-container hidden" id="btcMonthChart-container">
+        <canvas id="btcMonthChart" width="100%" height="200"></canvas>
+    </div>
+
+
+</div>
+                
+              
+                
+            </div>
+            
+            <br>
+        </div>
+            
+        <!-- 오른쪽 패널 -->
+
+        <div style="gap: 20px; align-items: flex-start;">
+        <div style="display: flex; gap: 20px; align-items: flex-start;">
+
+        <div class="section" style="max-width: 300px; height: 550px;">
+            <h3>My Assets</h3>
+            <div class="total-value">
+                <p>Total Value: <span id="total-value">9,948,000 KRW</span></p>
+                <p>Profit/Loss: <span id="profit-loss">+46,000 KRW</span></p>
+            </div>
+            <div class="asset-breakdown">
+                <h4>Asset Breakdown</h4>
+                <ul>
+                    <li>Bitcoin (BTC): <span id="BTC-value">513,000 KRW</span> </li>
+                    <li>Won (KRW): <span id="KRW-value">123,330 KRW</span> </li>
+                </ul>
+            </div>
+            <div>
+                <h4 style="color: #007BFF; margin-bottom: 10px;">Bitcoin News from cryptocompare</h4>
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead class="table-header">
+                        <tr>
+                            
+                            <tbody id="news-table-body">
+                                <!-- 뉴스가 동적으로 추가됩니다 -->
+                            </tbody>
+                            
+                        </tr>
+                    </thead>
+                    <tbody class="table-body" id="news-table-body">
+                        <!-- 뉴스가 동적으로 추가됩니다 -->
+                    </tbody>
+                </table>
+                                
             </div>
         </div>
-        
-    <div style="gap: 20px; align-items: flex-start;">
 
-    <div style="display: flex; gap: 20px; align-items: flex-start;">
-
-        <!-- 거래 정보 섹션 -->
-        <!-- <div class="trade-info-container">
-            <h3 class="trade-info-header">주요 코인 거래 정보</h3>
-            
-            <table class="crypto-table-widget">
-                <thead class="crypto-table-header">
-                    <tr>
-                        <th class="crypto-table-header-cell">코인명</th>
-                        <th class="crypto-table-header-cell">현재가</th>
-                        <th class="crypto-table-header-cell">전일 비</th>
-                        <th class="crypto-table-header-cell">비중</th>
-                    </tr>
-                </thead>
-                <tbody id="crypto-table" class="crypto-table-body"> -->
-                    <!-- 데이터가 여기에 삽입됩니다 -->
-                <!-- </tbody>
-            </table>
-            <table class="trade-info-table">
-                <tbody style="display: none;">
-                    <tr class="table-row">
-                        <td class="table-cell">거래량</td>
-                        <td id="special-trade-volume" class="table-cell value-cell positive">-</td>
-                    </tr>
-                    <tr class="table-row">
-                        <td class="table-cell">거래대금</td>
-                        <td id="special-trade-amount" class="table-cell value-cell primary">-</td>
-                    </tr>
-                    <tr class="table-row">
-                        <td class="table-cell">52주 최고</td>
-                        <td id="special-year-high" class="table-cell value-cell negative">-</td>
-                    </tr>
-                    <tr class="table-row">
-                        <td class="table-cell">52주 최저</td>
-                        <td id="special-year-low" class="table-cell value-cell positive">-</td>
-                    </tr>
-                    <tr class="table-row">
-                        <td class="table-cell">전일 고가</td>
-                        <td id="special-day-high" class="table-cell value-cell negative">-</td>
-                    </tr>
-                    <tr class="table-row">
-                        <td class="table-cell">전일 저가</td>
-                        <td id="special-day-low" class="table-cell value-cell primary">-</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div> -->
-        
         <!-- 누적호가창 -->
         <div class="accumulated-orderbook-container">
             <h3 class="orderbook-header">누적호가창</h3>
@@ -258,6 +234,7 @@
                         <th class="table-header-cell">누적호가</th>
                         <th class="table-header-cell">호가주문</th>
                         <th class="table-header-cell">비중</th>
+                        
                     </tr>
                 </thead>
                 <tbody id="special-orderbook-body">
@@ -283,39 +260,28 @@
                 <button type="submit" class="sell-button" value="sell">Sell</button>
             </form>    
             <br>
+            
                 <h3 class="section-header">Schedule Order</h3>
                 <form th:action="@{/scheduleOrder}" method="post" class="schedule-form">
                     <label for="orderType">Order Type:</label>
-                    <select id="orderType" name="action" required>
+                    <select id="orderType" name="action" class="sc_ipt"  required>
                         <option value="buy">Buy</option>
                         <option value="sell">Sell</option>
                     </select>
                     <label for="orderAmount">Amount (KRW for Buy / BTC for Sell):</label>
-                    <input type="text" id="orderAmount" name="amount" placeholder="Enter amount" required>
+                    <input type="text" id="orderAmount" class="sc_ipt" name="amount" placeholder="Enter amount" required>
                     <label for="targetTime">Target Time (hh:mm:ss):</label>
-                    <input type="text" id="targetTime" name="targetTime" placeholder="e.g., 15:30:00" required>
+                    <input type="text" id="targetTime" class="sc_ipt" name="targetTime" placeholder="e.g., 15:30:00" required>
                     <button type="submit" class="schedule-button">Schedule Order</button>
                 </form>
-        
-                <table id="scheduledOrdersTable" class="orders-table">
-                    <thead>
-                        <tr class="table-header">
-                            <th class="table-cell">Time</th>
-                            <th class="table-cell">Action</th>
-                            <th class="table-cell">Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="table-row" th:each="entry : ${scheduledOrders}">
-                            <td th:text="${entry.key}" class="table-cell"></td>
-                            <td th:text="${entry.value.action}" class="table-cell"></td>
-                            <td th:text="${entry.value.amount}" class="table-cell"></td>
-                        </tr>
-                    </tbody>
-                </table>
+          
+
         </div>
     </div>
 
-<script src="/assets/js/scripts.js" defer></script>
+<!-- <script src="/assets/js/scripts.js" defer></script> -->
+<script src="./js/scripts.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </body>
 </html>
