@@ -81,15 +81,15 @@
     </video>
     
     <div class="login-container">
-        <h1>로그인</h1>
+        <h1>OBservator</h1>
         <form th:action="@{/login}" method="post">
             <div>
-                <input type="text" id="username" name="username" placeholder="아이디">
+                <input type="text" id="username" name="username" th:placeholder="#{ID_placeholder}">
             </div>
             <div>
-                <input type="password" id="password" name="password" placeholder="비밀번호">
+                <input type="password" id="password" name="password" th:placeholder="#{password_placeholder}">
             </div>
-            <div id="error-message" class="error-message" th:if="${param.error}" style="color: red; font-size: 0.9em;">
+            <div id="error-message" class="error-message" th:if="${param.error}" style="color: red; font-size: 0.9em;" th:text="#{login_error}">
                 로그인 실패. 아이디와 비밀번호를 확인해주세요.
             </div>
             <div class="remember-container">
@@ -102,10 +102,10 @@
                 </div>
             </div>
             <div>
-                <button type="submit" class="login-button">로그인</button>
+                <button type="submit" class="login-button" th:text="#{login}">로그인</button>
             </div>
             <div>
-                <button type="button" class="signup-button" onclick="location.href='/signup'">회원가입</button>
+                <button type="button" class="signup-button" onclick="location.href='/signup'" th:text="#{signup}">회원가입</button>
             </div>
         </form>
         <!--<div class="social-login">
