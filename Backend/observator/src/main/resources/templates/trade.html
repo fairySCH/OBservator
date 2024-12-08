@@ -3,14 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OBservator - Bitcoin Dashboard</title>
-    <link rel="stylesheet" href="/assets/css/trade.css">
+    <title>Bitcoin Dashboard</title>
+
+    <link rel="stylesheet" href="./assets/css/styles-trade.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <header class="header">
         <div class="logo" th:text="#{header_dashboard}">Bitcoin 대시보드</div>
         <nav>
+            <div class="language-switcher">
+                <a href="?lang=en">English</a> | <a href="?lang=kr">한국어</a>
+            </div>
             <a href="/trade" th:text="#{header_dashboard}">대시보드</a>
             <a href="/profile" th:text="#{header_profile}">프로필</a>
             <a href="/home" th:text="#{header_home}">홈</a>
@@ -18,10 +22,15 @@
         </nav>
     </header>
 
+
     <div class="container">
+    
         <!-- 매인 차트 -->
         <div class="left-panel">
+            
             <div class="chart-section">
+           <div id="real_chart">
+            <div id="box-left">
                 <!-- 시세 정보 헤더 -->
                 <div class="price-header">
                     <div class="price-info">
@@ -29,9 +38,10 @@
                             <img class="bit_img" src="/assets/bit_sim.png" alt="">
                             <a th:text="#{bitcoin}">비트코인 BTC/KRW</a>
                         </div>
-                        <h7 class="current-price">-</h7>
+                        <h7  class="current-price">-</h7>
                         <aa class="price-change">
                             <div class="price-stats">
+                        
                                 <div>
                                     <span class="change-percent">+2.07%</span>
                                     <span class="change-amount">▲ 2,756,000</span>
@@ -44,43 +54,44 @@
                                     <span class="low-price">133,001,000</span>
                                 </div>
                                 <div class="additional-info">
-                                    <span class="volume" th:text="#{h_trade}">24h 총거래 : </span>
+                                    <span th:text="#{h_trade}">24h 총거래 : </span>
                                     <span class="volume">8,149.673 BTC</span>
                                     <br>
-                                    <span class="trade-amount" th:text="#{h_tradeamount}">24h 총거래액 : </span>
+                                    <span th:text="#{h_tradeamount}">24h 총거래액 : </span>
                                     <span class="trade-amount">1,084,180,672,622</span>
                                 </div>
                             </div>
                         </aa>
                     </div>
                 </div>
-                
-                <!-- 거래소별 가격 -->
                 <div class="exchange-prices">
                     <table class="exchange-table">
                         <tr>
                             <td class="exchange-name" style="color: #007BFF;" th:text="#{bitFlyer}">비트플라이어</td>
                             <td id="bitflyer-price">-</td>
+                            
                             <td class="exchange-name" style="color: #28a745;" th:text="#{Binance}">바이낸스</td>
                             <td id="binance-price">-</td>
+                            
                             <td class="exchange-name" style="color: chocolate;">OKX</td>
                             <td id="okx-price">-</td>
                         </tr>
                     </table>
                 </div>
-                
-                <!-- 비트코인 차트 -->
-                <div class="chart-container">
-                    <canvas id="btcChart"></canvas>
-                </div>
             </div>
-        </div>
-            
-        <!-- 오른쪽 패널 -->
-        <div class="right-panel">
-            <!-- 자동 거래 시작 종료 -->
-            <div class="section">
-                <h3 th:text="#{profit_threshold}">Profit Threshold</h3>
+
+                
+            <div id="box-right" class="section">
+                <h3 >
+                    <span th:text="#{profit_threshold}"> Profit Threshold </span>
+
+                    <span class="tooltip-icon">ℹ️
+                        <span class="tooltip-modal">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisl tincidunt eget nullam non. Quis hendrerit dolor magna eget est lorem ipsum dolor sit. Volutpat odio facilisis mauris sit amet massa. Commodo odio aenean sed adipiscing diam donec adipiscing tristique. Mi eget m
+                        </span>
+                    </span>
+
+                </h3>
                 <div>
                     <div>
                         <p>
@@ -103,9 +114,6 @@
                             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
                             background-color: #0055ff;
                             color: #ffffff;"
-                            onmouseover="this.style.backgroundColor='#218838'; this.style.boxShadow='0 6px 12px rgba(0, 0, 0, 0.2)'; this.style.transform='translateY(-2px)';"
-                            onmouseout="this.style.backgroundColor='#28a745'; this.style.boxShadow='0 4px 8px rgba(0, 0, 0, 0.1)'; this.style.transform='translateY(0)';"
-                            onmousedown="this.style.backgroundColor='#1e7e34'; this.style.transform='translateY(2px)';"
                             onmouseup="this.style.backgroundColor='#218838'; this.style.transform='translateY(0)';"
                             th:text="#{trade_start}">
                             자동매매 시작
@@ -123,11 +131,8 @@
                             cursor: pointer;
                             transition: all 0.3s ease;
                             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                            background-color: #0055ff;
+                            background-color:#28a745;
                             color: #ffffff;"
-                            onmouseover="this.style.backgroundColor='#218838'; this.style.boxShadow='0 6px 12px rgba(0, 0, 0, 0.2)'; this.style.transform='translateY(-2px)';"
-                            onmouseout="this.style.backgroundColor='#28a745'; this.style.boxShadow='0 4px 8px rgba(0, 0, 0, 0.1)'; this.style.transform='translateY(0)';"
-                            onmousedown="this.style.backgroundColor='#1e7e34'; this.style.transform='translateY(2px)';"
                             onmouseup="this.style.backgroundColor='#218838'; this.style.transform='translateY(0)';"
                             th:text="#{change_threshold}">
                             트레숄드 변경
@@ -147,9 +152,6 @@
                             background-color: #cf3328;
                             color: #ffffff;
                             margin: 10 11px;"
-                            onmouseover="this.style.backgroundColor='#c82333'; this.style.boxShadow='0 6px 12px rgba(0, 0, 0, 0.2)'; this.style.transform='translateY(-2px)';"
-                            onmouseout="this.style.backgroundColor='#dc3545'; this.style.boxShadow='0 4px 8px rgba(0, 0, 0, 0.1)'; this.style.transform='translateY(0)';"
-                            onmousedown="this.style.backgroundColor='#bd2130'; this.style.transform='translateY(2px)';"
                             onmouseup="this.style.backgroundColor='#c82333'; this.style.transform='translateY(0)';"
                             th:text="#{trade_end}">
                             자동매매 중지
@@ -157,9 +159,48 @@
                     </form> 
                 </div>
             </div>
-            <!-- 자산 확인 -->
-            <div class="section">
-                <h3 th:text="#{my_asset}">My Assets</h3>
+           </div>     
+
+            
+                  
+                   
+                               
+<div>
+    <div class="chart-tabs">
+        <button class="tab-button active" onclick="showChart('btcChart')" th:text="#{current}">실시간</button>
+        <!-- <button class="tab-button" onclick="showChart('btcWeekChart')">최근 일주일</button>
+        <button class="tab-button" onclick="showChart('btcMonthChart')">최근 한 달</button> -->
+    </div>
+    
+    <div class="chart-container" id="btcChart-container">
+        <canvas id="btcChart" width="100%" height="600"></canvas>
+    </div>
+    
+    <div class="chart-container hidden" id="btcWeekChart-container">
+        <canvas id="btcWeekChart" width="100%" height="200"></canvas>
+    </div>
+    
+    <div class="chart-container hidden" id="btcMonthChart-container">
+        <canvas id="btcMonthChart" width="100%" height="200"></canvas>
+    </div>
+
+
+</div>
+                
+              
+                
+            </div>
+            
+            <br>
+        </div>
+            
+        <!-- 오른쪽 패널 -->
+
+        <div style="gap: 20px; align-items: flex-start;">
+        <div style="display: flex; gap: 20px; align-items: flex-start;">
+
+        <div class="section" style="max-width: 300px; height: 100%;">
+            <h3 th:text="#{my_asset}">My Assets</h3>
                 <div class="total-value">
                     <p>
                         <span th:text="#{total_value}">Total Value: </span>
@@ -183,8 +224,8 @@
                         </li>
                     </ul>
                 </div>
-                <div>
-                    <h4 style="color: #007BFF; margin-bottom: 10px;" th:text="#{news}">Bitcoin News from cryptocompare</h4>
+            <div>
+                <h4 style="color: #007BFF; margin-bottom: 10px;" th:text="#{news}">Bitcoin News from cryptocompare</h4>
                     <table style="width: 100%; border-collapse: collapse; text-align: left;">
                         <thead class="table-header">
                             <tr>
@@ -197,81 +238,26 @@
                             <!-- 뉴스가 동적으로 추가됩니다 -->
                         </tbody>
                     </table>
-                </div>
-                <!-- <div>
-                    <h4 style="color: #007BFF; margin-bottom: 10px;">Recent Transactions</h4>
-                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
-                        <table class="transaction-table">
-                            <thead class="table-header">
-                                <tr>
-                                    <th class="table-cell header-cell">Date</th>
-                                    <th class="table-cell header-cell">Asset</th>
-                                    <th class="table-cell header-cell">Type</th>
-                                    <th class="table-cell header-cell">Amount</th>
-                                    <th class="table-cell header-cell">Value (KRW)</th>
-                                </tr>
-                            </thead>
-                        </table>
-                        
-                    </table>
-                </div> -->
+
+                <table class="upbit-realtime-table">
+                    <thead>
+                        <tr class="upbit-realtime-tr">
+                            <th class="upbit-realtime-th" th:text="#{trade_price}">체결가 (KRW)</th>
+                            <th class="upbit-realtime-th" th:text="#{trade_amount}">체결량</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tradeTableBody">
+                        <!-- 실시간 데이터가 여기에 추가됩니다 -->
+                    </tbody>
+                </table>
+                                
             </div>
         </div>
-        
-    <div style="gap: 20px; align-items: flex-start;">
 
-    <div style="display: flex; gap: 20px; align-items: flex-start;">
-
-        <!-- 거래 정보 섹션 -->
-        <!-- <div class="trade-info-container">
-            <h3 class="trade-info-header">주요 코인 거래 정보</h3>
-            
-            <table class="crypto-table-widget">
-                <thead class="crypto-table-header">
-                    <tr>
-                        <th class="crypto-table-header-cell">코인명</th>
-                        <th class="crypto-table-header-cell">현재가</th>
-                        <th class="crypto-table-header-cell">전일 비</th>
-                        <th class="crypto-table-header-cell">비중</th>
-                    </tr>
-                </thead>
-                <tbody id="crypto-table" class="crypto-table-body"> -->
-                    <!-- 데이터가 여기에 삽입됩니다 -->
-                <!-- </tbody>
-            </table>
-            <table class="trade-info-table">
-                <tbody style="display: none;">
-                    <tr class="table-row">
-                        <td class="table-cell">거래량</td>
-                        <td id="special-trade-volume" class="table-cell value-cell positive">-</td>
-                    </tr>
-                    <tr class="table-row">
-                        <td class="table-cell">거래대금</td>
-                        <td id="special-trade-amount" class="table-cell value-cell primary">-</td>
-                    </tr>
-                    <tr class="table-row">
-                        <td class="table-cell">52주 최고</td>
-                        <td id="special-year-high" class="table-cell value-cell negative">-</td>
-                    </tr>
-                    <tr class="table-row">
-                        <td class="table-cell">52주 최저</td>
-                        <td id="special-year-low" class="table-cell value-cell positive">-</td>
-                    </tr>
-                    <tr class="table-row">
-                        <td class="table-cell">전일 고가</td>
-                        <td id="special-day-high" class="table-cell value-cell negative">-</td>
-                    </tr>
-                    <tr class="table-row">
-                        <td class="table-cell">전일 저가</td>
-                        <td id="special-day-low" class="table-cell value-cell primary">-</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div> -->
-        
         <!-- 누적호가창 -->
         <div class="accumulated-orderbook-container">
             <h3 class="orderbook-header" th:text="#{orderbook}">누적호가창</h3>
+       
             <table class="orderbook-table">
                 <thead>
                     <tr class="table-header-row">
@@ -296,7 +282,7 @@
                 <input type="text" id="buy-price" name="price" th:placeholder="#{buy_placeholder}" required>
                 <button type="submit" class="buy-button" value="buy" th:text="#{trade_buy}">Buy</button>
             </form>
-
+            <br>
             <!-- Sell Button Form -->
             <form th:action="@{/sell}" method="post" class="trade-form">
                 <label for="sell-volume" th:text="#{trade_sell_volume}">Volume to Sell (BTC): </label>
@@ -304,39 +290,26 @@
                 <button type="submit" class="sell-button" value="sell" th:text="#{trade_sell}">Sell</button>
             </form>    
             <br>
-                <h3 class="section-header" th:text="#{schedule_trade}">Schedule Order</h3>
+            
+                <h3 class="section-header">Schedule Order</h3>
                 <form th:action="@{/scheduleOrder}" method="post" class="schedule-form">
                     <label for="orderType" th:text="#{order_type}">Order Type: </label>
-                    <select id="orderType" name="action" required>
+                    <select id="orderType" name="action" class="sc_ipt" required>
                         <option value="buy" th:text="#{trade_buy}">Buy</option>
                         <option value="sell" th:text="#{trade_sell}">Sell</option>
                     </select>
                     <label for="orderAmount" th:text="#{schedule_trade_amount}">Enter Amount (KRW for Buy / BTC for Sell): </label>
-                    <input type="text" id="orderAmount" name="amount" th:placeholder="#{schedule_amount_placeholder}" required>
+                    <input type="text" id="orderAmount" name="amount" class="sc_ipt" th:placeholder="#{schedule_amount_placeholder}" required>
                     <label for="targetTime" th:text="#{schedule_trade_time}">Target Time (hh:mm:ss.SSS): </label>
-                    <input type="text" id="targetTime" name="targetTime" th:placeholder="#{schedule_time_placeholder}" required>
+                    <input type="text" id="targetTime" name="targetTime" class="sc_ipt" th:placeholder="#{schedule_time_placeholder}" required>
                     <button type="submit" class="schedule-button" th:text="#{schedule_trade}">Schedule Order</button>
                 </form>
-        
-                <table id="scheduledOrdersTable" class="orders-table">
-                    <thead>
-                        <tr class="table-header">
-                            <th class="table-cell" th:text="#{time}">Time</th>
-                            <th class="table-cell" th:text="#{action}">Action</th>
-                            <th class="table-cell" th:text="#{amount}">Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="table-row" th:each="entry : ${scheduledOrders}">
-                            <td th:text="${entry.key}" class="table-cell"></td>
-                            <td th:text="${entry.value.action}" class="table-cell"></td>
-                            <td th:text="${entry.value.amount}" class="table-cell"></td>
-                        </tr>
-                    </tbody>
-                </table>
         </div>
     </div>
 
-<script src="/assets/js/scripts.js" defer></script>
+<!-- <script src="/assets/js/scripts.js" defer></script> -->
+<script src="./assets/js/scripts.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </body>
 </html>
