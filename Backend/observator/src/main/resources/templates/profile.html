@@ -55,6 +55,9 @@
     <header class="header">
         <div class="logo" th:text="#{header_profile}"> 프로필 </div>
         <nav>
+            <div class="language-switcher">
+                <a href="?lang=en">English</a> | <a href="?lang=kr">한국어</a>
+            </div>
             <a href="/trade" th:text="#{header_dashboard}">대시보드</a>
             <a href="/profile" th:text="#{header_profile}">프로필</a>
             <a href="/home" th:text="#{header_home}">홈</a>

@@ -436,3 +436,84 @@ function addThresholdLevelToForm(form) {
     }
     hiddenInput.value = document.getElementById('hidden-Threshold-level').value;
 }
+///////////////////중복 주의
+// WebSocket 초기화
+const upbitSocket = new WebSocket('wss://api.upbit.com/websocket/v1');
+
+// 최근 체결 데이터 저장 배열
+let recentTrades = [];
+
+// 체결 데이터 테이블
+const tradeTableBody = document.getElementById('tradeTableBody');
+
+// WebSocket 연결
+upbitSocket.onopen = () => {
+    console.log('WebSocket Connected');
+    // 업비트 WebSocket 구독 메시지 (KRW-BTC 체결 정보)
+    const subscribeMessage = [
+        { ticket: "test" },
+        { type: "trade", codes: ["KRW-BTC"] }
+    ];
+    upbitSocket.send(JSON.stringify(subscribeMessage));
+};
+
+// 메시지 수신
+upbitSocket.onmessage = async (event) => {
+    try {
+        // Blob 데이터를 텍스트로 변환
+        const textData = await event.data.text();
+        const data = JSON.parse(textData); // JSON으로 변환
+        if (data.type === 'trade') {
+            // 체결가와 체결량 추가
+            const tradePrice = data.trade_price; // 체결가
+            const tradeVolume = data.trade_volume; // 체결량
+
+            // 최근 데이터에 추가
+            recentTrades.unshift({ price: tradePrice, volume: tradeVolume });
+            
+            // 최근 10개 데이터 유지
+            if (recentTrades.length > 5) {
+                recentTrades.pop();
+            }
+
+            // 테이블 업데이트
+            updateTable();
+        }
+    } catch (error) {
+        console.error('Error parsing WebSocket message:', error);
+    }
+};
+
+// 테이블 업데이트 함수
+function updateTable() {
+    // 테이블 내용 초기화
+    tradeTableBody.innerHTML = '';
+
+    // 최근 데이터 추가
+    recentTrades.forEach((trade) => {
+        const row = document.createElement('tr');
+        row.className = 'upbit-realtime-tr';
+
+        const priceCell = document.createElement('td');
+        priceCell.className = 'upbit-realtime-td';
+        priceCell.textContent = `${trade.price.toLocaleString()} KRW`;
+
+        const volumeCell = document.createElement('td');
+        volumeCell.className = 'upbit-realtime-td';
+        volumeCell.textContent = `${trade.volume.toFixed(4)}`;
+
+        row.appendChild(priceCell);
+        row.appendChild(volumeCell);
+        tradeTableBody.appendChild(row);
+    });
+}
+
+// WebSocket 에러 처리
+upbitSocket.onerror = (error) => {
+    console.error('WebSocket Error:', error);
+};
+
+// WebSocket 종료
+upbitSocket.onclose = () => {
+    console.log('WebSocket Disconnected');
+};
