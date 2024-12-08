@@ -16,10 +16,9 @@
                 <a th:href="@{/profile}" class="button" th:text="#{go_to_profile}">Go to Profile</a>
                 <a th:href="@{/trade}" class="button secondary" th:text="#{go_to_trade}">Go to Trade Page</a>
             </div>
-            <br>
             <div class="logout-container">
                 <form th:action="@{/logout}" method="post">
-                    <button style="padding: 20px" type="submit" class="logout-button" th:text="#{logout}">Logout</button>
+                    <button type="submit" class="logout-button" th:text="#{logout}">Logout</button>
                 </form>
             </div>
         </div>
