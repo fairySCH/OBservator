@@ -2,8 +2,36 @@
 <html>
 <head>
     <title>OBservator - Login</title>
-    <link rel="stylesheet" href="./css/styles-login.css">
-
+    <link rel="stylesheet" href="/assets/css/login.css">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+        .login-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+    </style>
 </head>
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script>
