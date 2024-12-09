@@ -101,7 +101,7 @@
                         <input type="hidden" id="hidden-Threshold-level" name="ThresholdLevel" value="1">
                         <br>
                     </div>
-                    <form id="form1", th:action="@{/start}" method="post" th:style="${showForm == 'form1' ? 'display: block;' : 'display: none;'}" onsubmit="addThresholdLevelToForm(this)">
+                    <form id="form1" th:action="@{/start}" method="post" style="display: block;" onsubmit="addThresholdLevelToForm(this); return handleForm1Click();">
                         <button type="submit" style="
                             margin-top: 10px;
                             padding: 10px 140px;
@@ -120,7 +120,7 @@
                         </button>
                     </form>
 
-                    <form id="form2" th:action="@{/change}" method="post" th:style="${showForm == 'form2' ? 'display: block;' : 'display: none;'}" onsubmit="addThresholdLevelToForm(this)">
+                    <form id="form2" th:action="@{/change}" method="post" style="display: none;" onsubmit="addThresholdLevelToForm(this); return handleForm2Click();">
                         <button type="submit" style="
                             margin-top: 10px;
                             padding: 10px 140px;
@@ -139,7 +139,7 @@
                         </button>
                     </form>
                     
-                    <form id="form3" style="display: flex; margin-top: 10px;" th:action="@{/end}" method="post">
+                    <form id="form3" style="display: flex; margin-top: 10px;" th:action="@{/end}" method="post" onsubmit=handleForm3Click()>
                         <button type="submit" style="
                             padding: 10px 140px;
                             font-size: 0.7rem;

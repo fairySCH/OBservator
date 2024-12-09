@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.happy.observator.service.UpbitService;
@@ -265,14 +267,19 @@ public class TradeController {
         }
     }
 
+    @ResponseBody
     @PostMapping("/start")
-    private String startTrade(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("ThresholdLevel") float thresholdLevel, Model model) {
-        String username = userDetails.getUsername();
-        User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
-        float threshold = thresholdLevel / 10000;
-        System.out.println("Received Threshold level: " + threshold + ". User ID: " + user.getId());
+    private Map<String, Object> startTrade(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("ThresholdLevel") float thresholdLevel) {
+        Map<String, Object> response = new HashMap<>();
 
         try {
+            String username = userDetails.getUsername();
+            User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+            float threshold = thresholdLevel / 10000;
+            System.out.println("Received Threshold level: " + threshold + ". User ID: " + user.getId());
+
+            response.put("success", true);
+
             // Python 스크립트를 실행
             ProcessBuilder processBuilder = new ProcessBuilder(
                 "python3",
@@ -319,31 +326,44 @@ public class TradeController {
 
             // 상태 업데이트
             isAutoTrading = true;
+            //response.put("newThreshold", thresholdLevel);
         } catch (Exception e) {
+            response.put("success", false);
+            response.put("error", e.getMessage());
             System.err.println("Failed to start Python script: " + e.getMessage());
         }
 
-        model.addAttribute("isAutoTrading", isAutoTrading); // 상태 전달
-        model.addAttribute("showForm", "form2");
-        return "trade";
+        //model.addAttribute("isAutoTrading", isAutoTrading); // 상태 전달
+        return response;
     }
 
+    @ResponseBody
     @PostMapping("/change")
-    private String changeTrade(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("ThresholdLevel") float thresholdLevel, Model model) {
-        String username = userDetails.getUsername();
-        User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
-        float threshold = thresholdLevel / 10000;
-        System.out.println("Received Threshold level: " + threshold + ". User ID: " + user.getId());
-        model.addAttribute("showForm", "form2");
+    private Map<String, Object> changeTrade(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("ThresholdLevel") float thresholdLevel) {
+        Map<String, Object> response = new HashMap<>();
+        try{
+            String username = userDetails.getUsername();
+            User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+            float threshold = thresholdLevel / 10000;
+            System.out.println("Received Threshold level: " + threshold + ". User ID: " + user.getId());
+            
+            response.put("success", true);
+
+            //Python 관련 집어넣는 곳
+
+            //response.put("newThreshold", thresholdLevel);
+        } catch (Exception e){
+            response.put("success", false);
+            response.put("error", e.getMessage());
+        }
         
-        return "trade";
+        return response;
     }
 
+    @ResponseBody
     @PostMapping("/end")
-    private String endTrade(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-        String username = userDetails.getUsername();
-        User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
-        System.out.println("End Trade User ID: " + user.getId());
+    private Map<String, Object> endTrade(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        Map<String, Object> response = new HashMap<>();
 
         // Python 프로세스 종료
         if (pythonProcess != null && pythonProcess.isAlive()) {
@@ -353,21 +373,29 @@ public class TradeController {
             System.out.println("No Python script is currently running.");
         }
 
-        // 특정 SSH 프로세스 종료
         try {
+            String username = userDetails.getUsername();
+            User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
+            System.out.println("End Trade User ID: " + user.getId());
+
+            response.put("success", true);
+
+            // 특정 SSH 프로세스 종료
             String killCommand = "ps -ef | grep 'ssh -v fairy@14.32.188.229' | grep -v grep | awk '{print $2}' | xargs kill -9";
             ProcessBuilder killProcessBuilder = new ProcessBuilder("bash", "-c", killCommand);
             Process killProcess = killProcessBuilder.start();
             killProcess.waitFor(); // 종료될 때까지 대기
             System.out.println("SSH process stopped successfully.");
+
+            // 상태 업데이트
+            isAutoTrading = false;
         } catch (Exception e) {
+            response.put("success", false);
+            response.put("error", e.getMessage());
             System.err.println("Failed to stop SSH process: " + e.getMessage());
         }
 
-        // 상태 업데이트
-        isAutoTrading = false;
-        model.addAttribute("isAutoTrading", isAutoTrading); // 상태 전달
-        model.addAttribute("showForm", "form1");
-        return "trade";
+        //model.addAttribute("isAutoTrading", isAutoTrading); // 상태 전달
+        return response;
     }
 }
