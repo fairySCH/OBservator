@@ -733,23 +733,216 @@ async function fetchMonthData() {
 initializeMonthChart();
 fetchMonthData();
 
+// 3개월 데이터 저장
+const threeMonthData = {
+    timestamps: [], // 날짜 데이터
+    prices: []      // 가격 데이터
+};
+
+// 6개월 데이터 저장
+const sixMonthData = {
+    timestamps: [], // 날짜 데이터
+    prices: []      // 가격 데이터
+};
+
+// 차트 초기화 변수
+let btcThreeMonthChart;
+let btcSixMonthChart;
+
+// 3개월 차트 초기화
+function initializeThreeMonthChart() {
+    const ctx = document.getElementById("btcThreeMonthChart").getContext("2d");
+    btcThreeMonthChart = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: threeMonthData.timestamps, // X축 날짜
+            datasets: [{
+                label: "최근 3개월 비트코인 가격",
+                data: threeMonthData.prices,   // Y축 가격
+                borderColor: "rgba(255, 159, 64, 1)", // 선 색상 (오렌지색)
+                backgroundColor: "rgba(255, 159, 64, 0.2)", // 배경색 (투명 오렌지색)
+                tension: 0.4, // 부드러운 곡선
+                pointRadius: 3,
+                pointHoverRadius: 6,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    enabled: true,
+                    callbacks: {
+                        label: function (context) {
+                            const value = context.raw;
+                            return `가격: ${value.toLocaleString()} KRW`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: "날짜"
+                    },
+                    ticks: {
+                        maxTicksLimit: 15
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: "가격 (KRW)"
+                    },
+                    ticks: {
+                        callback: function (value) {
+                            return value.toLocaleString() + " KRW";
+                        }
+                    }
+                }
+            },
+            interaction: {
+                mode: "nearest",
+                intersect: false
+            }
+        }
+    });
+}
+
+// 6개월 차트 초기화
+function initializeSixMonthChart() {
+    const ctx = document.getElementById("btcSixMonthChart").getContext("2d");
+    btcSixMonthChart = new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: sixMonthData.timestamps, // X축 날짜
+            datasets: [{
+                label: "최근 6개월 비트코인 가격",
+                data: sixMonthData.prices,   // Y축 가격
+                borderColor: "rgba(54, 162, 235, 1)", // 선 색상 (파란색)
+                backgroundColor: "rgba(54, 162, 235, 0.2)", // 배경색 (투명 파란색)
+                tension: 0.4,
+                pointRadius: 3,
+                pointHoverRadius: 6,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    enabled: true,
+                    callbacks: {
+                        label: function (context) {
+                            const value = context.raw;
+                            return `가격: ${value.toLocaleString()} KRW`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    title: {
+                        display: true,
+                        text: "날짜"
+                    },
+                    ticks: {
+                        maxTicksLimit: 20
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: "가격 (KRW)"
+                    },
+                    ticks: {
+                        callback: function (value) {
+                            return value.toLocaleString() + " KRW";
+                        }
+                    }
+                }
+            },
+            interaction: {
+                mode: "nearest",
+                intersect: false
+            }
+        }
+    });
+}
+
+// 3개월 데이터 가져오기
+async function fetchThreeMonthData() {
+    const apiUrl = "/proxy/upbit/candles?market=KRW-BTC&count=91"; // 3개월 데이터 (90일)
+
+    try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+
+        // 데이터 처리
+        threeMonthData.timestamps = data.map((item) => item.candle_date_time_kst.split("T")[0]); // 날짜
+        threeMonthData.prices = data.map((item) => item.trade_price); // 종가
+
+        console.log("Fetched Three-Month Data:", threeMonthData);
+
+        // 차트 업데이트
+        btcThreeMonthChart.data.labels = threeMonthData.timestamps.reverse();
+        btcThreeMonthChart.data.datasets[0].data = threeMonthData.prices.reverse();
+        btcThreeMonthChart.update();
+    } catch (error) {
+        console.error("Error fetching three-month data:", error);
+    }
+}
+
+// 6개월 데이터 가져오기
+async function fetchSixMonthData() {
+    const apiUrl = "/proxy/upbit/candles?market=KRW-BTC&count=183"; // 6개월 데이터 (180일)
+
+    try {
+        const response = await fetch(apiUrl);
+        const data = await response.json();
+
+        // 데이터 처리
+        sixMonthData.timestamps = data.map((item) => item.candle_date_time_kst.split("T")[0]); // 날짜
+        sixMonthData.prices = data.map((item) => item.trade_price); // 종가
+
+        console.log("Fetched Six-Month Data:", sixMonthData);
+
+        // 차트 업데이트
+        btcSixMonthChart.data.labels = sixMonthData.timestamps.reverse();
+        btcSixMonthChart.data.datasets[0].data = sixMonthData.prices.reverse();
+        btcSixMonthChart.update();
+    } catch (error) {
+        console.error("Error fetching six-month data:", error);
+    }
+}
+
+// 차트 초기화 및 데이터 가져오기
+initializeThreeMonthChart();
+initializeSixMonthChart();
+fetchThreeMonthData();
+fetchSixMonthData();
+
 
 // --------------------
 
-
 function showChart(chartId) {
     // 모든 차트를 숨김
-    const charts = document.querySelectorAll('.chart-container');
-    charts.forEach(chart => chart.classList.add('hidden'));
+    const chartContainers = document.querySelectorAll('.chart-container');
+    chartContainers.forEach(container => container.classList.add('hidden'));
 
-    // 클릭된 차트만 표시
-    document.getElementById(`${chartId}-container`).classList.remove('hidden');
+    // 클릭된 차트 컨테이너만 표시
+    const selectedChartContainer = document.getElementById(`${chartId}-container`);
+    if (selectedChartContainer) {
+        selectedChartContainer.classList.remove('hidden');
+    }
 
-    // 모든 버튼의 활성화 상태 제거
+    // 버튼 활성화 상태 설정
     const buttons = document.querySelectorAll('.tab-button');
     buttons.forEach(button => button.classList.remove('active'));
 
     // 현재 버튼 활성화
-    const activeButton = document.querySelector(`button[onclick="showChart('${chartId}')"]`);
-    activeButton.classList.add('active');
+    event.target.classList.add('active');
 }
