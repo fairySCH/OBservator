@@ -38,7 +38,7 @@
                             <img class="bit_img" src="/assets/bit_sim.png" alt="">
                             <a th:text="#{bitcoin}">비트코인 BTC/KRW</a>
                         </div>
-                        <h7  class="current-price">-</h7>
+                        <h7  class="current-price">Loading...</h7>
                         <aa class="price-change">
                             <div class="price-stats">
                         
@@ -80,14 +80,13 @@
                 </div>
             </div>
 
-                
             <div id="box-right" class="section">
                 <h3 >
                     <span th:text="#{profit_threshold}"> Profit Threshold </span>
 
                     <span class="tooltip-icon">ℹ️
-                        <span class="tooltip-modal">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisl tincidunt eget nullam non. Quis hendrerit dolor magna eget est lorem ipsum dolor sit. Volutpat odio facilisis mauris sit amet massa. Commodo odio aenean sed adipiscing diam donec adipiscing tristique. Mi eget m
+                        <span class="tooltip-modal" th:text="#{explanation}">
+                            Threshold explanation
                         </span>
                     </span>
 
@@ -168,8 +167,8 @@
 <div>
     <div class="chart-tabs">
         <button class="tab-button active" onclick="showChart('btcChart')" th:text="#{current}">실시간</button>
-        <button class="tab-button" onclick="showChart('btcWeekChart')">최근 일주일</button>
-        <button class="tab-button" onclick="showChart('btcMonthChart')">최근 한 달</button>
+        <button class="tab-button" onclick="showChart('btcWeekChart')" th:text="#{week}">일주일</button>
+        <button class="tab-button" onclick="showChart('btcMonthChart')" th:text="#{month}">한달</button>
     </div>
     
     <div class="chart-container" id="btcChart-container">
