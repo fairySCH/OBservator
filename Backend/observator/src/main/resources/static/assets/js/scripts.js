@@ -403,17 +403,21 @@ function updateNewsTable(articles) {
     });
 }
 
-// url 변경 금지
+// form을 이벤트리스너에 삽입
 document.addEventListener("DOMContentLoaded", function () {
     // Attach submit event to all forms
     const forms = document.querySelectorAll("form");
     forms.forEach(form => {
-        form.addEventListener("submit", function (event) {
-            event.preventDefault(); // Prevent default form submission
-            submitForm(form.id);
-        });
+        form.removeEventListener("submit", handleSubmitEvent);
+        form.addEventListener("submit", handleSubmitEvent);
     });
 });
+
+// url 변경 금지
+function handleSubmitEvent(event) {
+    event.preventDefault(); // Prevent default form submission
+    submitForm(event.target.id); // Call submitForm with the form's ID
+}
 
 //자동매매용 AJAX
 function submitForm(formId) {
@@ -472,77 +476,6 @@ function handleForm3Click() {
     return false; // Prevent default form submission
 }
 
-//buy form용 AJAX
-function handleBuySubmit(event) {
-    const form = document.getElementById("buyForm");
-    const formData = new FormData(form);
-    const url = form.action;
-
-    fetch(url, {
-        method: "POST",
-        body: formData,
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error("Failed to submit form: " + response.statusText);
-        }
-        return response.json();
-    })
-    .then(data => {
-        const messageDiv = document.getElementById("buyMessage");
-        if (data.success) {
-            messageDiv.textContent = data.message;
-            messageDiv.style.color = "green";
-        } else {
-            messageDiv.textContent = data.message;
-            messageDiv.style.color = "red";
-        }
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        const messageDiv = document.getElementById("buyMessage");
-        messageDiv.textContent = "An error occurred: " + error.message;
-        messageDiv.style.color = "red";
-    });
-
-    return false; // Ensure no traditional submission occurs
-}
-
-//buy form용 AJAX
-function handleSellSubmit(event) {
-    const form = document.getElementById("sellForm");
-    const formData = new FormData(form);
-    const url = form.action;
-
-    fetch(url, {
-        method: "POST",
-        body: formData,
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error("Failed to submit form: " + response.statusText);
-        }
-        return response.json();
-    })
-    .then(data => {
-        const messageDiv = document.getElementById("sellMessage");
-        if (data.success) {
-            messageDiv.textContent = data.message;
-            messageDiv.style.color = "green";
-        } else {
-            messageDiv.textContent = data.message;
-            messageDiv.style.color = "red";
-        }
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        const messageDiv = document.getElementById("sellMessage");
-        messageDiv.textContent = "An error occurred: " + error.message;
-        messageDiv.style.color = "red";
-    });
-
-    return false; // Ensure no traditional submission occurs
-}
 ///////////////////중복 주의
 // WebSocket 초기화
 const upbitSocket = new WebSocket('wss://api.upbit.com/websocket/v1');
