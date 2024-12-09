@@ -17,7 +17,7 @@ public class ProxyController {
 
     @GetMapping("/proxy/upbit/candles")
     public ResponseEntity<Object> getCandles(@RequestParam String market, @RequestParam int count) {
-        String url = BASE_URL + "/candles/minutes/1?market=" + market + "&count=" + count;
+        String url = BASE_URL + "/candles/days?market=" + market + "&count=" + count;
         try {
             Object response = restTemplate.getForObject(url, Object.class);
             return ResponseEntity.ok(response);
@@ -47,4 +47,4 @@ public class ProxyController {
             return ResponseEntity.status(500).body("Error fetching ticker: " + e.getMessage());
         }
     }
-}
+} 

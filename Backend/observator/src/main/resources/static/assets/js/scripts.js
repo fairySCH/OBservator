@@ -162,25 +162,6 @@ function initializeWebSocketConnections() {
     okxWebSocket.onclose = () => {
         console.log("WebSocket 연결 종료");
     };
-
-    // 다른 암호화폐 가격을 가져오기 위한 WebSocket 설정
-    // const otherPricesWebSocket = new WebSocket("wss://api.upbit.com/websocket/v1");
-    // otherPricesWebSocket.onopen = () => {
-    //     const payload = [
-    //         { "ticket": "test" },
-    //         { "type": "ticker", "codes": ["KRW-BTC", "KRW-ETH", "KRW-XRP"] }
-    //     ];
-    //     otherPricesWebSocket.send(JSON.stringify(payload));
-    // };
-
-    // otherPricesWebSocket.onmessage = (event) => {
-    //     const reader = new FileReader();
-    //     reader.onload = function () {
-    //         const data = JSON.parse(reader.result);
-    //         updateCryptoPrices(data);
-    //     };
-    //     reader.readAsText(event.data);
-    // };
 }
 
 // 페이지의 티커 데이터를 업데이트하는 함수
