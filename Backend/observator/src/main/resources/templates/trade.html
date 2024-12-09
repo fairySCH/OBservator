@@ -277,7 +277,7 @@
         <div class="trade-section">
             <h3 class="section-header" th:text="#{trade_bitcoin}">Trade Bitcoin</h3>
             <!-- Buy Button Form -->
-            <form id="buyForm" th:action="@{/buy}" method="post" class="trade-form" onsubmit="return handleBuySubmit(event);">
+            <form id="buyForm" th:action="@{/buy}" method="post" class="trade-form">
                 <label for="buy-price" th:text="#{trade_buy_price}">Price to Buy (KRW): </label>
                 <input type="text" id="buy-price" name="price" th:placeholder="#{buy_placeholder}" required>
                 <button type="submit" class="buy-button" value="buy" th:text="#{trade_buy}">Buy</button>
@@ -285,7 +285,7 @@
             <div id="buyMessage"></div>
             <br>
             <!-- Sell Button Form -->
-            <form id="sellForm" th:action="@{/sell}" method="post" class="trade-form" onsubmit="return handleSellSubmit(event);">
+            <form id="sellForm" th:action="@{/sell}" method="post" class="trade-form">
                 <label for="sell-volume" th:text="#{trade_sell_volume}">Volume to Sell (BTC): </label>
                 <input type="text" id="sell-volume" name="volume" th:placeholder="#{sell_placeholder}" required>
                 <button type="submit" class="sell-button" value="sell" th:text="#{trade_sell}">Sell</button>
