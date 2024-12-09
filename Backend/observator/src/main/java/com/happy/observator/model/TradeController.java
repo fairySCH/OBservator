@@ -190,12 +190,15 @@ public class TradeController {
         return "redirect:/trade";  // Render the same page with success or error message
     }
     */
+    @ResponseBody
     @PostMapping("/scheduleOrder")
-    public String scheduleOrderBitcoin(@AuthenticationPrincipal UserDetails userDetails, @RequestParam String action, @RequestParam String amount, @RequestParam String targetTime, Model model) {
+    public Map<String, Object> scheduleOrderBitcoin(@AuthenticationPrincipal UserDetails userDetails, @RequestParam String action, @RequestParam String amount, @RequestParam String targetTime, Model model) {
+        Map<String, Object> response = new HashMap<>();
         String username = userDetails.getUsername();
         User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
         
-        // Create a unique ID for the order
+        try{
+            // Create a unique ID for the order
         String orderId = UUID.randomUUID().toString();
 
         // Check if there's an existing order for the target time and delete it
@@ -215,15 +218,20 @@ public class TradeController {
         long delay = Duration.between(now, target).toMillis();
         
         if (delay < 0) {
-            model.addAttribute("errorMessage", "Target time has already passed.");
-            return "redirect:/trade";
+            response.put("success", false);
+            response.put("message", "Target time has already passed.");
+            return response;
         }
 
         scheduler.schedule(() -> executeOrder(order, user), delay, TimeUnit.MILLISECONDS);
-        model.addAttribute("successMessage", action + " order scheduled for " + targetTime);
-        model.addAttribute("scheduledOrders", scheduledOrders);  // Add orders to the model
+        response.put("success", true);
+        response.put("message", action + " order scheduled for " + targetTime);
 
-        return "redirect:/trade";  // Render the same page with success or error message
+        }catch (Exception e) {
+        response.put("success", false);
+        response.put("message", "Error scheduling order: " + e.getMessage());
+        }
+        return response;  // Render the same page with success or error message
     }
 
     private void executeOrder(S_Order order, User user) {

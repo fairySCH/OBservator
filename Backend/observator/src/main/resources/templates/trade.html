@@ -166,11 +166,11 @@
                                
            <div>
             <div class="chart-tabs">
-                <button class="tab-button active" onclick="showChart('btcChart')">실시간</button>
-                <button class="tab-button" onclick="showChart('btcWeekChart')">일주일</button>
-                <button class="tab-button" onclick="showChart('btcMonthChart')">1개월</button>
-                <button class="tab-button" onclick="showChart('btcThreeMonthChart')">3개월</button>
-                <button class="tab-button" onclick="showChart('btcSixMonthChart')">6개월</button>
+                <button class="tab-button active" onclick="showChart('btcChart')" th:text="#{current}">실시간</button>
+                <button class="tab-button" onclick="showChart('btcWeekChart')" th:text="#{week}">일주일</button>
+                <button class="tab-button" onclick="showChart('btcMonthChart')" th:text="#{month_1}">1개월</button>
+                <button class="tab-button" onclick="showChart('btcThreeMonthChart')" th:text="#{month_3}">3개월</button>
+                <button class="tab-button" onclick="showChart('btcSixMonthChart')" th:text="#{month_6}">6개월</button>
             </div>
             
             <div class="chart-container" id="btcChart-container">
@@ -216,7 +216,7 @@
                     </p>
                     <p>
                         <span th:text="#{profit_loss}">Profit/Loss: </span>
-                        <span id="profit-loss">+0 KRW</span>
+                        <span id="profit-loss">+0% KRW</span>
                     </p>
                 </div>
                 <div class="asset-breakdown">
@@ -302,7 +302,7 @@
             <br>
             
                 <h3 class="section-header" th:text="#{s_order}">Schedule Order</h3>
-                <form th:action="@{/scheduleOrder}" method="post" class="schedule-form">
+                <form id="scheduleForm" th:action="@{/scheduleOrder}" method="post" class="schedule-form">
                     <label for="orderType" th:text="#{order_type}">Order Type: </label>
                     <select id="orderType" name="action" class="sc_ipt" required>
                         <option value="buy" th:text="#{trade_buy}">Buy</option>
@@ -314,6 +314,7 @@
                     <input type="text" id="targetTime" name="targetTime" class="sc_ipt" th:placeholder="#{schedule_time_placeholder}" required>
                     <button type="submit" class="schedule-button" th:text="#{schedule_trade}">Schedule Order</button>
                 </form>
+                <div id="scheduleMessage"></div>
         </div>
     </div>
 
