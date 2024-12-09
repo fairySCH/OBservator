@@ -78,32 +78,40 @@ public class TradeController {
         return "trade";  // Return the name of the template (trade.html)
     }
 
+    @ResponseBody
     @PostMapping("/buy")
-    public String buyBitcoin(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("price") String price, Model model) {
+    public Map<String, Object> buyBitcoin(@AuthenticationPrincipal UserDetails userDetails, String price) {
+        Map<String, Object> response = new HashMap<>();
         String username = userDetails.getUsername();
         User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
         try {
-            String response = upbitService.placeBuyOrder(user.getUpbitAccessKey(), user.getUpbitSecretKey(), "KRW-BTC", price);
-            model.addAttribute("successMessage", "Buy order placed successfully: " + response);
+            upbitService.placeBuyOrder(user.getUpbitAccessKey(), user.getUpbitSecretKey(), "KRW-BTC", price);
+            response.put("success", true);
+            response.put("message", "Buy order placed successfully");
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Failed to place buy order: " + e.getMessage());
+            response.put("success", false);
+            response.put("message", "Failed to place buy order: " + e.getMessage());
         }
 
-        return "redirect:/trade";  // Render the same page with success or error message
+        return response;  // Render the same page with success or error message
     }
 
+    @ResponseBody
     @PostMapping("/sell")
-    public String sellBitcoin(@AuthenticationPrincipal UserDetails userDetails, @RequestParam("volume") String volume, Model model) {
+    public Map<String, Object> sellBitcoin(@AuthenticationPrincipal UserDetails userDetails, String volume) {
+        Map<String, Object> response = new HashMap<>();
         String username = userDetails.getUsername();
         User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
         try {
-            String response = upbitService.placeSellOrder(user.getUpbitAccessKey(), user.getUpbitSecretKey(), "KRW-BTC", volume);
-            model.addAttribute("successMessage", "Sell order placed successfully: " + response);
+            upbitService.placeSellOrder(user.getUpbitAccessKey(), user.getUpbitSecretKey(), "KRW-BTC", volume);
+            response.put("success", true);
+            response.put("message", "Sell order placed successfully");
         } catch (Exception e) {
-            model.addAttribute("errorMessage", "Failed to place sell order: " + e.getMessage());
+            response.put("success", false);
+            response.put("message", "Failed to place sell order: " + e.getMessage());
         }
 
-        return "redirect:/trade";  // Render the same page with success or error message
+        return response;  // Render the same page with success or error message
     }
 
     @PostMapping("/order")
