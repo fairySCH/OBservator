@@ -425,6 +425,40 @@ function updateNewsTable(articles) {
     });
 }
 
+// url 변경 금지
+document.addEventListener("DOMContentLoaded", function () {
+    // Attach submit event to all forms
+    const forms = document.querySelectorAll("form");
+    forms.forEach(form => {
+        form.addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent default form submission
+            submitForm(form.id);
+        });
+    });
+});
+
+//자동매매용 AJAX
+function submitForm(formId) {
+        const form = document.getElementById(formId);
+        const formData = new FormData(form);
+        const url = form.action;
+
+        fetch(url, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json()) // Expect JSON response
+        .then(data => {
+            if (data.success) {
+                // Update the UI based on the response
+                console.log('Form submitted successfully:', data);
+            } else {
+                console.error('Form submission error:', data.error);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
 // 자동 트레이드 버튼에 threshold 정보 삽입
 function addThresholdLevelToForm(form) {
     let hiddenInput = form.querySelector('input[name="ThresholdLevel"]');
@@ -435,6 +469,29 @@ function addThresholdLevelToForm(form) {
         form.appendChild(hiddenInput);
     }
     hiddenInput.value = document.getElementById('hidden-Threshold-level').value;
+}
+//form button display 설정
+function handleForm1Click() {
+    // Show Form 2 and keep Form 3 visible
+    document.getElementById("form2").style.display = "block";
+    document.getElementById("form3").style.display = "block";
+    document.getElementById("form1").style.display = "none"; // Hide Form 1
+    return false; // Prevent default form submission
+}
+
+function handleForm2Click() {
+    // Keep Form 2 and Form 3 visible
+    document.getElementById("form2").style.display = "block";
+    document.getElementById("form3").style.display = "block";
+    return false; // Prevent default form submission
+}
+
+function handleForm3Click() {
+    // Show Form 1 and keep Form 3 visible
+    document.getElementById("form1").style.display = "block";
+    document.getElementById("form3").style.display = "block";
+    document.getElementById("form2").style.display = "none"; // Hide Form 2
+    return false; // Prevent default form submission
 }
 ///////////////////중복 주의
 // WebSocket 초기화
