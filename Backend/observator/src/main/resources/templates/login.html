@@ -82,6 +82,9 @@
     
     <div class="login-container">
         <h1>OBservator</h1>
+        <div class="language-switcher">
+        <a href="?lang=en">English</a> | <a href="?lang=kr">한국어</a>
+        </div>
         <form th:action="@{/login}" method="post">
             <div>
                 <input type="text" id="username" name="username" th:placeholder="#{ID_placeholder}">
@@ -92,15 +95,6 @@
             <div id="error-message" class="error-message" th:if="${param.error}" style="color: red; font-size: 0.9em;" th:text="#{login_error}">
                 로그인 실패. 아이디와 비밀번호를 확인해주세요.
             </div>
-            <div class="remember-container">
-                <div>
-                    <input type="checkbox" id="remember" name="remember">
-                    <label for="remember">아이디 저장</label>
-                </div>
-                <div>
-                    <a href="/find-id">아이디 찾기</a> | <a href="/find-password">비밀번호 찾기</a>
-                </div>
-            </div>
             <div>
                 <button type="submit" class="login-button" th:text="#{login}">로그인</button>
             </div>
@@ -108,16 +102,7 @@
                 <button type="button" class="signup-button" onclick="location.href='/signup'" th:text="#{signup}">회원가입</button>
             </div>
         </form>
-        <!--<div class="social-login">
-            <p>소셜 계정으로 로그인</p>
-            <div id="g_id_onload"
-                data-client_id="1052925642956-2550ukjm4u2qms261ukbl189hncdngfd.apps.googleusercontent.com"
-                data-callback="handleCredentialResponse"
-                data-auto_prompt="false">
-            </div>
-            Google Sign-In 버튼이 렌더링될 요소
-            <div class="g_id_signin"></div>
-        </div> -->
     </div>
+    
 </body>
 </html>
