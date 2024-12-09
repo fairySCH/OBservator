@@ -471,6 +471,78 @@ function handleForm3Click() {
     document.getElementById("form2").style.display = "none"; // Hide Form 2
     return false; // Prevent default form submission
 }
+
+//buy form용 AJAX
+function handleBuySubmit(event) {
+    const form = document.getElementById("buyForm");
+    const formData = new FormData(form);
+    const url = form.action;
+
+    fetch(url, {
+        method: "POST",
+        body: formData,
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Failed to submit form: " + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        const messageDiv = document.getElementById("buyMessage");
+        if (data.success) {
+            messageDiv.textContent = data.message;
+            messageDiv.style.color = "green";
+        } else {
+            messageDiv.textContent = data.message;
+            messageDiv.style.color = "red";
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        const messageDiv = document.getElementById("buyMessage");
+        messageDiv.textContent = "An error occurred: " + error.message;
+        messageDiv.style.color = "red";
+    });
+
+    return false; // Ensure no traditional submission occurs
+}
+
+//buy form용 AJAX
+function handleSellSubmit(event) {
+    const form = document.getElementById("sellForm");
+    const formData = new FormData(form);
+    const url = form.action;
+
+    fetch(url, {
+        method: "POST",
+        body: formData,
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Failed to submit form: " + response.statusText);
+        }
+        return response.json();
+    })
+    .then(data => {
+        const messageDiv = document.getElementById("sellMessage");
+        if (data.success) {
+            messageDiv.textContent = data.message;
+            messageDiv.style.color = "green";
+        } else {
+            messageDiv.textContent = data.message;
+            messageDiv.style.color = "red";
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        const messageDiv = document.getElementById("sellMessage");
+        messageDiv.textContent = "An error occurred: " + error.message;
+        messageDiv.style.color = "red";
+    });
+
+    return false; // Ensure no traditional submission occurs
+}
 ///////////////////중복 주의
 // WebSocket 초기화
 const upbitSocket = new WebSocket('wss://api.upbit.com/websocket/v1');
