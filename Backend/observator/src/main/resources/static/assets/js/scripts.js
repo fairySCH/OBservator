@@ -1,25 +1,3 @@
-// const socket = new WebSocket("wss://14.32.188.229:8765");
-
-// socket.onerror = function (error) {
-//     console.error("WebSocket error:", error);
-// };
-
-// socket.onclose = function (event) {
-//     console.log("WebSocket closed:", event);
-// };
-//     // WebSocket 이벤트 처리
-// socket.onopen = function () {
-//     console.log("Connected to WebSocket server!");
-
-//     // 서버에 메시지 전송
-//     const message = {
-//         type: "init",
-//         content: "Hello, Server! Client connected.",
-//     };
-//     socket.send(JSON.stringify(message));
-//     console.log("Message sent to server:", message);
-// };
-
 // WebSocket을 통해 ML서버 연결
 const serverWebSocket = new WebSocket("wss://14.32.188.229:8765");
 
@@ -186,23 +164,23 @@ function initializeWebSocketConnections() {
     };
 
     // 다른 암호화폐 가격을 가져오기 위한 WebSocket 설정
-    const otherPricesWebSocket = new WebSocket("wss://api.upbit.com/websocket/v1");
-    otherPricesWebSocket.onopen = () => {
-        const payload = [
-            { "ticket": "test" },
-            { "type": "ticker", "codes": ["KRW-BTC", "KRW-ETH", "KRW-XRP"] }
-        ];
-        otherPricesWebSocket.send(JSON.stringify(payload));
-    };
+    // const otherPricesWebSocket = new WebSocket("wss://api.upbit.com/websocket/v1");
+    // otherPricesWebSocket.onopen = () => {
+    //     const payload = [
+    //         { "ticket": "test" },
+    //         { "type": "ticker", "codes": ["KRW-BTC", "KRW-ETH", "KRW-XRP"] }
+    //     ];
+    //     otherPricesWebSocket.send(JSON.stringify(payload));
+    // };
 
-    otherPricesWebSocket.onmessage = (event) => {
-        const reader = new FileReader();
-        reader.onload = function () {
-            const data = JSON.parse(reader.result);
-            updateCryptoPrices(data);
-        };
-        reader.readAsText(event.data);
-    };
+    // otherPricesWebSocket.onmessage = (event) => {
+    //     const reader = new FileReader();
+    //     reader.onload = function () {
+    //         const data = JSON.parse(reader.result);
+    //         updateCryptoPrices(data);
+    //     };
+    //     reader.readAsText(event.data);
+    // };
 }
 
 // 페이지의 티커 데이터를 업데이트하는 함수
@@ -646,7 +624,7 @@ function initializeWeekChart() {
 
 // Upbit API를 통해 최근 7일 데이터 가져오기
 async function fetchWeekData() {
-    const apiUrl = "https://api.upbit.com/v1/candles/days?market=KRW-BTC&count=7";
+    const apiUrl = "/proxy/upbit/candles?market=KRW-BTC&count=7";
 
     try {
         const response = await fetch(apiUrl);
@@ -744,7 +722,7 @@ function initializeMonthChart() {
 
 // Upbit API를 통해 최근 한 달 데이터 가져오기
 async function fetchMonthData() {
-    const apiUrl = "https://api.upbit.com/v1/candles/days?market=KRW-BTC&count=30";
+    const apiUrl = "/proxy/upbit/candles?market=KRW-BTC&count=30";
 
     try {
         const response = await fetch(apiUrl);
