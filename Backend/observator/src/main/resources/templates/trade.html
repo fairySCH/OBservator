@@ -55,9 +55,11 @@
                                 </div>
                                 <div class="additional-info">
                                     <span th:text="#{h_trade}">24h 총거래 : </span>
+                                    <br>
                                     <span class="volume">8,149.673 BTC</span>
                                     <br>
                                     <span th:text="#{h_tradeamount}">24h 총거래액 : </span>
+                                    <br>
                                     <span class="trade-amount">1,084,180,672,622</span>
                                 </div>
                             </div>
@@ -67,10 +69,10 @@
                 <div class="exchange-prices">
                     <table class="exchange-table">
                         <tr>
-                            <td class="exchange-name" style="color: #007BFF;" th:text="#{bitFlyer}">비트플라이어</td>
+                            <td class="exchange-name" style="color: #007BFF;" th:text="#{bitFlyer}">bitFlyer</td>
                             <td id="bitflyer-price">-</td>
                             
-                            <td class="exchange-name" style="color: #28a745;" th:text="#{Binance}">바이낸스</td>
+                            <td class="exchange-name" style="color: #28a745;" th:text="#{Binance}">Binance</td>
                             <td id="binance-price">-</td>
                             
                             <td class="exchange-name" style="color: chocolate;">OKX</td>
@@ -166,11 +168,11 @@
                                
            <div>
             <div class="chart-tabs">
-                <button class="tab-button active" onclick="showChart('btcChart')">실시간</button>
-                <button class="tab-button" onclick="showChart('btcWeekChart')">일주일</button>
-                <button class="tab-button" onclick="showChart('btcMonthChart')">1개월</button>
-                <button class="tab-button" onclick="showChart('btcThreeMonthChart')">3개월</button>
-                <button class="tab-button" onclick="showChart('btcSixMonthChart')">6개월</button>
+                <button class="tab-button active" onclick="showChart('btcChart')" th:text="#{current}">실시간</button>
+                <button class="tab-button" onclick="showChart('btcWeekChart')" th:text="#{week}">일주일</button>
+                <button class="tab-button" onclick="showChart('btcMonthChart')" th:text="#{1month}">1개월</button>
+                <button class="tab-button" onclick="showChart('btcThreeMonthChart')" th:text="#{3month}">3개월</button>
+                <button class="tab-button" onclick="showChart('btcSixMonthChart')" th:text="#{6month}">6개월</button>
             </div>
             
             <div class="chart-container" id="btcChart-container">
