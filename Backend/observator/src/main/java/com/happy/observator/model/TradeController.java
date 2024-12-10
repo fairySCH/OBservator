@@ -283,7 +283,7 @@ public class TradeController {
         try {
             String username = userDetails.getUsername();
             User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
-            float threshold = thresholdLevel / 10000;
+            float threshold = thresholdLevel;
             System.out.println("Received Threshold level: " + threshold + ". User ID: " + user.getId());
 
             response.put("success", true);
@@ -352,7 +352,7 @@ public class TradeController {
         try{
             String username = userDetails.getUsername();
             User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
-            float threshold = thresholdLevel / 10000;
+            float threshold = thresholdLevel;
             System.out.println("Received Threshold level: " + threshold + ". User ID: " + user.getId());
             
             response.put("success", true);
