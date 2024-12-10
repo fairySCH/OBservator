@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
+// import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -41,7 +41,7 @@ public class TradeController {
     private final UpbitService upbitService;
     private final OrderRepositary orderRepository;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-    private final Map<LocalTime, S_Order> scheduledOrders = new ConcurrentHashMap<>();
+    // private final Map<LocalTime, S_Order> scheduledOrders = new ConcurrentHashMap<>();
     private Process pythonProcess;
     private boolean isAutoTrading = false;
 
@@ -291,7 +291,7 @@ public class TradeController {
         try {
             String username = userDetails.getUsername();
             User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
-            float threshold = thresholdLevel / 10000;
+            float threshold = thresholdLevel;
             System.out.println("Received Threshold level: " + threshold + ". User ID: " + user.getId());
 
             response.put("success", true);
@@ -342,7 +342,7 @@ public class TradeController {
 
             // 상태 업데이트
             isAutoTrading = true;
-            //response.put("newThreshold", thresholdLevel);
+            // response.put("newThreshold", thresholdLevel);
         } catch (Exception e) {
             response.put("success", false);
             response.put("error", e.getMessage());
@@ -360,7 +360,7 @@ public class TradeController {
         try{
             String username = userDetails.getUsername();
             User user = userService.findByUsername(username).orElseThrow(() -> new RuntimeException("User not found"));
-            float threshold = thresholdLevel / 10000;
+            float threshold = thresholdLevel;
             System.out.println("Received Threshold level: " + threshold + ". User ID: " + user.getId());
             
             response.put("success", true);

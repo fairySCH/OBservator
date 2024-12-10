@@ -321,14 +321,14 @@ function fetchBalances() {
                     baseValue += parseFloat(balance.balance)
                 }
             });
-            profitValue = totalValue / baseValue;
+            profitValue = totalValue - baseValue;
 
             // Update total value in the DOM
             totalValueElement.textContent = `${totalValue.toFixed(2).toLocaleString()} KRW`;
             if (profitValue >= 0){
-                ProfitValueElement.textContent = `+ ${profitValue.toFixed(2).toLocaleString()}% KRW`;
+                ProfitValueElement.textContent = `+ ${profitValue.toFixed(2).toLocaleString()} KRW`;
             } else {
-                ProfitValueElement.textContent = `${profitValue.toFixed(2).toLocaleString()}% KRW`;
+                ProfitValueElement.textContent = `${profitValue.toFixed(2).toLocaleString()} KRW`;
             }
             BTCValueElement.textContent = `${BTCValue.toFixed(2).toLocaleString()} KRW`;
             KRWValueElement.textContent = `${KRWValue.toFixed(2).toLocaleString()} KRW`;
