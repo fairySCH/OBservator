@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bitcoin Dashboard</title>
-
     <link rel="stylesheet" href="./assets/css/trade.css">
+    <script src="./assets/js/scripts.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -18,18 +18,15 @@
                 <a href="?lang=en" class="language-button">English</a> |
                 <a href="?lang=kr" class="language-button">한국어</a>
             </div>
-    
             <!-- 페이지 이동 버튼 -->
             <a href="/trade" class="page-button" th:text="#{header_dashboard}">대시보드</a>
             <a href="/profile" class="page-button active" th:text="#{header_profile}">프로필</a>
             <a href="/home" class="page-button" th:text="#{header_home}">홈</a>
-    
             <!-- 로그아웃 버튼 -->
             <a href="/logout" class="logout-button" th:text="#{header_logout}">로그아웃</a>
             <a href="#about"></a>
         </nav>
     </header>
-
     <div class="container">
         <!-- 매인 차트 -->
         <div class="left-panel">
@@ -258,11 +255,9 @@
                     <tbody id="tradeTableBody">
                         <!-- 실시간 데이터가 여기에 추가됩니다 -->
                     </tbody>
-                </table>
-                                
+                </table>          
             </div>
         </div>
-
         <!-- 누적호가창 -->
         <div class="accumulated-orderbook-container">
             <h3 class="orderbook-header" th:text="#{orderbook}">누적호가창</h3>
@@ -323,9 +318,5 @@
                 <div id="scheduleMessage"></div>
         </div>
     </div>
-
-<script src="./assets/js/scripts.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 </body>
 </html>
