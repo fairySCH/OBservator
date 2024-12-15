@@ -903,12 +903,12 @@ body {
 }
 
 #auto-trade-status.running {
-    color: #28a745; /* 초록색 텍스트 */
-    background-color: #e9f7ef; /* 연한 초록색 배경 */
+    color: #28a745;
+    background-color: #e9f7ef;
 }
 
 #auto-trade-status.stopped {
-    color: #dc3545; /* 빨간색 텍스트 */
-    background-color: #f8d7da; /* 연한 빨간색 배경 */
+    color: #dc3545;
+    background-color: #f8d7da;
 }
 

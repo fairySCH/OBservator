@@ -76,7 +76,7 @@
                 </div>
             </div>
             <div id="box-right" class="section">
-                <h3 >
+                <h3>
                     <span th:text="#{profit_threshold}"> Profit Threshold </span>
                     <span class="tooltip-icon">ℹ️
                         <span class="tooltip-modal" th:text="#{explanation}">
@@ -281,7 +281,11 @@
                 <input type="text" id="buy-price" name="price" th:placeholder="#{buy_placeholder}" required>
                 <button type="submit" class="buy-button" value="buy" th:text="#{trade_buy}">Buy</button>
             </form>
-            <div id="buyMessage"></div>
+            <div id="buyMessage" 
+                th:data-lang-buy-success="#{buy_success}" 
+                th:data-lang-buy-fail="#{buy_fail}" 
+                th:data-lang-error="#{buy_error}">
+            </div>
             <br>
             <!-- Sell Button Form -->
             <form id="sellForm" th:action="@{/sell}" method="post" class="trade-form">
@@ -289,7 +293,11 @@
                 <input type="text" id="sell-volume" name="volume" th:placeholder="#{sell_placeholder}" required>
                 <button type="submit" class="sell-button" value="sell" th:text="#{trade_sell}">Sell</button>
             </form>
-            <div id="sellMessage"></div>
+            <div id="sellMessage" 
+                th:data-lang-sell-success="#{sell_success}" 
+                th:data-lang-sell-fail="#{sell_fail}" 
+                th:data-lang-error="#{sell_error}">
+            </div>
             <br>
                 <h3 class="section-header" th:text="#{s_order}">Schedule Order</h3>
                 <form id="scheduleForm" th:action="@{/scheduleOrder}" method="post" class="schedule-form">
