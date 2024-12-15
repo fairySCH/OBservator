@@ -22,12 +22,9 @@
         </nav>
     </header>
 
-
     <div class="container">
-    
         <!-- 매인 차트 -->
         <div class="left-panel">
-            
             <div class="chart-section">
            <div id="real_chart">
             <div id="box-left">
@@ -41,7 +38,6 @@
                         <h7  class="current-price">Loading...</h7>
                         <aa class="price-change">
                             <div class="price-stats">
-                        
                                 <div>
                                     <span class="change-percent">+2.07%</span>
                                     <span class="change-amount">▲ 2,756,000</span>
@@ -71,27 +67,22 @@
                         <tr>
                             <td class="exchange-name" style="color: #007BFF;" th:text="#{bitFlyer}">bitFlyer</td>
                             <td id="bitflyer-price">-</td>
-                            
                             <td class="exchange-name" style="color: #28a745;" th:text="#{Binance}">Binance</td>
                             <td id="binance-price">-</td>
-                            
                             <td class="exchange-name" style="color: chocolate;">OKX</td>
                             <td id="okx-price">-</td>
                         </tr>
                     </table>
                 </div>
             </div>
-
             <div id="box-right" class="section">
                 <h3 >
                     <span th:text="#{profit_threshold}"> Profit Threshold </span>
-
                     <span class="tooltip-icon">ℹ️
                         <span class="tooltip-modal" th:text="#{explanation}">
                             Threshold explanation
                         </span>
                     </span>
-
                 </h3>
                 <div>
                     <div>
@@ -120,7 +111,6 @@
                             자동매매 시작
                         </button>
                     </form>
-
                     <form id="form2" th:action="@{/change}" method="post" style="display: none;" onsubmit="addThresholdLevelToForm(this); return handleForm2Click();">
                         <button type="submit" style="
                             margin-top: 10px;
@@ -139,7 +129,6 @@
                             트레숄드 변경
                         </button>
                     </form>
-                    
                     <form id="form3" style="display: flex; margin-top: 10px;" th:action="@{/end}" method="post" onsubmit=handleForm3Click()>
                         <button type="submit" style="
                             padding: 10px 140px;
@@ -157,15 +146,27 @@
                             th:text="#{trade_end}">
                             자동매매 중지
                         </button>
-                    </form> 
+                    </form>
+                    <!-- 자동매매 상태 메시지 -->
+                    <div id="auto-trade-status" 
+                    th:data-lang-stopped="#{auto_trade_stopped}"
+                    th:data-lang-running="#{auto_trade_running}"
+                    style="
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        margin-top: 15px;
+                        padding: 10px;
+                        font-size: 1rem;
+                        font-weight: bold;
+                        border: 1px solid #ddd;
+                        border-radius: 8px;
+                        background-color: #f8f9fa;
+                        color: #dc3545;">
+                    </div>
                 </div>
             </div>
            </div>     
-
-            
-                  
-                   
-                               
            <div>
             <div class="chart-tabs">
                 <button class="tab-button active" onclick="showChart('btcChart')" th:text="#{current}">실시간</button>
@@ -190,25 +191,16 @@
             <div class="chart-container hidden" id="btcThreeMonthChart-container">
                 <canvas id="btcThreeMonthChart" width="100%" height="200"></canvas>
             </div>
-        
             <div class="chart-container hidden" id="btcSixMonthChart-container">
                 <canvas id="btcSixMonthChart" width="100%" height="200"></canvas>
             </div>
         </div>
-        
-                
-              
-                
             </div>
-            
             <br>
         </div>
-            
         <!-- 오른쪽 패널 -->
-
         <div style="gap: 20px; align-items: flex-start;">
         <div style="display: flex; gap: 20px; align-items: flex-start;">
-
         <div class="section" style="max-width: 300px; height: 100%;">
             <h3 th:text="#{my_asset}">My Assets</h3>
                 <div class="total-value">
@@ -248,7 +240,6 @@
                             <!-- 뉴스가 동적으로 추가됩니다 -->
                         </tbody>
                     </table>
-
                 <table class="upbit-realtime-table">
                     <thead>
                         <tr class="upbit-realtime-tr">
@@ -267,7 +258,6 @@
         <!-- 누적호가창 -->
         <div class="accumulated-orderbook-container">
             <h3 class="orderbook-header" th:text="#{orderbook}">누적호가창</h3>
-       
             <table class="orderbook-table">
                 <thead>
                     <tr class="table-header-row">
@@ -282,7 +272,6 @@
                 </tbody>
             </table>
         </div>
-
         <!-- Trade Bitcoin 섹션 -->
         <div class="trade-section">
             <h3 class="section-header" th:text="#{trade_bitcoin}">Trade Bitcoin</h3>
@@ -302,7 +291,6 @@
             </form>
             <div id="sellMessage"></div>
             <br>
-            
                 <h3 class="section-header" th:text="#{s_order}">Schedule Order</h3>
                 <form id="scheduleForm" th:action="@{/scheduleOrder}" method="post" class="schedule-form">
                     <label for="orderType" th:text="#{order_type}">Order Type: </label>

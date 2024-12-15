@@ -946,3 +946,38 @@ function showChart(chartId) {
     // 현재 버튼 활성화
     event.target.classList.add('active');
 }
+
+const statusBox = document.getElementById('auto-trade-status');
+
+// Update trade status
+function updateAutoTradeStatus(status) {
+    const stoppedMessage = statusBox.dataset.langStopped; // Current language message
+    const runningMessage = statusBox.dataset.langRunning;
+
+    if (status === 'running') {
+        statusBox.textContent = runningMessage;
+        statusBox.style.color = '#28a745';
+        statusBox.style.backgroundColor = '#e9f7ef';
+    } else if (status === 'stopped') {
+        statusBox.textContent = stoppedMessage;
+        statusBox.style.color = '#dc3545';
+        statusBox.style.backgroundColor = '#f8d7da';
+    }
+}
+
+// 시작 버튼 이벤트 처리
+document.getElementById('form1').addEventListener('submit', function(event) {
+    event.preventDefault();
+    updateAutoTradeStatus('running');
+});
+
+// 중지 버튼 이벤트 처리
+document.getElementById('form3').addEventListener('submit', function(event) {
+    event.preventDefault();
+    updateAutoTradeStatus('stopped');
+});
+
+// 초기 상태 설정
+window.addEventListener('DOMContentLoaded', () => {
+    updateAutoTradeStatus('stopped'); // 초기 상태 설정
+});
