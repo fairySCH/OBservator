@@ -42,29 +42,29 @@
 
 ### 1. 로그인 화면  
 
-<img src="Doc/imgs/login_1.png" height=300> <img src="Doc/imgs/login_2.png" height=300>  
+<img src="Doc/imgs/English/login_1_en.png" height=300> <img src="Doc/imgs/English/login_2_en.png" height=300>  
 
 ### 2. 회원가입 화면 & 이용약관 팝업  
 
-<img src="Doc/imgs/signup_1.png" height=300>  <img src="Doc/imgs/signup_2.png" height=300>  
+<img src="Doc/imgs/English/signup_1_en.png" height=300>  <img src="Doc/imgs/English/signup_2_en.png" height=300>  
 
 ### 3. 홈 화면
 
-<img src="Doc/imgs/home.png" height=300>  
+<img src="Doc/imgs/English/home_en.png" height=300>  
 
 ### 4. 프로필 화면 & Upbit API 발급방법 팝업
 
-<img src="Doc/imgs/profile_1.png" height=300> <img src="Doc/imgs/profile_2.png" height=300> <img src="Doc/imgs/profile_3.png" height=300>  
+<img src="Doc/imgs/English/profile_1_en.png" height=300> <img src="Doc/imgs/English/profile_2_en.png" height=300> <img src="Doc/imgs/English/profile_3_en.png" height=300>  
 
 ### 5. 대시보드 화면
 
-<img src="Doc/imgs/dashboard_1.png" height=300> <img src="Doc/imgs/dashboard_2.png" height=300>  
+<img src="Doc/imgs/English/dashboard_1_en.png" height=300> <img src="Doc/imgs/English/dashboard_2_en.png" height=300>  
 
 ## 개발 환경
 
 ### OS
 
-![windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)![mac]( https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=apple&logoColor=white)![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)
+![windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)![mac](https://img.shields.io/badge/mac%20os-000000?style=for-the-badge&logo=apple&logoColor=white)![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=for-the-badge&logo=ubuntu&logoColor=white)
 
 ### Code Editor
 
